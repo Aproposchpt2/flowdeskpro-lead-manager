@@ -1,0 +1,13 @@
+{
+  "name": "flowdesk-smart-attendant",
+  "version": "1.0.0",
+  "description": "FlowDesk Pro — Smart Auto-Attendant by AI4 Businesses",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": "18"
+  }
+}
