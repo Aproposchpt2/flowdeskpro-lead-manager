@@ -1,15 +1,10 @@
 {
-  "name": "flowdesk-smart-attendant",
+  "name": "flowdesk-demo-site",
   "version": "1.0.0",
-  "description": "FlowDesk Pro — Smart Auto-Attendant by AI4 Businesses",
   "private": true,
+  "description": "FlowDesk Pro Lead Manager Demo Site — lead-management.aiflowdeskpro.com",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.24.3",
-    "@supabase/supabase-js": "^2.39.0",
-    "node-fetch": "^3.3.2",
-    "resend": "^3.2.0"
-  },
-  "engines": {
-    "node": "18"
+    "@supabase/supabase-js": "^2.49.4",
+    "resend": "^4.1.2"
   }
 }

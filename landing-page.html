@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowDesk Pro — AI Call Intake for Real Businesses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ── SCROLL BUG FIX: ensure body/html don't create stacking
+   context that clips fixed BG layers at scroll bottom ─────── */
+html, body {
+  min-height: 100%;
+  /* NO overflow:hidden here — that was the scroll bug */
+}
+
+:root {
+  --navy:   #0B1F3A;
+  --purple: #5B3FB5;
+  --sky:    #82d8ff;
+  --white:  #FFFFFF;
+  --bg:     #080c10;
+  --bg-2:   #0d1117;
+  --bg-3:   #161b22;
+  --border: rgba(255,255,255,0.07);
+  --border-m: rgba(255,255,255,0.13);
+  --blue:   #2d9cdb;
+  --blue-dim: rgba(45,156,219,0.08);
+  --green:  #3fb950;
+  --green-dim: rgba(63,185,80,0.09);
+  --text-1: #f0f6fc;
+  --text-2: #c9d1d9;
+  --text-3: #8b949e;
+  --text-4: #484f58;
+  --display: 'Syne', sans-serif;
+  --serif:   'DM Serif Display', serif;
+  --mono:    'JetBrains Mono', monospace;
+  --sans:    'Inter', sans-serif;
+  --r:  10px;
+  --r-lg: 20px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-2);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative; /* establishes stacking context cleanly */
+}
+
+/* Fixed BG — pointer-events:none so scroll works through them */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-glow {
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -15%, rgba(91,63,181,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 90% 85%, rgba(45,156,219,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 10% 70%, rgba(63,185,80,0.06) 0%, transparent 50%);
+}
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(130,216,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(130,216,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* All content sits above the fixed layers */
+nav, section, footer, .hero, main { position: relative; z-index: 1; }
+
+/* ── NAV ───────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 2.5rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,12,16,0.92);
+  backdrop-filter: blur(20px);
+}
+.logo { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
+.logo-mark {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: .75rem; font-weight: 600; color: #fff;
+  box-shadow: 0 0 20px rgba(91,63,181,0.4);
+}
+.logo-name { font-family: var(--display); font-size: 1rem; font-weight: 700; color: var(--text-1); letter-spacing: -.03em; }
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-link { font-size: .82rem; color: var(--text-3); text-decoration: none; transition: color .2s; }
+.nav-link:hover { color: var(--text-1); }
+.nav-cta {
+  font-family: var(--display); font-size: .82rem; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  padding: .55rem 1.25rem; border-radius: 7px; text-decoration: none;
+  box-shadow: 0 0 20px rgba(91,63,181,0.3);
+  transition: all .2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 0 30px rgba(91,63,181,0.5); }
+
+/* ── HERO ──────────────────────────────────────────────────── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .68rem; font-weight: 600;
+  color: var(--green); letter-spacing: .08em;
+  background: var(--green-dim); border: 1px solid rgba(63,185,80,0.2);
+  padding: .3rem .9rem; border-radius: 100px;
+  margin-bottom: 1.75rem;
+  animation: fadeUp .5s ease both;
+}
+.eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(63,185,80,.4)} 50%{box-shadow:0 0 0 5px rgba(63,185,80,0)} }
+
+.hero-h1 {
+  font-family: var(--display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  line-height: 1.02; letter-spacing: -.05em;
+  color: var(--text-1); margin-bottom: 1.25rem;
+  animation: fadeUp .6s .1s ease both;
+}
+.hero-h1 em { font-family: var(--serif); font-style: italic; color: var(--sky); letter-spacing: -.02em; }
+
+.hero-sub {
+  font-size: 1.05rem; color: var(--text-3); max-width: 580px; line-height: 1.75;
+  margin-bottom: 2.75rem;
+  animation: fadeUp .6s .2s ease both;
+}
+
+.cta-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp .6s .3s ease both; }
+
+.btn-primary {
+  font-family: var(--display); font-size: .95rem; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  padding: .9rem 2.25rem; border-radius: 8px; text-decoration: none;
+  border: 1px solid rgba(91,63,181,0.4);
+  box-shadow: 0 0 30px rgba(91,63,181,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: all .2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 44px rgba(91,63,181,0.5); }
+
+.btn-outline {
+  font-family: var(--display); font-size: .95rem; font-weight: 700; color: var(--text-2);
+  background: transparent; padding: .9rem 2.25rem; border-radius: 8px; text-decoration: none;
+  border: 1px solid var(--border-m); transition: all .2s;
+}
+.btn-outline:hover { border-color: var(--sky); color: var(--sky); background: rgba(130,216,255,0.05); }
+
+/* ── SOCIAL PROOF BAR ──────────────────────────────────────── */
+.proof-bar {
+  display: flex; align-items: center; justify-content: center;
+  gap: 2.5rem; flex-wrap: wrap;
+  padding: 2.5rem 2rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-top: 4rem;
+  animation: fadeUp .6s .4s ease both;
+}
+.proof-item { text-align: center; }
+.proof-num { font-family: var(--display); font-size: 2rem; font-weight: 800; color: var(--text-1); letter-spacing: -.04em; display: block; }
+.proof-label { font-family: var(--mono); font-size: .62rem; color: var(--text-4); letter-spacing: .06em; text-transform: uppercase; }
+
+/* ── HOW IT WORKS ──────────────────────────────────────────── */
+.section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section-label { font-family: var(--mono); font-size: .68rem; font-weight: 600; color: var(--purple); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; display: block; text-align: center; }
+.section-h2 { font-family: var(--display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -.04em; color: var(--text-1); text-align: center; margin-bottom: 1rem; line-height: 1.08; }
+.section-h2 em { font-family: var(--serif); font-style: italic; color: var(--sky); }
+.section-sub { font-size: .95rem; color: var(--text-3); text-align: center; max-width: 540px; margin: 0 auto 3.5rem; line-height: 1.7; }
+
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.step-card {
+  background: var(--bg-2); border: 1px solid var(--border-m);
+  border-radius: var(--r-lg); padding: 2rem;
+  position: relative; overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+.step-card:hover { border-color: rgba(91,63,181,0.4); transform: translateY(-2px); }
+.step-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(91,63,181,0.07), transparent);
+  pointer-events: none;
+}
+.step-num-big {
+  font-family: var(--display); font-size: 4rem; font-weight: 800;
+  color: rgba(91,63,181,0.15); line-height: 1;
+  margin-bottom: .75rem; display: block;
+}
+.step-title { font-family: var(--display); font-size: 1.1rem; font-weight: 700; color: var(--text-1); margin-bottom: .5rem; letter-spacing: -.02em; }
+.step-body { font-size: .88rem; color: var(--text-3); line-height: 1.65; }
+
+/* ── FEATURES ──────────────────────────────────────────────── */
+.features-section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+.feature-card {
+  background: var(--bg-2); border: 1px solid var(--border-m);
+  border-radius: var(--r-lg); padding: 1.75rem;
+  display: flex; gap: 1rem; align-items: flex-start;
+  transition: border-color .2s;
+}
+.feature-card:hover { border-color: rgba(130,216,255,0.3); }
+.feature-icon {
+  width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(91,63,181,0.2), rgba(45,156,219,0.1));
+  border: 1px solid rgba(91,63,181,0.2);
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.feature-title { font-family: var(--display); font-size: 1rem; font-weight: 700; color: var(--text-1); margin-bottom: .35rem; letter-spacing: -.02em; }
+.feature-body { font-size: .85rem; color: var(--text-3); line-height: 1.65; }
+
+/* ── DEMO CTA ──────────────────────────────────────────────── */
+.demo-section {
+  margin: 0 2rem 5rem;
+  max-width: 1100px;
+  margin-left: auto; margin-right: auto;
+  padding: 3.5rem;
+  background: linear-gradient(135deg, rgba(91,63,181,0.14), rgba(45,156,219,0.07));
+  border: 1px solid rgba(91,63,181,0.3);
+  border-radius: var(--r-lg);
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.demo-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(91,63,181,0.1), transparent);
+  pointer-events: none;
+}
+.demo-section h2 { font-family: var(--display); font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; color: var(--text-1); letter-spacing: -.04em; margin-bottom: 1rem; line-height: 1.08; }
+.demo-section h2 em { font-family: var(--serif); font-style: italic; color: var(--sky); }
+.demo-section p { font-size: .95rem; color: var(--text-3); max-width: 480px; margin: 0 auto 2rem; line-height: 1.7; }
+
+/* ── PHONE HIGHLIGHT ───────────────────────────────────────── */
+.phone-highlight {
+  display: inline-flex; align-items: center; gap: .75rem;
+  font-family: var(--mono); font-size: 1.1rem; font-weight: 600; color: var(--text-1);
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border-m);
+  padding: .75rem 1.5rem; border-radius: 10px; margin-bottom: 1.75rem;
+  text-decoration: none; transition: border-color .2s;
+}
+.phone-highlight:hover { border-color: var(--sky); }
+.phone-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+
+/* ── FOOTER ────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.footer-brand { font-family: var(--display); font-size: .85rem; font-weight: 700; color: var(--text-3); }
+.footer-txt { font-family: var(--mono); font-size: .62rem; color: var(--text-4); }
+.footer-links { display: flex; gap: 1.5rem; list-style: none; }
+.footer-links a { font-size: .75rem; color: var(--text-4); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: var(--text-2); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── RESPONSIVE ────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  nav { padding: 1rem 1.25rem; }
+  .nav-links .nav-link { display: none; }
+  .hero { padding: 4rem 1.25rem 3rem; }
+  .steps-grid, .features-grid { grid-template-columns: 1fr; }
+  .demo-section { padding: 2.5rem 1.5rem; }
+  footer { flex-direction: column; text-align: center; }
+  .footer-links { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Fixed background layers — scroll bug fixed: no overflow:hidden on body/html -->
+<div class="bg-layer bg-glow"></div>
+<div class="bg-layer bg-grid"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark">fd</div>
+    <span class="logo-name">FlowDesk Pro</span>
+  </a>
+  <div class="nav-links">
+    <a href="#how-it-works" class="nav-link">How It Works</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="https://aiflowdeskpro.com/#pricing" class="nav-link">Pricing</a>
+    <a href="/demo-request.html" class="nav-cta">Get My Demo →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">
+    <span class="eyebrow-dot"></span>
+    AI-Powered · 24/7 · No Credit Card Required
+  </div>
+
+  <h1 class="hero-h1">
+    Every missed call<br>is <em>lost revenue.</em>
+  </h1>
+
+  <p class="hero-sub">
+    FlowDesk Pro answers every inbound call with a natural-language AI voice agent,
+    qualifies your callers, creates a structured lead record, and alerts you instantly —
+    automatically, around the clock.
+  </p>
+
+  <div class="cta-row">
+    <a href="/demo-request.html" class="btn-primary">See Live Demo — Free →</a>
+    <a href="https://aiflowdeskpro.com" class="btn-outline">Learn More</a>
+  </div>
+
+  <!-- Social proof bar -->
+  <div class="proof-bar" style="width:100%;max-width:700px;margin-top:4rem;">
+    <div class="proof-item">
+      <span class="proof-num">24/7</span>
+      <span class="proof-label">Always Answering</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-num">&lt;30s</span>
+      <span class="proof-label">Lead Captured</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-num">EN/ES</span>
+      <span class="proof-label">Bilingual AI</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-num">$79/mo</span>
+      <span class="proof-label">Starts At</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div id="how-it-works">
+<div class="section">
+  <span class="section-label">How It Works</span>
+  <h2 class="section-h2">Three steps. <em>Zero missed calls.</em></h2>
+  <p class="section-sub">From first ring to structured lead record — fully automated.</p>
+
+  <div class="steps-grid">
+    <div class="step-card">
+      <span class="step-num-big">01</span>
+      <div class="step-title">Customer Calls</div>
+      <p class="step-body">Your FlowDesk number answers within two rings, 24 hours a day, 7 days a week. No voicemail. No hold music. A natural AI voice greets them by your business name.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num-big">02</span>
+      <div class="step-title">AI Qualifies</div>
+      <p class="step-body">The AI gathers the caller's name, reason for calling, urgency level, and preferred callback time — using conversational language that feels human, not robotic.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num-big">03</span>
+      <div class="step-title">Lead Created & Alert Fired</div>
+      <p class="step-body">A structured lead record hits your dashboard instantly. You receive an email and SMS alert with the caller's info — ready for your callback before competitors even know they called.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FEATURES -->
+<div id="features">
+<div class="features-section">
+  <span class="section-label">Built for Real Businesses</span>
+  <h2 class="section-h2">Everything you need.<br><em>Nothing you don't.</em></h2>
+  <p class="section-sub">Production-ready from day one. No dev team required.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎙️</div>
+      <div>
+        <div class="feature-title">Natural AI Voice</div>
+        <p class="feature-body">Powered by Claude AI — not a clunky IVR. Callers have a real conversation. Your brand sounds professional on every call.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div>
+        <div class="feature-title">Instant Alerts</div>
+        <p class="feature-body">Email and SMS alerts fire the moment a call ends. Name, phone, reason for call, urgency — all in one formatted message you can act on in 10 seconds.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div>
+        <div class="feature-title">Live Lead Dashboard</div>
+        <p class="feature-body">Every lead flows into your real-time dashboard. Filter by source, urgency, status. Update records, fire follow-up emails, create callback tasks — all in one place.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <div>
+        <div class="feature-title">Bilingual EN / ES</div>
+        <p class="feature-body">The AI detects and switches to Spanish automatically. Every business in the Command tier and above can serve bilingual markets without lifting a finger.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏢</div>
+      <div>
+        <div class="feature-title">Industry Templates</div>
+        <p class="feature-body">Purpose-built intake scripts for Legal, Medical, Dental, HVAC, Real Estate, Insurance, Veterinary, and Financial Services. Sounds like your industry. Works like clockwork.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔑</div>
+      <div>
+        <div class="feature-title">Agency & White-Label</div>
+        <p class="feature-body">Run your own book of business. One Agency account at $349/mo can power 10-20 sub-clients under your brand. Full API, webhooks, and dedicated SLA included.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- DEMO CTA -->
+<div style="padding: 0 2rem 2rem; max-width: 1100px; margin: 0 auto;">
+  <div class="demo-section">
+    <h2>See it live.<br><em>With your business name.</em></h2>
+    <p>Fill out the 30-second form. Call the demo number. Watch your lead appear on the dashboard in real time. That's the whole pitch — no slides, no sales call.</p>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:1.25rem;">
+      <a href="tel:+17253305102" class="phone-highlight">
+        <span class="phone-dot"></span>
+        (725) 330-5102 — Demo Line
+      </a>
+      <a href="/demo-request.html" class="btn-primary" style="display:inline-block;">Build My Private Demo →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">FlowDesk Pro</span>
+  <span class="footer-txt">© 2026 Apropos Group LLC · All rights reserved</span>
+  <ul class="footer-links">
+    <li><a href="https://aiflowdeskpro.com">Main Site</a></li>
+    <li><a href="/demo-request.html">Get Demo</a></li>
+    <li><a href="mailto:support@aiflowdeskpro.com">Support</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>

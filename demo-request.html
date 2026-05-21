@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowDesk Pro — Request Your Private Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #080c10;
+  --bg-2:      #0d1117;
+  --bg-3:      #161b22;
+  --bg-4:      #1c2128;
+  --border:    rgba(255,255,255,0.07);
+  --border-m:  rgba(255,255,255,0.14);
+  --blue:      #2d9cdb;
+  --blue-dim:  rgba(45,156,219,0.08);
+  --purple:    #5B3FB5;
+  --green:     #3fb950;
+  --green-dim: rgba(63,185,80,0.1);
+  --red:       #ef4444;
+  --text-1:    #f0f6fc;
+  --text-2:    #c9d1d9;
+  --text-3:    #8b949e;
+  --text-4:    #484f58;
+  --display:   'Syne', sans-serif;
+  --serif:     'DM Serif Display', serif;
+  --mono:      'JetBrains Mono', monospace;
+  --sans:      'Inter', sans-serif;
+  --r:         10px;
+  --r-lg:      18px;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text-2);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(91,63,181,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 90% 90%, rgba(63,185,80,0.05) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(130,216,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(130,216,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none; z-index: 0;
+}
+
+nav {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,12,16,0.92);
+  backdrop-filter: blur(20px);
+}
+.logo { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
+.logo-mark {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: .75rem; font-weight: 600; color: #fff;
+  box-shadow: 0 0 20px rgba(91,63,181,0.4);
+}
+.logo-name { font-family: var(--display); font-size: 1rem; font-weight: 700; color: var(--text-1); letter-spacing: -.03em; }
+.nav-back {
+  font-family: var(--mono); font-size: .72rem; color: var(--text-3);
+  text-decoration: none; transition: color .2s;
+  display: flex; align-items: center; gap: .4rem;
+}
+.nav-back:hover { color: var(--text-1); }
+
+main {
+  flex: 1; position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 1.5rem;
+}
+.form-container { width: 100%; max-width: 520px; }
+
+.form-header { text-align: center; margin-bottom: 2.5rem; }
+.form-eyebrow {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .68rem; font-weight: 600;
+  color: var(--green); letter-spacing: .08em;
+  background: var(--green-dim); border: 1px solid rgba(63,185,80,0.2);
+  padding: .3rem .9rem; border-radius: 100px;
+  margin-bottom: 1.25rem;
+  animation: fadeUp .5s ease both;
+}
+.eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(63,185,80,.4)} 50%{opacity:.8;box-shadow:0 0 0 5px rgba(63,185,80,0)} }
+
+.form-h1 {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.06; letter-spacing: -.04em;
+  color: var(--text-1); margin-bottom: .6rem;
+  animation: fadeUp .6s .1s ease both;
+}
+.form-h1 em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--blue); }
+.form-sub { font-size: .9rem; color: var(--text-3); line-height: 1.65; animation: fadeUp .6s .2s ease both; }
+
+.form-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border-m);
+  border-radius: var(--r-lg);
+  padding: 2.25rem;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+  animation: fadeUp .6s .3s ease both;
+  position: relative;
+}
+.form-card::before {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: calc(var(--r-lg) + 1px);
+  background: linear-gradient(135deg, rgba(91,63,181,0.15), transparent 50%);
+  z-index: -1; pointer-events: none;
+}
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.field-row.single { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: .45rem; }
+.field-label {
+  font-family: var(--mono); font-size: .65rem; font-weight: 600;
+  color: var(--text-3); letter-spacing: .06em; text-transform: uppercase;
+}
+.field-label span { color: var(--red); margin-left: 2px; }
+.field-input, .field-select {
+  background: var(--bg-3); border: 1px solid var(--border-m);
+  border-radius: var(--r); padding: .75rem 1rem;
+  font-family: var(--sans); font-size: .88rem; color: var(--text-1);
+  transition: border-color .2s, box-shadow .2s; outline: none; width: 100%;
+  appearance: none;
+}
+.field-input::placeholder { color: var(--text-4); }
+.field-input:focus, .field-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(45,156,219,0.12);
+}
+.field-input.error { border-color: var(--red); }
+.select-wrapper { position: relative; }
+.select-wrapper::after {
+  content: '▾'; position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%); color: var(--text-4); font-size: .75rem; pointer-events: none;
+}
+.field-select { padding-right: 2rem; cursor: pointer; }
+.field-select option { background: var(--bg-3); color: var(--text-1); }
+.field-error { font-family: var(--mono); font-size: .6rem; color: var(--red); display: none; }
+.field-error.visible { display: block; }
+
+.form-divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+.privacy-note {
+  display: flex; align-items: flex-start; gap: .6rem;
+  background: var(--blue-dim); border: 1px solid rgba(45,156,219,0.12);
+  border-radius: 8px; padding: .75rem 1rem; margin-bottom: 1.5rem;
+}
+.privacy-icon { font-size: .85rem; flex-shrink: 0; margin-top: 1px; }
+.privacy-text { font-family: var(--mono); font-size: .62rem; color: var(--text-3); line-height: 1.6; }
+.privacy-text strong { color: var(--blue); }
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  border: 1px solid rgba(91,63,181,0.4);
+  border-radius: var(--r); padding: .9rem 1.5rem;
+  font-family: var(--display); font-size: .95rem; font-weight: 700;
+  color: #fff; cursor: pointer;
+  box-shadow: 0 0 28px rgba(91,63,181,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: .6rem;
+}
+.submit-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 40px rgba(91,63,181,0.4); }
+.submit-btn:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+.btn-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin .7s linear infinite; display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.success-state {
+  display: none; flex-direction: column; align-items: center;
+  text-align: center; padding: 2rem 1rem; gap: 1rem;
+}
+.success-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--green-dim); border: 2px solid rgba(63,185,80,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; animation: scaleIn .4s ease both;
+}
+@keyframes scaleIn { from{opacity:0;transform:scale(.5)} to{opacity:1;transform:scale(1)} }
+.success-title { font-family: var(--display); font-size: 1.3rem; font-weight: 800; color: var(--text-1); letter-spacing: -.03em; }
+.success-sub { font-size: .85rem; color: var(--text-3); line-height: 1.65; }
+.success-redirect { font-family: var(--mono); font-size: .7rem; color: var(--text-4); display: flex; align-items: center; gap: .5rem; }
+.redirect-bar { width: 120px; height: 3px; background: var(--bg-4); border-radius: 100px; overflow: hidden; }
+.redirect-fill { height: 100%; background: var(--blue); width: 0%; transition: width 3s linear; }
+
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 2.5rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.footer-txt { font-family: var(--mono); font-size: .62rem; color: var(--text-4); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 540px) {
+  nav { padding: 1rem 1.25rem; }
+  main { padding: 2rem 1rem; }
+  .form-card { padding: 1.5rem; }
+  .field-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/landing-page.html" class="logo">
+    <div class="logo-mark">fd</div>
+    <span class="logo-name">FlowDesk Pro</span>
+  </a>
+  <a href="/landing-page.html" class="nav-back">← Back to site</a>
+</nav>
+
+<main>
+  <div class="form-container">
+
+    <div class="form-header">
+      <div class="form-eyebrow">
+        <span class="eyebrow-dot"></span>
+        30-Second Setup · No Credit Card
+      </div>
+      <h1 class="form-h1">
+        FlowDesk Pro<br><em>Lead Management</em>
+      </h1>
+      <p class="form-sub">
+        Fill out the form — we will build your business's custom dashboard.
+        Call it, watch your lead appear, and see exactly what your clients experience.
+      </p>
+    </div>
+
+    <div class="form-card">
+
+      <form id="demoForm" novalidate>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="firstName">First Name <span>*</span></label>
+            <input class="field-input" type="text" id="firstName" name="firstName"
+              placeholder="Jeff" autocomplete="given-name" required>
+            <span class="field-error" id="firstNameError">Required</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="lastName">Last Name <span>*</span></label>
+            <input class="field-input" type="text" id="lastName" name="lastName"
+              placeholder="Mitchell" autocomplete="family-name" required>
+            <span class="field-error" id="lastNameError">Required</span>
+          </div>
+        </div>
+
+        <div class="field-row single">
+          <div class="field">
+            <label class="field-label" for="businessName">Business Name <span>*</span></label>
+            <input class="field-input" type="text" id="businessName" name="businessName"
+              placeholder="Henderson Law Group" autocomplete="organization" required>
+            <span class="field-error" id="businessNameError">Required</span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="phone">Phone Number <span>*</span></label>
+            <input class="field-input" type="tel" id="phone" name="phone"
+              placeholder="(702) 555-0100" autocomplete="tel" required>
+            <span class="field-error" id="phoneError">Required</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="industry">Industry <span>*</span></label>
+            <div class="select-wrapper">
+              <select class="field-select" id="industry" name="industry" required>
+                <option value="" disabled selected>Select industry</option>
+                <option value="legal">Legal / Law Firm</option>
+                <option value="medical">Medical Practice</option>
+                <option value="dental">Dental Office</option>
+                <option value="hvac">HVAC / Trades</option>
+                <option value="real_estate">Real Estate</option>
+                <option value="insurance">Insurance Agency</option>
+                <option value="veterinary">Veterinary Clinic</option>
+                <option value="financial">Financial Services</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <span class="field-error" id="industryError">Required</span>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <div class="privacy-note">
+          <span class="privacy-icon">🔒</span>
+          <span class="privacy-text">
+            Your information is used <strong>only to personalize your demo</strong>.
+            We will never share or sell your data.
+          </span>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <div class="btn-spinner" id="btnSpinner"></div>
+          <span id="btnText">Build My Private Demo →</span>
+        </button>
+
+      </form>
+
+      <div class="success-state" id="successState">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Demo Ready!</div>
+        <p class="success-sub">
+          Your private demo has been built.<br>Redirecting you now...
+        </p>
+        <div class="success-redirect">
+          <span>Loading your dashboard</span>
+          <div class="redirect-bar"><div class="redirect-fill" id="redirectFill"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span class="footer-txt">© 2026 Apropos Group LLC · FlowDesk Pro · support@aiflowdeskpro.com</span>
+</footer>
+
+<script>
+const form       = document.getElementById('demoForm');
+const submitBtn  = document.getElementById('submitBtn');
+const btnText    = document.getElementById('btnText');
+const btnSpinner = document.getElementById('btnSpinner');
+const successState = document.getElementById('successState');
+
+function validateField(id, errorId) {
+  const el  = document.getElementById(id);
+  const err = document.getElementById(errorId);
+  const val = el.value.trim();
+  if (!val) { el.classList.add('error'); err.classList.add('visible'); return false; }
+  el.classList.remove('error'); err.classList.remove('visible'); return true;
+}
+
+['firstName','lastName','businessName','phone','industry'].forEach(id => {
+  const el = document.getElementById(id);
+  const errId = id + 'Error';
+  el.addEventListener('input', () => {
+    el.classList.remove('error');
+    const err = document.getElementById(errId);
+    if (err) err.classList.remove('visible');
+  });
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const valid = [
+    validateField('firstName',    'firstNameError'),
+    validateField('lastName',     'lastNameError'),
+    validateField('businessName', 'businessNameError'),
+    validateField('phone',        'phoneError'),
+    validateField('industry',     'industryError'),
+  ].every(Boolean);
+
+  if (!valid) return;
+
+  submitBtn.disabled = true;
+  btnText.textContent = 'Building your demo...';
+  btnSpinner.style.display = 'block';
+
+  const businessName = document.getElementById('businessName').value.trim();
+
+  const payload = {
+    firstName:    document.getElementById('firstName').value.trim(),
+    lastName:     document.getElementById('lastName').value.trim(),
+    businessName,
+    phone:        document.getElementById('phone').value.trim(),
+    industry:     document.getElementById('industry').value,
+  };
+
+  // Save to sessionStorage IMMEDIATELY — before network call
+  try { sessionStorage.setItem('flowdesk_business_name', businessName); } catch(e) {}
+
+  try {
+    const res  = await fetch('/.netlify/functions/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+
+    // Store ref_slug too if returned
+    try {
+      if (data.ref_slug) sessionStorage.setItem('flowdesk_ref_slug', data.ref_slug);
+    } catch(e) {}
+
+    // Show success
+    form.style.display = 'none';
+    successState.style.display = 'flex';
+    setTimeout(() => { document.getElementById('redirectFill').style.width = '100%'; }, 100);
+
+    // Redirect to page-2.html
+    setTimeout(() => {
+      const slug = data.ref_slug || encodeURIComponent(businessName).replace(/%20/g, '-').toLowerCase();
+      window.location.href = '/page-2.html?business=' + encodeURIComponent(businessName);
+    }, 3200);
+
+  } catch (err) {
+    console.error('Submit error:', err);
+    // Even on error, redirect with businessName from sessionStorage
+    form.style.display = 'none';
+    successState.style.display = 'flex';
+    setTimeout(() => { document.getElementById('redirectFill').style.width = '100%'; }, 100);
+    setTimeout(() => {
+      window.location.href = '/page-2.html?business=' + encodeURIComponent(businessName);
+    }, 3200);
+  }
+});
+</script>
+
+</body>
+</html>
