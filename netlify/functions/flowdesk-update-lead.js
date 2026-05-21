@@ -1,151 +1,106 @@
-const jsonHeaders = {
-  'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
-};
+// netlify/functions/flowdesk-update-lead.js
+// FlowDesk Pro — Lead Manager
+// Called by the dashboard to update a lead record in flowdesk_intake_records
 
-const STATUS_MAP = {
-  new: 'New / Needs Review',
-  priority: 'New / Priority Review',
-  contacted: 'In Progress',
-  scheduled: 'In Progress',
-  followup: 'In Progress',
-  'follow-up': 'In Progress',
-  progress: 'In Progress',
-  closed: 'Closed / Resolved',
-  resolved: 'Closed / Resolved',
-  'New / Needs Review': 'New / Needs Review',
-  'New / Priority Review': 'New / Priority Review',
-  'In Progress': 'In Progress',
-  'Closed / Resolved': 'Closed / Resolved'
-};
+const { createClient } = require("@supabase/supabase-js");
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+const VALID_STATUSES = [
+  "New / Needs Review",
+  "New / Priority Review",
+  "In Progress",
+  "Closed / Resolved",
+];
+
+const VALID_URGENCIES = ["Low", "Normal", "Time-sensitive", "Urgent"];
 
 exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 204, headers: jsonHeaders, body: '' };
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: JSON.stringify({ error: "Method Not Allowed" }) };
   }
-
-  if (event.httpMethod !== 'POST') {
-    return jsonResponse(405, { error: 'Method not allowed' });
-  }
-
-  const supabaseUrl = clean(process.env.SUPABASE_URL);
-  const serviceKey = clean(process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY);
-  const tableName = clean(process.env.FLOWDESK_INTAKE_TABLE) || 'flowdesk_intake_records';
-
-  if (!supabaseUrl || !serviceKey) {
-    return jsonResponse(500, { error: 'Supabase environment variables are not configured.' });
-  }
-
-  let payload;
-  try {
-    payload = JSON.parse(event.body || '{}');
-  } catch {
-    return jsonResponse(400, { error: 'Invalid JSON payload.' });
-  }
-
-  const id = clean(payload.id);
-  const intakeId = clean(payload.intake_id);
-  const status = normalizeStatus(payload.status || payload.lead_status);
-  const internalNotes = clean(payload.internal_notes);
-  const nextAction = clean(payload.next_action);
-  const hasFollowUpNeeded = typeof payload.follow_up_needed === 'boolean';
-
-  if (!id && !intakeId) {
-    return jsonResponse(400, { error: 'Missing lead id or intake_id.' });
-  }
-
-  if (!status && !internalNotes && !nextAction && !hasFollowUpNeeded) {
-    return jsonResponse(400, { error: 'No update fields provided.' });
-  }
-
-  const update = {};
-  if (status) {
-    update.lead_status = status;
-    update.follow_up_needed = status !== 'Closed / Resolved';
-    if (status === 'Closed / Resolved') update.closed_at = new Date().toISOString();
-  }
-  if (internalNotes) update.internal_notes = internalNotes;
-  if (nextAction) update.next_action = nextAction;
-  if (hasFollowUpNeeded) update.follow_up_needed = payload.follow_up_needed;
-
-  const filter = id ? `id=eq.${encodeURIComponent(id)}` : `intake_id=eq.${encodeURIComponent(intakeId)}`;
-  const endpoint = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/${encodeURIComponent(tableName)}?${filter}`;
 
   try {
-    let result = await patchRecord(endpoint, serviceKey, update);
-    const message = String((result.data && result.data.message) || '');
+    const payload = JSON.parse(event.body || "{}");
+    const { id, intake_id, ...updates } = payload;
 
-    if (!result.ok && message.includes("'internal_notes' column")) {
-      delete update.internal_notes;
-      result = await patchRecord(endpoint, serviceKey, update);
-      result.usedFallback = true;
+    if (!id && !intake_id) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Record id or intake_id is required." }),
+      };
     }
 
-    if (!result.ok) {
-      console.error('FlowDesk lead update error:', result.status, result.data);
-      return jsonResponse(result.status, {
-        error: 'Unable to update FlowDesk lead.',
-        details: result.data
-      });
+    // Validate status if provided
+    if (updates.lead_status && !VALID_STATUSES.includes(updates.lead_status)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: `Invalid lead_status: ${updates.lead_status}` }),
+      };
     }
 
-    return jsonResponse(200, {
-      ok: true,
-      record: Array.isArray(result.data) ? result.data[0] : result.data,
-      usedFallback: Boolean(result.usedFallback)
-    });
-  } catch (error) {
-    console.error('FlowDesk lead update exception:', error);
-    return jsonResponse(500, { error: 'Unexpected server error while updating lead.' });
+    // Validate urgency if provided
+    if (updates.urgency && !VALID_URGENCIES.includes(updates.urgency)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: `Invalid urgency: ${updates.urgency}` }),
+      };
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+    // Always update updated_at
+    updates.updated_at = new Date().toISOString();
+
+    // If status is Closed, set closed_at
+    if (updates.lead_status === "Closed / Resolved") {
+      updates.closed_at = new Date().toISOString();
+    }
+
+    // Build query — prefer id, fall back to intake_id
+    let query = supabase
+      .from("flowdesk_intake_records")
+      .update(updates)
+      .select()
+      .single();
+
+    if (id) {
+      query = supabase
+        .from("flowdesk_intake_records")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+    } else {
+      query = supabase
+        .from("flowdesk_intake_records")
+        .update(updates)
+        .eq("intake_id", intake_id)
+        .select()
+        .single();
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("[flowdesk-update-lead] Supabase error:", error.message);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: error.message }),
+      };
+    }
+
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ok: true, record: data }),
+    };
+  } catch (err) {
+    console.error("[flowdesk-update-lead] fatal error:", err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Internal server error" }),
+    };
   }
 };
-
-async function patchRecord(endpoint, serviceKey, update) {
-  const response = await fetch(endpoint, {
-    method: 'PATCH',
-    headers: {
-      apikey: serviceKey,
-      Authorization: `Bearer ${serviceKey}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=representation'
-    },
-    body: JSON.stringify(update)
-  });
-
-  const data = await readJson(response);
-
-  return {
-    ok: response.ok,
-    status: response.status,
-    data
-  };
-}
-
-async function readJson(response) {
-  const text = await response.text();
-  try {
-    return text ? JSON.parse(text) : null;
-  } catch {
-    return text;
-  }
-}
-
-function normalizeStatus(value) {
-  const raw = clean(value);
-  if (!raw) return '';
-  return STATUS_MAP[raw] || STATUS_MAP[raw.toLowerCase()] || '';
-}
-
-function clean(value) {
-  return String(value || '').trim();
-}
-
-function jsonResponse(statusCode, body) {
-  return {
-    statusCode,
-    headers: jsonHeaders,
-    body: JSON.stringify(body)
-  };
-}
