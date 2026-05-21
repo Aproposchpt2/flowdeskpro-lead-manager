@@ -4,8 +4,10 @@
   "description": "FlowDesk Pro — Smart Auto-Attendant by AI4 Businesses",
   "private": true,
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
     "@supabase/supabase-js": "^2.39.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "resend": "^3.2.0"
   },
   "engines": {
     "node": "18"
