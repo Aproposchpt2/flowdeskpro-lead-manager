@@ -29,9 +29,11 @@
 'use strict';
 
 const { Resend } = require('resend');
+const { Anthropic } = require('@anthropic-ai/sdk');
 const https = require('https');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 /* ---------------------------------------------
    CONSTANTS
@@ -368,12 +370,10 @@ function buildFallbackTwiML() {
 }
 
 /* ---------------------------------------------
-   CLAUDE AI — LEAD EXTRACTION
+   CLAUDE AI — LEAD EXTRACTION (using @anthropic-ai/sdk)
 --------------------------------------------- */
 async function extractLeadFromTranscript(transcript, callerPhone, language = 'en') {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-
-  if (!apiKey) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     console.error('ANTHROPIC_API_KEY not configured');
     return { full_name: 'Caller', intent: transcript, urgency: 'medium', industry: 'other', notes: transcript, language };
   }
@@ -409,66 +409,34 @@ Urgency rules:
 - medium = appointment, question, interested, looking for, need help soon
 - low = just browsing, general info, no rush mentioned`;
 
-  return new Promise((resolve) => {
-    const body = JSON.stringify({
-      model:      'claude-sonnet-4-5',
+  try {
+    console.log('SENDING TO CLAUDE:', transcript.substring(0, 100));
+    const message = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
       max_tokens: 500,
-      system:     systemPrompt,
-      messages:   [{ role: 'user', content: userPrompt }],
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
     });
 
-    const options = {
-      hostname: 'api.anthropic.com',
-      path:     '/v1/messages',
-      method:   'POST',
-      headers: {
-        'Content-Type':      'application/json',
-        'x-api-key':         apiKey,
-        'anthropic-version': '2023-06-01',
-        'Content-Length':    Buffer.byteLength(body),
-      },
+    const text = message.content[0]?.type === 'text' ? message.content[0].text : '{}';
+    console.log('CLAUDE RAW:', text);
+    
+    const clean = text.replace(/```json|```/g, '').trim();
+    const lead = JSON.parse(clean);
+    console.log('CLAUDE EXTRACTION:', JSON.stringify(lead));
+    
+    return {
+      full_name: safeString(lead.full_name, 'Caller'),
+      intent:    safeString(lead.intent,    transcript.substring(0, 200)),
+      urgency:   normalizeUrgency(lead.urgency),
+      industry:  safeString(lead.industry,  'other'),
+      notes:     safeString(lead.notes,     ''),
+      language:  safeString(lead.language,  language),
     };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => { data += chunk; });
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          console.log('CLAUDE RAW:', JSON.stringify(parsed?.content?.[0]?.text || 'NO TEXT'));
-          const text  = parsed?.content?.[0]?.text || '{}';
-          const clean = text.replace(/```json|```/g, '').trim();
-          const lead  = JSON.parse(clean);
-          console.log('CLAUDE EXTRACTION:', JSON.stringify(lead));
-          resolve({
-            full_name: safeString(lead.full_name, 'Caller'),
-            intent:    safeString(lead.intent,    transcript.substring(0, 200)),
-            urgency:   normalizeUrgency(lead.urgency),
-            industry:  safeString(lead.industry,  'other'),
-            notes:     safeString(lead.notes,     ''),
-            language:  safeString(lead.language,  language),
-          });
-        } catch (err) {
-          console.error('CLAUDE PARSE ERROR:', err.message);
-          resolve({ full_name: 'Caller', intent: transcript.substring(0, 300), urgency: 'medium', industry: 'other', notes: transcript, language });
-        }
-      });
-    });
-
-    req.on('error', (err) => {
-      console.error('CLAUDE REQUEST ERROR:', err.message);
-      resolve({ full_name: 'Caller', intent: transcript.substring(0, 300), urgency: 'medium', industry: 'other', notes: transcript, language });
-    });
-
-    req.setTimeout(8000, () => {
-      req.destroy();
-      console.error('CLAUDE TIMEOUT');
-      resolve({ full_name: 'Caller', intent: transcript.substring(0, 300), urgency: 'medium', industry: 'other', notes: transcript, language });
-    });
-
-    req.write(body);
-    req.end();
-  });
+  } catch (err) {
+    console.error('CLAUDE ERROR:', err.message);
+    return { full_name: 'Caller', intent: transcript.substring(0, 300), urgency: 'medium', industry: 'other', notes: transcript, language };
+  }
 }
 
 /* ---------------------------------------------
