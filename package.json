@@ -1,0 +1,11 @@
+{
+  "name": "flowdesk-demo-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FlowDesk Pro Lead Manager Demo Site — lead-management.aiflowdeskpro.com",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@supabase/supabase-js": "^2.49.4",
+    "resend": "^4.1.2"
+  }
+}
