@@ -3,1013 +3,138 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlowDesk Pro — Lead Manager | AI4 Businesses</title>
-  <meta name="description" content="FlowDesk Pro delivers AI-powered call intake, lead management, and workflow automation for service businesses. Live demos available. Powered by Apropos Group LLC." />
-  <meta property="og:title" content="FlowDesk Pro — Intelligent Workflow Automation" />
-  <meta property="og:description" content="AI intake systems that capture every call, form, and request — then turn them into structured, dashboard-ready records." />
+  <title>FlowDesk Pro — Cloud Customer-Response Systems</title>
+  <meta name="description" content="FlowDesk Pro is a cloud-delivered customer-response system for call capture, customer intake, lead management, missed-call workflows, and appointment-ready follow-up." />
+  <meta property="og:title" content="FlowDesk Pro — Cloud Customer-Response Systems" />
+  <meta property="og:description" content="Answer calls, capture requests, create dashboard records, and manage follow-up through secure web-based access." />
   <meta property="og:image" content="https://aiflowdeskpro.com/AI4-FLOWDESK-PRO-LOGO.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet" />
-
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    /* ── SHARED TOKENS ── */
     :root {
-      /* File 2 palette (primary) */
-      --bg: #050c1a;
-      --bg2: #071224;
-      --surface: rgba(10,20,42,0.82);
-      --surface2: rgba(14,28,56,0.9);
-      --line: rgba(45,156,219,0.13);
-      --line2: rgba(45,156,219,0.28);
-      --accent: #2d9cdb;
-      --accent2: #1a7bb8;
-      --accent3: #5cc5f0;
-      --purple: #7c3aed;
-      --purple2: #9d6ef8;
-      --white: #f0f6ff;
-      --silver: #b8cce0;
-      --muted: #7a94ad;
-      --muted2: #4e6880;
-      --green: #34d399;
-      --amber: #f59e0b;
-      --red: #f87171;
-      --mono: 'JetBrains Mono', monospace;
-      --sans: 'DM Sans', sans-serif;
-      --display: 'DM Serif Display', serif;
-      --radius: 14px;
-      --radius-lg: 22px;
-
-      /* File 1 palette aliases (used in landing section) */
-      --black: #020407;
-      --deep: #060C14;
-      --panel: #0E1928;
-      --border: rgba(74,127,255,0.15);
-      --blue: #4A7FFF;
-      --blue-bright: #6B9FFF;
-      --blue-dim: rgba(74,127,255,0.25);
-      --chrome: #C8D8F0;
-      --text: #A8B8D0;
-      --text-muted: #586880;
-      --glow-blue: 0 0 60px rgba(74,127,255,0.3);
-      --ease: cubic-bezier(0.16,1,0.3,1);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--muted);
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-
-    /* Grid texture */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(45,156,219,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(45,156,219,0.03) 1px, transparent 1px);
-      background-size: 72px 72px;
-      mask-image: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.08) 75%, transparent);
-    }
-
-    /* Noise overlay */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      background-size: 256px 256px;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.8;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
-
-    /* ── NAV ── */
-
-    /* ══════════════════════════════════════════
-       SECTION 1 — CINEMATIC LOGO SPLASH
-    ══════════════════════════════════════════ */
-    .arc-svg-lm { width: min(500px, 90vw); display: block; margin: 0 auto 0; }
-    .arc-text-lm {
-      font-family: 'Syne', sans-serif;
-      font-size: 14px; font-weight: 800;
-      fill: var(--blue);
-      letter-spacing: 0.18em; text-transform: uppercase;
-    }
-        .hero-cinematic {
-      position: relative; z-index: 1;
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      border-bottom: 1px solid var(--line);
-      overflow: hidden;
-    }
-
-    .hero-splash {
-      position: relative;
-      flex: 1;
-      display: flex; align-items: center; justify-content: center;
-      padding: clamp(2rem,5vw,4rem) clamp(1rem,4vw,2.5rem) 0;
-      overflow: hidden;
-    }
-    .hero-splash::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(45,156,219,0.13) 0%, rgba(124,58,237,0.06) 45%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 50% 80%, rgba(45,156,219,0.08) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .hero-logo-wrap {
-      position: relative;
-      width: min(980px, 94%);
-      animation: heroFadeIn 1.1s cubic-bezier(0.22,1,0.36,1) both;
-    }
-    .hero-logo-wrap img {
-      width: 100%; height: auto; display: block;
-      filter:
-        drop-shadow(0 0 60px rgba(45,156,219,0.5))
-        drop-shadow(0 0 120px rgba(45,156,219,0.25))
-        drop-shadow(0 24px 56px rgba(0,0,0,0.65));
-    }
-
-    @keyframes heroFadeIn {
-      from { opacity: 0; transform: scale(0.96) translateY(18px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    /* CTA strip */
-    .hero-cta-strip {
-      display: flex; flex-direction: column; align-items: center;
-      padding: clamp(1.5rem,3vw,2.5rem) clamp(1rem,4vw,2.5rem) clamp(2rem,4vw,3rem);
-      text-align: center;
-      gap: 1.5rem;
-      background: linear-gradient(0deg, rgba(5,12,26,0.95) 0%, rgba(5,12,26,0.6) 60%, transparent 100%);
-    }
-    .hero-tagline {
-      font-family: var(--mono);
-      font-size: clamp(0.65rem, 1.2vw, 0.8rem);
-      font-weight: 700;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--accent3);
-      animation: heroFadeIn 1.3s 0.2s cubic-bezier(0.22,1,0.36,1) both;
-    }
-    .hero-headline-splash {
-      font-family: var(--display);
-      font-size: clamp(1.5rem, 3.2vw, 2.4rem);
-      font-weight: 400;
-      line-height: 1.15;
-      letter-spacing: -0.01em;
-      color: var(--white);
-      max-width: 700px;
-      animation: heroFadeIn 1.3s 0.35s cubic-bezier(0.22,1,0.36,1) both;
-    }
-    .hero-headline-splash em { font-style: italic; color: var(--accent3); }
-
-    .hero-actions-splash {
-      display: flex; flex-wrap: wrap; gap: 0.85rem;
-      justify-content: center;
-      animation: heroFadeIn 1.3s 0.5s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    /* Scroll indicator */
-    .scroll-indicator {
-      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-      animation: heroFadeIn 1.3s 0.7s cubic-bezier(0.22,1,0.36,1) both;
-      padding-bottom: 0.5rem;
-    }
-    .scroll-indicator span {
-      font-family: var(--mono);
-      font-size: 0.58rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted2);
-    }
-    .scroll-line {
-      width: 1px; height: 40px;
-      background: linear-gradient(to bottom, rgba(45,156,219,0.5), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    @keyframes scrollPulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
-
-    /* stats bar */
-    .hero-stats-bar {
-      width: 100%;
-      display: flex; justify-content: center;
-      border-top: 1px solid var(--line);
-      animation: heroFadeIn 1.3s 0.65s cubic-bezier(0.22,1,0.36,1) both;
-    }
-    .hero-stats-inner {
-      display: flex; flex-wrap: wrap;
-      max-width: 680px; width: 100%;
-    }
-    .hero-stat {
-      flex: 1; min-width: 140px;
-      text-align: center;
-      padding: 1.25rem 1rem;
-      border-right: 1px solid var(--line);
-    }
-    .hero-stat:last-child { border-right: none; }
-    .hero-stat-num {
-      font-family: var(--display);
-      font-size: 1.8rem;
-      color: var(--white);
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-    .hero-stat-label {
-      font-family: var(--mono);
-      font-size: 0.58rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted2);
-    }
-
-    /* shared button styles */
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 0.6rem;
-      font-weight: 700; font-size: 0.92rem;
-      color: #03101f;
-      background: linear-gradient(130deg, var(--accent3) 0%, var(--accent) 55%, var(--accent2));
-      border-radius: 999px;
-      padding: 0.9rem 2rem;
-      box-shadow: 0 0 36px rgba(45,156,219,0.32);
-      transition: transform 0.16s, box-shadow 0.16s;
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 52px rgba(45,156,219,0.48); }
-
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 0.6rem;
-      font-weight: 600; font-size: 0.92rem;
-      color: var(--white);
-      border: 1px solid var(--line2);
-      border-radius: 999px;
-      padding: 0.9rem 2rem;
-      background: rgba(255,255,255,0.04);
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); }
-
-    /* ══════════════════════════════════════════
-       SECTION 2 — LANDING PAGE (from File 1)
-    ══════════════════════════════════════════ */
-
-    /* FILE 1 HERO (2-col) */
-    #hero-landing {
-      position: relative;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      overflow: hidden;
-      background: var(--black);
-      border-bottom: 1px solid var(--border);
-    }
-    .hero-left {
-      position: relative;
-      display: flex; align-items: flex-end;
-      overflow: hidden;
-    }
-    .hero-left img {
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: center top;
-      display: block;
-      opacity: 0;
-      animation: fadeIn 1.6s 0.3s forwards;
-    }
-    .hero-left::after {
-      content: "";
-      position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
-      background: linear-gradient(to right, transparent, rgba(2,4,7,0.95));
-      pointer-events: none;
-    }
-    .hero-left::before {
-      content: "";
-      position: absolute; bottom: 0; left: 0; right: 0; height: 30%;
-      background: linear-gradient(to top, var(--black), transparent);
-      pointer-events: none; z-index: 1;
-    }
-    .hero-right {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 10rem 4rem 6rem 3rem;
-      background: linear-gradient(135deg, rgba(74,127,255,0.04) 0%, transparent 60%);
-    }
-    .hero-right::before {
-      content: "";
-      position: absolute; top: 20%; left: 0; width: 80%; height: 60%;
-      background: radial-gradient(ellipse, rgba(74,127,255,0.12) 0%, transparent 70%);
-      filter: blur(40px); pointer-events: none; z-index: -1;
-    }
-    .hero-logo-ldg {
-      width: 100%; max-width: 480px;
-      margin-bottom: 2rem;
-      opacity: 0; animation: fadeUp 1s 0.6s forwards;
-      filter: drop-shadow(0 0 40px rgba(74,127,255,0.4));
-    }
-    .hero-eyebrow {
-      display: flex; align-items: center; gap: 0.75rem;
-      margin-bottom: 1.5rem;
-      opacity: 0; animation: fadeUp 0.8s 1s forwards;
-    }
-    .hero-eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--blue); display: block; }
-    .hero-eyebrow span {
-      font-family: "Syncopate", sans-serif;
-      font-size: 0.58rem; letter-spacing: 0.25em;
-      text-transform: uppercase; color: var(--blue-bright);
-    }
-    .hero-headline-ldg {
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(2rem, 3vw, 3.4rem);
-      line-height: 1.08; color: var(--white);
-      margin-bottom: 1.4rem;
-      opacity: 0; animation: fadeUp 0.9s 1.1s forwards;
-    }
-    .hero-headline-ldg em { font-style: italic; color: var(--blue-bright); }
-    .hero-sub {
-      font-size: 1rem; color: var(--text);
-      max-width: 440px; line-height: 1.85;
-      margin-bottom: 2.5rem;
-      opacity: 0; animation: fadeUp 0.9s 1.2s forwards;
-    }
-    .hero-actions-ldg {
-      display: flex; gap: 1rem; flex-wrap: wrap;
-      opacity: 0; animation: fadeUp 0.9s 1.35s forwards;
-    }
-    .btn-primary-ldg {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.9rem 2.2rem;
-      background: var(--blue); color: var(--white);
-      font-size: 0.78rem; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      text-decoration: none; border-radius: 100px; border: none; cursor: pointer;
-      font-family: "DM Sans", sans-serif;
-      transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
-    }
-    .btn-primary-ldg:hover { background: var(--blue-bright); box-shadow: var(--glow-blue); transform: translateY(-1px); }
-    .btn-ghost-ldg {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.9rem 2.2rem;
-      background: transparent; color: var(--chrome);
-      font-size: 0.78rem; font-weight: 400;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      text-decoration: none; border-radius: 100px;
-      border: 1px solid rgba(74,127,255,0.3); cursor: pointer;
-      font-family: "DM Sans", sans-serif;
-      transition: border-color 0.3s, color 0.3s, transform 0.2s;
-    }
-    .btn-ghost-ldg:hover { border-color: var(--blue); color: var(--blue-bright); transform: translateY(-1px); }
-
-    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-
-    /* FEATURES */
-    #features-ldg {
-      position: relative; z-index: 1;
-      background: var(--deep);
-      border-top: 1px solid var(--border);
-      padding: 7rem 0;
-    }
-    .container-ldg { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
-    .section-label {
-      display: flex; align-items: center; gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .section-label::before { content: ""; width: 22px; height: 1px; background: var(--blue); display: block; }
-    .section-label span {
-      font-family: "Syncopate", sans-serif;
-      font-size: 0.57rem; letter-spacing: 0.25em;
-      text-transform: uppercase; color: var(--blue-bright);
-    }
-    .section-title-ldg {
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(2rem, 3vw, 3.2rem);
-      line-height: 1.1; color: var(--white);
-      margin-bottom: 1.2rem;
-    }
-    .section-desc { font-size: 0.98rem; color: var(--text); max-width: 560px; line-height: 1.85; margin-bottom: 4rem; }
-    .features-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
-    }
-    .feature-card {
-      padding: 2rem;
-      background: linear-gradient(135deg, rgba(74,127,255,0.16) 0%, rgba(74,127,255,0.05) 50%, rgba(10,18,32,0.95) 100%);
-      border: 1px solid rgba(74,127,255,0.3);
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(74,127,255,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
-      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-    }
-    .feature-card:hover { border-color: rgba(74,127,255,0.55); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(74,127,255,0.2); }
-    .feature-title { font-family: "Cormorant Garamond", serif; font-size: 1.2rem; color: var(--white); margin-bottom: 0.6rem; }
-    .feature-desc { font-size: 0.85rem; color: var(--text); line-height: 1.7; }
-
-    /* DEMO SECTION */
-    #live-demo-ldg {
-      position: relative; z-index: 1;
-      border-top: 1px solid var(--border);
-    }
-    .demo-header-ldg {
-      background: var(--black);
-      padding: 4rem 3rem 2rem;
-      text-align: center;
-    }
-    .demo-header-ldg h2 {
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(2rem, 3vw, 3rem);
-      color: var(--white); margin-bottom: 0.8rem;
-    }
-    .demo-header-ldg p { font-size: 0.98rem; color: var(--text); max-width: 560px; margin: 0 auto; line-height: 1.8; }
-    .live-badge {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3);
-      border-radius: 100px; padding: 0.4rem 1rem;
-      font-size: 0.7rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: #3fb950; margin-bottom: 1.5rem;
-    }
-    .live-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #3fb950; animation: pulse 1.5s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
-
-    /* FOOTER */
-    footer {
-      position: relative; z-index: 1;
-      background: var(--black);
-      border-top: 1px solid var(--border);
-      padding: 3rem;
-    }
-    .footer-inner {
-      max-width: 1200px; margin: 0 auto;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;
-    }
-    .footer-brand {
-      font-family: "Syncopate", sans-serif;
-      font-size: 0.65rem; letter-spacing: 0.2em; color: var(--blue-bright);
-    }
-    .footer-brand span { display: block; font-size: 0.5rem; color: var(--text-muted); margin-top: 3px; }
-    .footer-links { display: flex; gap: 2rem; }
-    .footer-links a { font-size: 0.78rem; color: var(--text-muted); text-decoration: none; transition: color 0.25s; }
-    .footer-links a:hover { color: var(--blue-bright); }
-    .footer-copy { font-size: 0.72rem; color: var(--text-muted); }
-
-    /* ANIMATIONS */
-    .reveal { opacity:0; transform:translateY(28px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
-    .reveal.visible { opacity:1; transform:translateY(0); }
-    .reveal-d1 { transition-delay:0.1s; } .reveal-d2 { transition-delay:0.2s; } .reveal-d3 { transition-delay:0.3s; }
-
-    /* ── FILE 1 DASHBOARD EMBED CSS ── */
-    :root {
-      --blue: #4A7FFF;
-      --blue-bright: #6B9FFF;
-      --blue-dim: rgba(74,127,255,0.25);
-      --chrome: #C8D8F0;
-      --text: #A8B8D0;
-      --text-muted: #586880;
-    }
-
-    /* Dashboard/app layout */
-    .app {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      min-height: 90vh;
-      font-family: var(--sans);
-      background: var(--black);
-      position: relative; z-index: 1;
-    }
-    aside {
-      background: #050c18;
-      border-right: 1px solid rgba(74,127,255,0.12);
-      padding: 2rem 1.5rem;
-      display: flex; flex-direction: column; gap: 2rem;
-      position: sticky; top: 68px; height: calc(100vh - 68px); overflow-y: auto;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-    .brand img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(74,127,255,0.4)); }
-    .brand strong { display: block; font-size: 0.82rem; color: var(--chrome); font-weight: 600; }
-    .brand span { display: block; font-size: 0.65rem; color: var(--text-muted); margin-top: 1px; }
-    .nav-group { display: flex; flex-direction: column; gap: 4px; }
-    .nav-link-dash {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.6rem 0.75rem;
-      border-radius: 8px;
-      font-size: 0.82rem; color: var(--text-muted);
-      border: 1px solid transparent;
-      transition: all 0.18s;
-      text-decoration: none;
-    }
-    .nav-link-dash:hover { color: var(--chrome); background: rgba(74,127,255,0.06); border-color: rgba(74,127,255,0.15); }
-    .nav-link-dash.active { color: var(--blue-bright); background: rgba(74,127,255,0.1); border-color: rgba(74,127,255,0.25); }
-    .nav-pill { font-size: 0.6rem; color: var(--text-muted); background: rgba(255,255,255,0.06); border-radius: 20px; padding: 2px 7px; }
-    .sidebar-note { font-size: 0.7rem; color: var(--text-muted); line-height: 1.6; padding: 0.75rem; background: rgba(74,127,255,0.04); border: 1px solid rgba(74,127,255,0.1); border-radius: 8px; margin-top: auto; }
-    main.dash-main { display: flex; flex-direction: column; overflow: hidden; }
-    .topbar {
-      padding: 1.75rem 2rem 1rem;
-      border-bottom: 1px solid rgba(74,127,255,0.1);
-      display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .page-title h1 {
-      font-family: "Cormorant Garamond", serif;
-      font-size: 1.6rem; color: var(--chrome); font-weight: 400; line-height: 1.2; margin-bottom: 0.35rem;
-    }
-    .page-title p { font-size: 0.78rem; color: var(--text-muted); max-width: 420px; line-height: 1.6; }
-    .top-actions { display: flex; gap: 0.75rem; align-items: center; flex-shrink: 0; }
-    .btn { padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.78rem; font-weight: 500; cursor: pointer; border: 1px solid rgba(74,127,255,0.25); background: transparent; color: var(--text); transition: all 0.15s; font-family: var(--sans); text-decoration: none; display: inline-flex; align-items: center; }
-    .btn:hover { border-color: rgba(74,127,255,0.5); color: var(--chrome); background: rgba(74,127,255,0.08); }
-    .btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
-    .btn.primary:hover { background: var(--blue-bright); border-color: var(--blue-bright); }
-    .metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: rgba(74,127,255,0.1); border-bottom: 1px solid rgba(74,127,255,0.1); }
-    .metric { background: #060e1c; padding: 1.25rem 1.5rem; }
-    .metric span { display: block; font-size: 0.68rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.08em; }
-    .metric strong { display: block; font-size: 1.6rem; font-family: "Cormorant Garamond", serif; color: var(--chrome); line-height: 1; margin-bottom: 0.25rem; }
-    .metric small { font-size: 0.65rem; color: var(--text-muted); }
-    .workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(74,127,255,0.1); flex: 1; min-height: 500px; }
-    .panel { background: #060e1c; display: flex; flex-direction: column; overflow: hidden; }
-    .panel-head { padding: 1.25rem 1.5rem 0.75rem; border-bottom: 1px solid rgba(74,127,255,0.08); }
-    .panel-head h2 { font-family: "Cormorant Garamond", serif; font-size: 1rem; color: var(--chrome); margin-bottom: 0.15rem; }
-    .panel-head span { font-size: 0.7rem; color: var(--text-muted); }
-    .filters { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(74,127,255,0.08); }
-    .field { background: rgba(74,127,255,0.05); border: 1px solid rgba(74,127,255,0.15); border-radius: 6px; padding: 0.55rem 0.75rem; font-size: 0.78rem; color: var(--chrome); font-family: var(--sans); outline: none; width: 100%; transition: border-color 0.15s; }
-    .field:focus { border-color: rgba(74,127,255,0.45); }
-    .notice { font-size: 0.75rem; color: var(--text-muted); padding: 0.75rem 1rem; border-bottom: 1px solid rgba(74,127,255,0.08); }
-    .notice.success { color: #3fb950; }
-    .notice.error { color: #f87171; }
-    .lead-list { overflow-y: auto; flex: 1; }
-    .lead-card {
-      width: 100%; text-align: left; background: transparent; border: none; border-bottom: 1px solid rgba(74,127,255,0.06); padding: 0.9rem 1rem; cursor: pointer; transition: background 0.12s; display: block;
-    }
-    .lead-card:hover { background: rgba(74,127,255,0.05); }
-    .lead-card.active { background: rgba(74,127,255,0.09); border-left: 3px solid var(--blue); }
-    .lead-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
-    .lead-top h3 { font-family: "Cormorant Garamond", serif; font-size: 0.95rem; color: var(--chrome); margin-bottom: 0.15rem; }
-    .lead-top p { font-size: 0.7rem; color: var(--text-muted); }
-    .chip-row { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
-    .meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.25rem 0.5rem; }
-    .meta { }
-    .meta span { display: block; font-size: 0.62rem; color: var(--text-muted); }
-    .meta strong { display: block; font-size: 0.72rem; color: var(--text); }
-    .badge { display: inline-block; font-size: 0.6rem; padding: 2px 7px; border-radius: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-    .badge.new { background: rgba(74,127,255,0.15); color: var(--blue-bright); }
-    .badge.priority { background: rgba(251,191,36,0.15); color: #fbbf24; }
-    .badge.progress { background: rgba(16,185,129,0.15); color: #10b981; }
-    .badge.closed { background: rgba(156,163,175,0.15); color: #9ca3af; }
-    .badge.voice { background: rgba(124,58,237,0.15); color: #a78bfa; }
-    .badge.web { background: rgba(45,156,219,0.15); color: var(--accent3); }
-    .badge.unknown { background: rgba(255,255,255,0.06); color: var(--text-muted); }
-    .detail-body { padding: 1rem; overflow-y: auto; flex: 1; }
-    .empty { color: var(--text-muted); font-size: 0.8rem; padding: 2rem 1rem; text-align: center; }
-    .detail-title { margin-bottom: 1rem; }
-    .detail-title h2 { font-family: "Cormorant Garamond", serif; font-size: 1.1rem; color: var(--chrome); margin-bottom: 0.2rem; }
-    .detail-title p { font-size: 0.72rem; color: var(--text-muted); }
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.75rem; margin-bottom: 1rem; }
-    .detail-section { margin-bottom: 1rem; padding: 0.75rem; background: rgba(74,127,255,0.04); border: 1px solid rgba(74,127,255,0.1); border-radius: 8px; }
-    .detail-section h3 { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
-    .detail-section p { font-size: 0.78rem; color: var(--text); line-height: 1.6; }
-    .action-grid { display: flex; flex-direction: column; gap: 0.5rem; }
-    .action-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    textarea.field { resize: vertical; min-height: 70px; }
-    .footer-note { font-size: 0.68rem; color: var(--text-muted); padding: 0.75rem 1.5rem; border-top: 1px solid rgba(74,127,255,0.08); background: #060e1c; }
-
-    /* ── MOBILE ── */
-    @media (max-width: 1024px) {
-      #hero-landing { grid-template-columns: 1fr; }
-      .hero-left { height: 50vh; }
-      .hero-right { padding: 4rem 2rem; }
-      .container-ldg { padding: 0 2rem; }
-      .features-grid { grid-template-columns: 1fr; }
-      .app { grid-template-columns: 1fr; }
-      aside { position: static; height: auto; }
-      .metrics { grid-template-columns: repeat(3,1fr); }
-      .workspace { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 960px) {
-      }
-    @media (max-width: 600px) {
-      .metrics { grid-template-columns: repeat(2,1fr); }
-    }
+      --bg:#040a16; --bg2:#071224; --ink:#f1f7ff; --text:#bed0e4; --muted:#7891aa; --soft:#516a83;
+      --panel:rgba(8,18,38,.82); --panel2:rgba(12,25,52,.92); --line:rgba(92,197,240,.16); --line2:rgba(92,197,240,.34);
+      --blue:#2d9cdb; --cyan:#5cc5f0; --purple:#7c3aed; --violet:#9d6ef8; --green:#34d399; --amber:#f59e0b;
+      --display:'DM Serif Display',serif; --sans:'DM Sans',sans-serif; --mono:'JetBrains Mono',monospace; --radius:20px; --radius-lg:30px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0} html{scroll-behavior:smooth} body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;line-height:1.65}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
+      radial-gradient(ellipse 70% 45% at 50% -10%,rgba(45,156,219,.22),transparent 62%),
+      radial-gradient(ellipse 48% 35% at 88% 18%,rgba(124,58,237,.16),transparent 58%),
+      radial-gradient(ellipse 42% 35% at 10% 75%,rgba(52,211,153,.08),transparent 55%),
+      linear-gradient(rgba(92,197,240,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(92,197,240,.028) 1px,transparent 1px);background-size:auto,auto,auto,72px 72px,72px 72px}
+    a{color:inherit;text-decoration:none} img{display:block;max-width:100%}.page{position:relative;z-index:1}
+    .hero{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.82fr);gap:clamp(2rem,6vw,5rem);align-items:center;padding:clamp(3rem,8vw,6.5rem) clamp(1rem,5vw,5rem);border-bottom:1px solid var(--line)}
+    .eyebrow{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--mono);font-size:.68rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--green);background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.24);padding:.45rem .85rem;border-radius:999px;margin-bottom:1.35rem}.eyebrow::before{content:'';width:7px;height:7px;border-radius:999px;background:var(--green);box-shadow:0 0 14px var(--green)}
+    h1{font-family:var(--display);font-size:clamp(3rem,7vw,6.7rem);font-weight:400;line-height:.94;letter-spacing:-.035em;color:var(--ink);max-width:980px;margin-bottom:1.4rem} h1 em{font-style:italic;color:var(--cyan)}
+    .hero-sub{font-size:clamp(1.02rem,1.4vw,1.24rem);color:var(--text);max-width:780px;line-height:1.78;margin-bottom:2rem}.hero-bullets{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2rem}.bullet{font-family:var(--mono);font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);background:rgba(92,197,240,.075);border:1px solid var(--line);border-radius:999px;padding:.45rem .85rem}.hero-actions{display:flex;flex-wrap:wrap;gap:.85rem}.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;border-radius:999px;font-weight:900;padding:.95rem 1.7rem;transition:.18s ease}.btn-primary{color:#021323;background:linear-gradient(135deg,#f7fbff,var(--cyan) 45%,var(--blue));box-shadow:0 0 36px rgba(45,156,219,.32)}.btn-primary:hover,.btn-secondary{color:var(--ink);background:rgba(255,255,255,.045);border:1px solid var(--line2)}.btn-secondary:hover{background:rgba(255,255,255,.075);border-color:var(--cyan)}
+    .hero-console{position:relative;background:linear-gradient(145deg,rgba(9,20,44,.96),rgba(7,14,31,.9));border:1px solid var(--line2);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:0 35px 100px rgba(0,0,0,.42),0 0 85px rgba(45,156,219,.1);overflow:hidden}.hero-console::before{content:'';position:absolute;inset:-2px;background:linear-gradient(130deg,rgba(92,197,240,.22),transparent 40%,rgba(124,58,237,.18));z-index:-1;border-radius:calc(var(--radius-lg) + 2px)}.hero-logo{padding:1rem 1rem 1.35rem;border-bottom:1px solid var(--line);margin-bottom:1.2rem}.console-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:900;margin-bottom:.85rem}.console-title{font-family:var(--display);font-size:2rem;line-height:1;color:var(--ink);margin-bottom:.3rem}.console-text{font-size:.92rem;color:var(--muted);line-height:1.6}.console-stack{display:grid;gap:.72rem;margin-top:1.2rem}.console-row{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:.8rem;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);padding:.85rem}.console-num{display:grid;place-items:center;width:42px;height:42px;border-radius:999px;background:rgba(92,197,240,.11);border:1px solid var(--line2);font-family:var(--mono);font-weight:900;color:var(--cyan);font-size:.7rem}.console-row strong{display:block;color:var(--ink);font-size:.9rem}.console-row span{display:block;color:var(--muted);font-size:.78rem;line-height:1.4}.tag{font-family:var(--mono);font-size:.56rem;color:var(--green);letter-spacing:.08em;font-weight:900}
+    .section{padding:clamp(3.6rem,7vw,6.5rem) clamp(1rem,5vw,5rem);border-bottom:1px solid var(--line)}.inner{max-width:1180px;margin:0 auto}.section-head{max-width:780px;margin-bottom:2.6rem}.section-kicker{font-family:var(--mono);font-size:.66rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:.85rem}.section-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.7rem);font-weight:400;line-height:1.04;color:var(--ink);margin-bottom:1rem}.section-title em{font-style:italic;color:var(--cyan)}.section-copy{font-size:1rem;color:var(--text);line-height:1.8;max-width:760px}
+    .value-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}.value-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);padding:1.5rem;min-height:150px}.value-card strong{display:block;color:var(--ink);font-size:1.02rem;margin-bottom:.55rem}.value-card p{color:var(--muted);font-size:.92rem;line-height:1.65}.check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1.3rem}.check{border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:999px;padding:.72rem 1rem;font-weight:800;color:var(--text);font-size:.88rem}.check::before{content:'✓';color:var(--green);margin-right:.55rem;font-weight:900}
+    .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.product-card{position:relative;min-height:340px;border:1px solid var(--line);border-radius:var(--radius-lg);background:rgba(7,16,34,.88);padding:1.6rem;display:flex;flex-direction:column;overflow:hidden;transition:.18s ease}.product-card::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(92,197,240,.085),transparent 55%);opacity:0;transition:.18s;pointer-events:none}.product-card:hover{border-color:var(--line2);transform:translateY(-4px);background:rgba(10,22,46,.96)}.product-card:hover::before{opacity:1}.product-index{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:900;margin-bottom:1rem}.product-icon{font-size:2rem;margin-bottom:1rem}.product-card h3{font-family:var(--display);font-size:1.55rem;font-weight:400;line-height:1.12;color:var(--ink);margin-bottom:.8rem}.product-card p{font-size:.92rem;color:var(--muted);line-height:1.68}.product-footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:auto;padding-top:1.4rem}.status{font-family:var(--mono);font-size:.58rem;letter-spacing:.09em;text-transform:uppercase;font-weight:900;border:1px solid var(--line);border-radius:999px;padding:.28rem .7rem;color:var(--muted)}.status.live{color:var(--green);background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.24)}.product-link{font-weight:900;color:var(--cyan)}
+    .pipeline{display:grid;gap:1px;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--line)}.step{display:grid;grid-template-columns:56px 1fr 90px;gap:1rem;align-items:center;padding:1.3rem 1.5rem;background:rgba(5,12,26,.88)}.step-num{display:grid;place-items:center;width:50px;height:50px;border-radius:999px;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#03101f;font-family:var(--mono);font-weight:900}.step strong{display:block;color:var(--ink);font-size:1rem}.step span{display:block;color:var(--muted);font-size:.9rem;line-height:1.55}.step-tag{font-family:var(--mono);font-size:.62rem;font-weight:900;color:var(--cyan);letter-spacing:.11em;text-align:right}
+    .cta{padding:clamp(4rem,8vw,7rem) clamp(1rem,5vw,5rem);text-align:center}.cta-panel{max-width:980px;margin:0 auto;border:1px solid var(--line2);border-radius:34px;background:linear-gradient(145deg,rgba(12,25,52,.95),rgba(8,18,38,.82));padding:clamp(2rem,5vw,4rem);box-shadow:0 35px 100px rgba(0,0,0,.36)}.cta h2{font-family:var(--display);font-size:clamp(2.2rem,5vw,4.4rem);font-weight:400;line-height:1;color:var(--ink);margin-bottom:1rem}.cta p{max-width:680px;margin:0 auto 2rem;color:var(--text);font-size:1.05rem;line-height:1.8}
+    footer{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;padding:2rem clamp(1rem,5vw,5rem);border-top:1px solid var(--line);color:var(--muted);font-size:.86rem}.footer-links{display:flex;gap:1rem;flex-wrap:wrap}.footer-links a{color:var(--cyan);font-weight:800}
+    @media(max-width:1020px){.hero{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,1fr)}.value-grid{grid-template-columns:1fr}.check-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:720px){.hero{padding-top:3rem}.hero-console{padding:1rem}.product-grid,.check-grid{grid-template-columns:1fr}.step{grid-template-columns:44px 1fr}.step-tag{grid-column:2;text-align:left}.console-row{grid-template-columns:36px 1fr}.console-row .tag{display:none}h1{font-size:clamp(2.5rem,16vw,4rem)}}
   </style>
 </head>
 <body>
+<div class="page">
 
-
-
-  <!-- ══════════════════════════════════════════
-       SECTION 1 — CINEMATIC LOGO SPLASH
-  ══════════════════════════════════════════ -->
-  <section class="hero-cinematic">
-
-    <div class="hero-splash">
-      <div class="hero-logo-wrap">
-        <svg class="arc-svg-lm" viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <path id="arc-lm" d="M 40,110 A 215,215 0 0,1 460,110"/>
-          </defs>
-          <text class="arc-text-lm">
-            <textPath href="#arc-lm" startOffset="50%" text-anchor="middle">
-              CRM LEAD MANAGEMENT SYSTEM
-            </textPath>
-          </text>
-        </svg>
-                <img src="AI4-FLOWDESK-PRO-LOGO.png" alt="AI4 FlowDesk Pro — Intelligent Workflow Automation" />
-      </div>
-    </div>
-
-    <div class="hero-cta-strip">
-      <div class="hero-tagline">Lead Manager — FlowDesk Pro &nbsp;·&nbsp; Apropos Group LLC</div>
-      <div class="hero-headline-splash">
-        Turn Inquiries Into Organized Leads<br><em>Your Team Can Actually Act On</em>
-      </div>
-      <div class="hero-actions-splash">
-        <a class="btn-primary" href="#live-demo-ldg">
-          See How It Works <span style="font-size:0.8rem;">→</span>
-        </a>
-        <a class="btn-secondary" href="demo-request.html">
-          Request a Demo
-        </a>
-      </div>
-      <div class="hero-stats-bar">
-        <div class="hero-stats-inner">
-          <div class="hero-stat">
-            <div class="hero-stat-num">24/7</div>
-            <div class="hero-stat-label">AI Coverage</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-num">&lt;10s</div>
-            <div class="hero-stat-label">Lead Record Created</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-num">100%</div>
-            <div class="hero-stat-label">Calls Captured</div>
-          </div>
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">CRM Lead Management System</div>
+        <h1>Every missed call is a <em>lost lead.</em></h1>
+        <p class="hero-sub">FlowDesk Pro Lead Manager captures every inbound call automatically and delivers a structured lead record to your dashboard in real time.</p>
+        <div class="hero-bullets" aria-label="FlowDesk Pro benefits"><span class="bullet">Real-time lead capture</span><span class="bullet">Structured dashboard records</span><span class="bullet">Instant email alerts</span><span class="bullet">24/7 automated intake</span></div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/demo-request.html">Launch the Lead Manager Demo →</a>
+          <a class="btn btn-secondary" href="demo-request.html">Request Demo</a>
         </div>
       </div>
-      <div class="scroll-indicator">
-        <span>↓ See How It Works</span>
-        <div class="scroll-line"></div>
-      </div>
-    </div>
 
-  </section>
+      <aside class="hero-console" aria-label="Smart Auto Attendant preview">
+        <div class="hero-logo"><img src="AI4-FLOWDESK-PRO-LOGO.png" alt="AI4 FlowDesk Pro logo" /></div>
+        <div class="console-label">CRM LEAD MANAGEMENT SYSTEM</div>
+        <div class="console-title">Lead Manager</div>
+        <p class="console-text">Answers the call, captures the reason, and prepares a dashboard-ready record for follow-up.</p>
+        <div class="console-stack"><div class="console-row"><div class="console-num">01</div><div><strong>Call received</strong><span>Inbound caller reaches your business line.</span></div><div class="tag">INPUT</div></div><div class="console-row"><div class="console-num">02</div><div><strong>Lead captured</strong><span>Name, contact, request, urgency — all recorded.</span></div><div class="tag">RECORD</div></div><div class="console-row"><div class="console-num">03</div><div><strong>Dashboard updated</strong><span>Structured lead record delivered in real time.</span></div><div class="tag">ALERT</div></div></div></aside>
+    </section>
 
-  <!-- ══════════════════════════════════════════
-       SECTION 2 — LANDING (File 1 content)
-  ══════════════════════════════════════════ -->
-
-  <!-- HERO 2-COL -->
-  <section id="hero-landing">
-    <div class="hero-left">
-      <img src="data:image/png;base64,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" alt="AI Intelligence — FlowDesk Pro Lead Manager"/>
-    </div>
-    <div class="hero-right">
-      <img src="AI4-FLOWDESK-PRO-LOGO.png" alt="FlowDesk Pro" class="hero-logo-ldg"/>
-      <div class="hero-eyebrow"><span>Lead Manager — FlowDesk Pro</span></div>
-      <h1 class="hero-headline-ldg">
-        Turn Inquiries Into<br>Organized Leads Your<br>Team Can <em>Act On</em>
-      </h1>
-      <p class="hero-sub">
-        Lead Manager gives businesses a structured way to capture, view, filter, and manage customer opportunities from one dashboard. No more scattered notes, missed follow-ups, or lost opportunities.
-      </p>
-      <div class="hero-actions-ldg">
-        <a href="#live-demo-ldg" class="btn-primary-ldg">
-          View Lead Manager Demo
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="https://ai4businesses.org" class="btn-ghost-ldg">Back to AI4 Businesses</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section id="features-ldg">
-    <div class="container-ldg">
-      <div class="reveal">
-        <div class="section-label"><span>What Lead Manager Does</span></div>
-        <h2 class="section-title-ldg">One Dashboard.<br>Every Lead. Organized.</h2>
-        <p class="section-desc">Lead Manager helps businesses move from scattered customer activity to a structured pipeline that is easier to capture, manage, and act on consistently.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card reveal reveal-d1">
-          <div class="feature-title">Structured Lead Capture</div>
-          <p class="feature-desc">Every incoming inquiry is captured and organized into a lead record — no more relying on memory, sticky notes, or scattered emails.</p>
+    <section class="section" id="cloud-delivered">
+      <div class="inner">
+        <div class="section-head">
+          <div class="section-kicker">Cloud-delivered value</div>
+          <h2 class="section-title">No infrastructure overhaul required.</h2>
+          <p class="section-copy">FlowDesk Pro is accessed online. Your business does not need an on-premise installation, local server, PBX replacement, or new equipment purchase. There is no equipment for your team to patch or upgrade.</p>
         </div>
-        <div class="feature-card reveal reveal-d2">
-          <div class="feature-title">Pipeline Visibility</div>
-          <p class="feature-desc">View, filter, and manage all customer opportunities from a single dashboard. Know exactly where every lead stands at any moment.</p>
+        <div class="value-grid">
+          <article class="value-card"><strong>Configured for your workflow</strong><p>FlowDesk Pro is designed around the customer-response path your business needs: calls, intake requests, lead review, follow-up, and status tracking.</p></article>
+          <article class="value-card"><strong>Secure web-based access</strong><p>Captured activity becomes organized records your team can review online, with demos and client access kept separate from protected backend systems.</p></article>
         </div>
-        <div class="feature-card reveal reveal-d3">
-          <div class="feature-title">Faster Follow-Up</div>
-          <p class="feature-desc">Structured records mean your team spends less time searching and more time connecting with the people who are ready to do business.</p>
-        </div>
-        <div class="feature-card reveal reveal-d1">
-          <div class="feature-title">Consistent Process</div>
-          <p class="feature-desc">Every lead goes through the same intake path — reducing the chance that any opportunity falls through the cracks during busy periods.</p>
-        </div>
-        <div class="feature-card reveal reveal-d2">
-          <div class="feature-title">Activity Tracking</div>
-          <p class="feature-desc">See the full history of every lead — when it came in, what actions were taken, and what the current status is — all in one view.</p>
-        </div>
-        <div class="feature-card reveal reveal-d3">
-          <div class="feature-title">Business-Ready Design</div>
-          <p class="feature-desc">Built for real business operations — not a complex enterprise tool. Clean, practical, and ready to support your team from day one.</p>
+        <div class="check-grid">
+          <div class="check">No local server</div>
+          <div class="check">No PBX replacement</div>
+          <div class="check">No equipment purchase</div>
+          <div class="check">No hardware maintenance</div>
+          <div class="check">Secure web-based access</div>
+          <div class="check">Configured business workflow</div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- DEMO SECTION -->
-  <section id="live-demo-ldg">
-    <div class="demo-header-ldg reveal">
-      <div class="live-badge"><div class="live-dot"></div>Live System — Active Demo</div>
-      <h2>Experience Lead Manager in Action</h2>
-      <p>The dashboard below is a live working demo of the Lead Manager system. Interact with it, add leads, filter records, and see exactly how the workflow supports your business operations.</p>
-    </div>
-
-    <!-- DASHBOARD EMBEDDED -->
-    <div class="app">
-      <aside>
-        <div class="brand">
-          <img src="AI4-FLOWDESK-PRO-LOGO.png" alt="FlowDesk Pro" />
-          <div><strong>FlowDesk Pro</strong><span>Lead Manager</span></div>
+    <section class="section" id="products">
+      <div class="inner">
+        <div class="section-head">
+          <div class="section-kicker">Product suite</div>
+          <h2 class="section-title">Customer-response systems built for real business workflows.</h2>
+          <p class="section-copy">Explore FlowDesk Pro products for smart call answering, customer intake, lead management, business process capture, missed-call workflows, and appointment-ready request handling.</p>
         </div>
-        <nav class="nav-group" aria-label="FlowDesk prototype navigation">
-          <a class="nav-link-dash" href="index.html">Homepage <span class="nav-pill">01</span></a>
-          <a class="nav-link-dash" href="flowdesk-intake-engine.html">Intake Engine <span class="nav-pill">02</span></a>
-          <a class="nav-link-dash active" href="index.html#live-demo-ldg">Lead Manager <span class="nav-pill">03</span></a>
-        </nav>
-        <div class="sidebar-note">Live operations view. Records are loaded through Netlify Functions so private Supabase credentials never enter browser JavaScript.</div>
-      </aside>
+        <div class="product-grid">
+          <a class="product-card" href="smart-auto-attendant.html"><div><div class="product-index">01 / Flagship</div><div class="product-icon">☎️</div><h3>Smart Auto Attendant</h3><p>Answers inbound calls, greets callers by business name, captures caller details, routes requests, and creates dashboard-ready call records.</p></div><div class="product-footer"><span class="status live">Live demo</span><span class="product-link">See Details →</span></div></a>
+          <a class="product-card" href="lead-manager.html"><div><div class="product-index">02 / Dashboard</div><div class="product-icon">📊</div><h3>Lead Manager Dashboard</h3><p>Gives businesses a clear place to review captured calls, intake requests, urgency, status, and next actions.</p></div><div class="product-footer"><span class="status live">Preview</span><span class="product-link">See Details →</span></div></a>
+          <a class="product-card" href="intake-engine.html"><div><div class="product-index">03 / Intake</div><div class="product-icon">🧾</div><h3>Intake Engine</h3><p>Captures customer requests through structured web forms and turns them into organized records for follow-up.</p></div><div class="product-footer"><span class="status live">Demo</span><span class="product-link">See Details →</span></div></a>
+          <a class="product-card" href="business-process-intake.html"><div><div class="product-index">04 / Operations</div><div class="product-icon">⚙️</div><h3>Business Process Intake</h3><p>Collects structured business information, organizes submissions, and prepares review-ready workflow records.</p></div><div class="product-footer"><span class="status">Preview</span><span class="product-link">See Details →</span></div></a>
+          <a class="product-card" href="sms-text-back-workflow.html"><div><div class="product-index">05 / Follow-up</div><div class="product-icon">💬</div><h3>Missed-Call / SMS Text-Back Workflow</h3><p>Designed to support consent-aware missed-call follow-up workflows where SMS approval and customer consent requirements are met.</p></div><div class="product-footer"><span class="status">Pending approval</span><span class="product-link">See Details →</span></div></a>
+          <a class="product-card" href="appointment-request-workflow.html"><div><div class="product-index">06 / Appointments</div><div class="product-icon">📅</div><h3>Appointment Request Workflow</h3><p>Helps turn customer service requests into appointment-ready records with preferred time windows and follow-up details.</p></div><div class="product-footer"><span class="status">Preview</span><span class="product-link">See Details →</span></div></a>
+        </div>
+      </div>
+    </section>
 
-      <main class="dash-main">
-        <header class="topbar">
-          <div class="page-title">
-            <h1>Lead Manager Dashboard</h1>
-            <p>Live command view for web intake, Twilio voice intake, and future SMS records flowing into FlowDesk Pro.</p>
-          </div>
-          <div class="top-actions">
-            <a class="btn" href="flowdesk-intake-engine.html">Open Intake</a>
-            <button class="btn primary" id="refreshButton" type="button">Refresh Records</button>
-          </div>
-        </header>
+    <section class="section" id="workflow">
+      <div class="inner">
+        <div class="section-head">
+          <div class="section-kicker">Operating flow</div>
+          <h2 class="section-title">FlowDesk Pro connects customer activity to organized follow-up.</h2>
+          <p class="section-copy">Whether a customer calls, submits a form, requests an appointment, or needs follow-up, FlowDesk Pro is designed to capture the activity, structure the information, and prepare a record your business can act on.</p>
+        </div>
+        <div class="pipeline" aria-label="FlowDesk Pro workflow">
+          <div class="step"><div class="step-num">01</div><div><strong>Customer reaches out</strong><span>Phone calls, web forms, missed calls, or service requests create a customer-response opportunity.</span></div><div class="step-tag">INPUT</div></div>
+          <div class="step"><div class="step-num">02</div><div><strong>FlowDesk captures the details</strong><span>The system collects names, contact information, reason for contact, urgency, and supporting details.</span></div><div class="step-tag">CAPTURE</div></div>
+          <div class="step"><div class="step-num">03</div><div><strong>Record is organized</strong><span>Customer activity is turned into a structured record for review.</span></div><div class="step-tag">RECORD</div></div>
+          <div class="step"><div class="step-num">04</div><div><strong>Business is notified</strong><span>Email alerts can notify the business owner. SMS follow-up can be added where approved and consented.</span></div><div class="step-tag">ALERT</div></div>
+          <div class="step"><div class="step-num">05</div><div><strong>Follow-up becomes easier</strong><span>Every request has context, status, and a clear next action.</span></div><div class="step-tag">ACTION</div></div>
+        </div>
+      </div>
+    </section>
 
-        <section class="metrics" aria-label="Lead metrics">
-          <article class="metric"><span>Total Leads</span><strong id="metricTotal">0</strong><small>All records loaded from Supabase.</small></article>
-          <article class="metric"><span>New Leads</span><strong id="metricNew">0</strong><small>Needs review or priority review.</small></article>
-          <article class="metric"><span>Voice Leads</span><strong id="metricVoice">0</strong><small>Created by Twilio voice intake.</small></article>
-          <article class="metric"><span>Web Leads</span><strong id="metricWeb">0</strong><small>Created by the intake form.</small></article>
-          <article class="metric"><span>High Urgency</span><strong id="metricHigh">0</strong><small>Urgent or time-sensitive leads.</small></article>
-        </section>
+    <section class="cta" id="demo">
+      <div class="cta-panel">
+        <div class="section-kicker">Personalized demo</div>
+        <h2>Ready to capture every lead automatically?</h2>
+        <p>See how Lead Manager turns every missed call into a structured lead record delivered straight to your dashboard.</p>
+        <a class="btn btn-primary" href="demo-request.html">Launch the Lead Manager Demo →</a>
+      </div>
+    </section>
+  </main>
 
-        <section class="workspace">
-          <section class="panel" aria-labelledby="list-title">
-            <div class="panel-head">
-              <div><h2 id="list-title">Live Intake Queue</h2><span id="listSubtitle">Loading records from Supabase...</span></div>
-            </div>
-            <div class="filters">
-              <input class="field" id="searchBox" type="search" placeholder="Search name, phone, email, business, intake ID..." />
-              <select class="field" id="sourceFilter" aria-label="Filter by source"><option value="all">All sources</option><option value="web">Web intake</option><option value="voice">Twilio voice</option><option value="other">Other</option></select>
-              <select class="field" id="urgencyFilter" aria-label="Filter by urgency"><option value="all">All urgency</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option><option value="unknown">Unknown</option></select>
-              <select class="field" id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="new">New</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select>
-            </div>
-            <div id="listNotice" class="notice">Connecting to live FlowDesk records...</div>
-            <div class="lead-list" id="leadList"></div>
-          </section>
-
-          <section class="panel" aria-labelledby="detail-title">
-            <div class="panel-head">
-              <div><h2 id="detail-title">Record Detail</h2><span>Review, classify, and update lead status.</span></div>
-            </div>
-            <div class="detail-body" id="detailPanel"><div class="empty">Select a lead after records load.</div></div>
-          </section>
-        </section>
-
-        <p class="footer-note">Security note: this page calls Netlify Functions only. Supabase service-role keys, Twilio tokens, Resend keys, and Stripe secrets are not present in frontend code.</p>
-      </main>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
   <footer>
-    <div class="footer-inner">
-      <div class="footer-brand">FlowDesk Pro<span>by Apropos Group LLC</span></div>
-      <div class="footer-links">
-        <a href="https://ai4businesses.org">AI4 Businesses</a>
-        <a href="https://auto-attendant.aiflowdeskpro.com">Smart Auto-Attendant</a>
-        <a href="https://aiflowdeskpro.com">AI Voice Attendant</a>
-      </div>
-      <p class="footer-copy">&copy; <span id="year"></span> Apropos Group LLC</p>
-    </div>
+    <div>© 2026 FlowDesk Pro · Powered by Apropos Group LLC</div>
+    <div class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="demo-request.html">Request Demo</a></div>
   </footer>
-
-  <script>
-    // ── YEAR ──
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // ── MOBILE NAV ──
-    mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileNav.classList.remove('open')));
-
-    // ── REVEAL ON SCROLL ──
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add("visible"), i * 90); obs.unobserve(e.target); } });
-    }, { threshold: 0.1 });
-    document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
-
-    // ── DASHBOARD LOGIC ──
-    const state = { records: [], selectedKey: '', loading: false, error: '' };
-    const els = {
-      leadList: document.getElementById('leadList'),
-      detailPanel: document.getElementById('detailPanel'),
-      listSubtitle: document.getElementById('listSubtitle'),
-      listNotice: document.getElementById('listNotice'),
-      searchBox: document.getElementById('searchBox'),
-      sourceFilter: document.getElementById('sourceFilter'),
-      urgencyFilter: document.getElementById('urgencyFilter'),
-      statusFilter: document.getElementById('statusFilter'),
-      refreshButton: document.getElementById('refreshButton')
-    };
-
-    els.searchBox.addEventListener('input', render);
-    els.sourceFilter.addEventListener('change', render);
-    els.urgencyFilter.addEventListener('change', render);
-    els.statusFilter.addEventListener('change', render);
-    els.refreshButton.addEventListener('click', loadRecords);
-    loadRecords();
-
-    async function loadRecords() {
-      state.loading = true; state.error = '';
-      els.refreshButton.disabled = true;
-      setNotice('Connecting to live FlowDesk records...', '');
-      render();
-      try {
-        const response = await fetch('/.netlify/functions/flowdesk-leads?limit=150');
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || !payload.ok) throw new Error(payload.error || 'Unable to load records.');
-        state.records = Array.isArray(payload.records) ? payload.records : [];
-        state.selectedKey = state.records[0] ? recordKey(state.records[0]) : '';
-        setNotice(state.records.length ? `Loaded ${state.records.length} live records from Supabase.` : 'No FlowDesk records found yet.', state.records.length ? 'success' : '');
-      } catch (error) {
-        state.error = error.message;
-        setNotice(error.message, 'error');
-      } finally {
-        state.loading = false;
-        els.refreshButton.disabled = false;
-        render();
-      }
-    }
-
-    function render() {
-      const visible = filteredRecords();
-      if (!visible.some((r) => recordKey(r) === state.selectedKey)) state.selectedKey = visible[0] ? recordKey(visible[0]) : '';
-      renderMetrics(); renderLeadList(visible); renderDetail();
-      els.listSubtitle.textContent = state.loading ? 'Loading...' : `${visible.length} visible / ${state.records.length} total`;
-    }
-
-    function filteredRecords() {
-      const q = els.searchBox.value.trim().toLowerCase();
-      return state.records
-        .filter((r) => sourceMatches(r, els.sourceFilter.value))
-        .filter((r) => urgencyMatches(r, els.urgencyFilter.value))
-        .filter((r) => statusMatches(r, els.statusFilter.value))
-        .filter((r) => !q || searchableText(r).includes(q))
-        .sort((a, b) => new Date(value(b.created_at, 0)) - new Date(value(a.created_at, 0)));
-    }
-
-    function renderMetrics() {
-      const total = state.records.length;
-      const newL = state.records.filter((r) => ['new','priority'].includes(statusBucket(r))).length;
-      const voice = state.records.filter((r) => sourceBucket(r) === 'voice').length;
-      const web = state.records.filter((r) => sourceBucket(r) === 'web').length;
-      const high = state.records.filter((r) => urgencyBucket(r) === 'high').length;
-      setText('metricTotal', total); setText('metricNew', newL); setText('metricVoice', voice); setText('metricWeb', web); setText('metricHigh', high);
-    }
-
-    function renderLeadList(visible) {
-      if (state.loading) { els.leadList.innerHTML = '<div class="empty">Loading live FlowDesk records...</div>'; return; }
-      if (state.error) { els.leadList.innerHTML = '<div class="empty">Dashboard could not load records. Check the Netlify function log.</div>'; return; }
-      if (!visible.length) { els.leadList.innerHTML = '<div class="empty">No records match the current filters.</div>'; return; }
-      els.leadList.innerHTML = visible.map((record) => {
-        const key = recordKey(record);
-        const active = key === state.selectedKey ? ' active' : '';
-        return `<button class="lead-card${active}" type="button" data-key="${escapeAttr(key)}"><div class="lead-top"><div><h3>${escapeHtml(displayBusiness(record))}</h3><p>${escapeHtml(displayName(record))} / ${escapeHtml(value(record.email, 'No email'))}</p></div>${statusBadge(record)}</div><div class="chip-row">${sourceBadge(record)}${urgencyBadge(record)}${consentBadge(record)}</div><div class="meta-grid">${meta('Phone', value(record.phone, 'Not provided'))}${meta('Created', formatDate(record.created_at))}${meta('Intake ID', value(record.intake_id, value(record.id, 'None')))}</div></button>`;
-      }).join('');
-      document.querySelectorAll('.lead-card').forEach((card) => card.addEventListener('click', () => { state.selectedKey = card.dataset.key; render(); }));
-    }
-
-    function renderDetail() {
-      const record = state.records.find((item) => recordKey(item) === state.selectedKey);
-      if (!record) { els.detailPanel.innerHTML = '<div class="empty">Select a lead to review details.</div>'; return; }
-      els.detailPanel.innerHTML = `<div class="detail-title"><div><h2>${escapeHtml(displayBusiness(record))}</h2><p>${escapeHtml(displayName(record))} / ${escapeHtml(value(record.email, 'No email'))} / ${escapeHtml(value(record.phone, 'No phone'))}</p><div class="chip-row">${sourceBadge(record)}${urgencyBadge(record)}${statusBadge(record)}${consentBadge(record)}</div></div></div><div class="detail-grid">${meta('Request Type', value(record.request_type, sourceBucket(record) === 'voice' ? 'AI Voice Attendant Call' : 'Not provided'))}${meta('Service Needed', value(record.service_needed, 'Not provided'))}${meta('Preferred Contact', value(record.preferred_contact_method, 'Not provided'))}${meta('Callback Window', value(record.preferred_callback_time, 'Not provided'))}${meta('Category', value(record.category, 'Not provided'))}${meta('Created', formatDate(record.created_at))}</div>${detailSection('Summary', value(record.ai_summary || record.summary, 'No summary available yet.'))}${detailSection(sourceBucket(record) === 'voice' ? 'Voice Transcript / Details' : 'Message / Details', value(record.details || record.message, 'No message captured.'))}${detailSection('Next Action', value(record.next_action, 'Review and decide the next follow-up step.'))}<section class="detail-section"><h3>Status Update</h3><div class="action-grid"><select class="field" id="leadStatusSelect"><option value="New / Needs Review">New / Needs Review</option><option value="New / Priority Review">New / Priority Review</option><option value="In Progress">In Progress</option><option value="Closed / Resolved">Closed / Resolved</option></select><textarea class="field" id="internalNotes" placeholder="Internal notes for the team...">${escapeHtml(value(record.internal_notes, ''))}</textarea><div class="action-row"><button class="btn primary" type="button" id="saveStatusButton">Save Lead Update</button><a class="btn" href="tel:${escapeAttr(value(record.phone, ''))}"">Call</a><button class="btn" type="button" id="sendLeadEmailButton">Email Lead</button><button class="btn" type="button" id="callbackTaskButton">Callback Task</button></div></div></section>`;
-      document.getElementById('leadStatusSelect').value = normalizeLeadStatus(record.lead_status);
-      document.getElementById('saveStatusButton').addEventListener('click', () => updateLead(record));
-      document.getElementById('sendLeadEmailButton').addEventListener('click', () => sendLeadEmail(record));
-      document.getElementById('callbackTaskButton').addEventListener('click', () => createCallbackTask(record));
-    }
-
-    async function updateLead(record) {
-      const button = document.getElementById('saveStatusButton');
-      const status = document.getElementById('leadStatusSelect').value;
-      const internalNotes = document.getElementById('internalNotes').value;
-      button.disabled = true; button.textContent = 'Saving...';
-      setNotice('Saving lead update...', '');
-      try {
-        const response = await fetch('/.netlify/functions/flowdesk-update-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: record.id, intake_id: record.intake_id, lead_status: status, internal_notes: internalNotes }) });
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || !payload.ok) throw new Error(payload.error || 'Unable to update lead.');
-        const updated = payload.record || { ...record, lead_status: status, internal_notes: internalNotes };
-        state.records = state.records.map((item) => recordKey(item) === recordKey(record) ? { ...item, ...updated } : item);
-        setNotice('Lead updated successfully.', 'success'); render();
-      } catch (error) {
-        setNotice(error.message, 'error');
-      } finally {
-        button.disabled = false; button.textContent = 'Save Lead Update';
-      }
-    }
-
-    async function sendLeadEmail(record) {
-      const button = document.getElementById('sendLeadEmailButton');
-      const email = value(record.email, '');
-      if (!isSendableEmail(email)) { setNotice('This lead does not have a sendable email address yet.', 'error'); return; }
-      button.disabled = true; button.textContent = 'Sending...';
-      setNotice('Sending lead follow-up email...', '');
-      try {
-        const response = await fetch('/.netlify/functions/flowdesk-email-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lead: record }) });
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || !payload.ok) throw new Error(payload.error || 'Unable to send lead email.');
-        setNotice(`Lead email sent to ${payload.email}.`, 'success');
-      } catch (error) {
-        setNotice(error.message || 'Unable to send lead email.', 'error');
-      } finally {
-        button.disabled = false; button.textContent = 'Email Lead';
-      }
-    }
-
-    async function createCallbackTask(record) {
-      const button = document.getElementById('callbackTaskButton');
-      const phone = value(record.phone, '');
-      if (!phone) { setNotice('This lead does not have a phone number for a callback task.', 'error'); return; }
-      const now = new Date().toLocaleString();
-      const existingNotes = document.getElementById('internalNotes').value.trim();
-      const note = `[${now}] Callback task created for ${phone}. Preferred window: ${value(record.preferred_callback_time, 'Not provided')}.`;
-      const internalNotes = existingNotes ? `${existingNotes}\n\n${note}` : note;
-      const nextAction = `Call ${displayName(record)} at ${phone}. Preferred window: ${value(record.preferred_callback_time, 'Not provided')}.`;
-      button.disabled = true; button.textContent = 'Creating...';
-      setNotice('Creating callback task...', '');
-      try {
-        const response = await fetch('/.netlify/functions/flowdesk-update-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: record.id, intake_id: record.intake_id, lead_status: 'In Progress', internal_notes: internalNotes, next_action: nextAction, follow_up_needed: true }) });
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || !payload.ok) throw new Error(payload.error || 'Unable to create callback task.');
-        const updated = payload.record || { ...record, lead_status: 'In Progress', internal_notes: internalNotes, next_action: nextAction, follow_up_needed: true };
-        state.records = state.records.map((item) => recordKey(item) === recordKey(record) ? { ...item, ...updated } : item);
-        setNotice('Callback task created and lead marked In Progress.', 'success'); render();
-      } catch (error) {
-        setNotice(error.message || 'Unable to create callback task.', 'error');
-      } finally {
-        button.disabled = false; button.textContent = 'Callback Task';
-      }
-    }
-
-    function sourceMatches(r, filter) { return filter === 'all' || sourceBucket(r) === filter; }
-    function urgencyMatches(r, filter) { return filter === 'all' || urgencyBucket(r) === filter; }
-    function statusMatches(r, filter) {
-      if (filter === 'all') return true;
-      const bucket = statusBucket(r);
-      if (['contacted','scheduled','follow-up'].includes(filter)) return bucket === 'contacted';
-      return bucket === filter;
-    }
-    function sourceBucket(r) { const src = String(r.source_page || '').toLowerCase(); if (src.includes('voice')) return 'voice'; if (src.includes('intake-engine') || src.includes('web') || src === '') return 'web'; return 'other'; }
-    function urgencyBucket(r) { const u = String(r.urgency || '').toLowerCase(); if (u.includes('urgent') || u.includes('time')) return 'high'; if (u.includes('normal') || u.includes('medium')) return 'medium'; if (u.includes('low')) return 'low'; return 'unknown'; }
-    function statusBucket(r) { const s = normalizeLeadStatus(r.lead_status); if (s === 'Closed / Resolved') return 'closed'; if (s === 'In Progress') return 'contacted'; if (s === 'New / Priority Review') return 'priority'; return 'new'; }
-    function normalizeLeadStatus(status) { const s = String(status || '').trim(); return ['New / Needs Review','New / Priority Review','In Progress','Closed / Resolved'].includes(s) ? s : 'New / Needs Review'; }
-    function recordKey(r) { return String(r.id || r.intake_id || r.created_at || Math.random()); }
-    function displayBusiness(r) { return value(r.business_name || r.company || r.business, 'Unknown business'); }
-    function displayName(r) { return value(r.full_name || r.name || r.customer_name, 'Unknown contact'); }
-    function searchableText(r) { return [r.id, r.intake_id, r.full_name, r.name, r.customer_name, r.email, r.phone, r.business_name, r.service_needed, r.details, r.message, r.ai_summary, r.summary, r.source_page].map((v) => String(v || '')).join(' ').toLowerCase(); }
-    function isSendableEmail(email) { const e = String(email || '').trim().toLowerCase(); return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && !e.endsWith('@flowdesk.local') && !e.endsWith('@example.com'); }
-    function statusBadge(r) { const s = normalizeLeadStatus(r.lead_status); let cls = 'new'; if (s === 'New / Priority Review') cls = 'priority'; if (s === 'In Progress') cls = 'progress'; if (s === 'Closed / Resolved') cls = 'closed'; return `<span class="badge ${cls}">${escapeHtml(s)}</span>`; }
-    function sourceBadge(r) { const bucket = sourceBucket(r); const label = bucket === 'voice' ? 'Twilio Voice' : bucket === 'web' ? 'Web Intake' : 'Other Source'; return `<span class="badge ${bucket === 'voice' ? 'voice' : bucket === 'web' ? 'web' : 'unknown'}">${label}</span>`; }
-    function urgencyBadge(r) { const bucket = urgencyBucket(r); const cls = bucket === 'high' ? 'priority' : bucket === 'low' ? 'closed' : bucket === 'medium' ? 'new' : 'unknown'; return `<span class="badge ${cls}">${escapeHtml(value(r.urgency, 'Unknown urgency'))}</span>`; }
-    function consentBadge(r) { return `<span class="badge ${r.sms_consent ? 'web' : 'unknown'}">SMS ${r.sms_consent ? 'Opted In' : 'No Consent'}</span>`; }
-    function detailSection(title, text) { return `<section class="detail-section"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></section>`; }
-    function meta(label, val) { return `<div class="meta"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value(val, 'Not provided'))}</strong></div>`; }
-    function formatDate(val) { if (!val) return 'Not provided'; const d = new Date(val); if (Number.isNaN(d.getTime())) return String(val); return new Intl.DateTimeFormat('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' }).format(d); }
-    function setNotice(message, type) { els.listNotice.textContent = message; els.listNotice.className = `notice ${type || ''}`.trim(); }
-    function setText(id, text) { document.getElementById(id).textContent = text; }
-    function value(v, fallback) { const s = String(v ?? '').trim(); return s || fallback; }
-    function escapeHtml(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
-    function escapeAttr(v) { return escapeHtml(v).replace(/`/g, '&#096;'); }
-  </script>
-
+</div>
 </body>
 </html>
