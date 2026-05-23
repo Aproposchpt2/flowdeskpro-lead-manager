@@ -8,28 +8,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #080c10;
-  --bg-2:      #0d1117;
-  --bg-3:      #161b22;
-  --bg-4:      #1c2128;
-  --border:    rgba(255,255,255,0.07);
-  --border-m:  rgba(255,255,255,0.14);
-  --blue:      #2d9cdb;
-  --blue-dim:  rgba(45,156,219,0.08);
-  --purple:    #5B3FB5;
-  --green:     #3fb950;
+  --bg: #080c10;
+  --bg-2: #0d1117;
+  --bg-3: #161b22;
+  --bg-4: #1c2128;
+  --border: rgba(255,255,255,0.07);
+  --border-m: rgba(255,255,255,0.14);
+  --blue: #2d9cdb;
+  --blue-dim: rgba(45,156,219,0.08);
+  --purple: #5B3FB5;
+  --green: #3fb950;
   --green-dim: rgba(63,185,80,0.1);
-  --red:       #ef4444;
-  --text-1:    #f0f6fc;
-  --text-2:    #c9d1d9;
-  --text-3:    #8b949e;
-  --text-4:    #484f58;
-  --display:   'Syne', sans-serif;
-  --serif:     'DM Serif Display', serif;
-  --mono:      'JetBrains Mono', monospace;
-  --sans:      'Inter', sans-serif;
-  --r:         10px;
-  --r-lg:      18px;
+  --red: #ef4444;
+  --text-1: #f0f6fc;
+  --text-2: #c9d1d9;
+  --text-3: #8b949e;
+  --text-4: #484f58;
+  --display: 'Syne', sans-serif;
+  --serif: 'DM Serif Display', serif;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --r: 10px;
+  --r-lg: 18px;
 }
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; }
@@ -61,7 +61,6 @@ body::after {
   background-size: 60px 60px;
   pointer-events: none; z-index: 0;
 }
-
 nav {
   position: relative; z-index: 10;
   display: flex; align-items: center; justify-content: space-between;
@@ -85,14 +84,12 @@ nav {
   display: flex; align-items: center; gap: .4rem;
 }
 .nav-back:hover { color: var(--text-1); }
-
 main {
   flex: 1; position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: center;
   padding: 3rem 1.5rem;
 }
 .form-container { width: 100%; max-width: 520px; }
-
 .form-header { text-align: center; margin-bottom: 2.5rem; }
 .form-eyebrow {
   display: inline-flex; align-items: center; gap: .5rem;
@@ -105,7 +102,6 @@ main {
 }
 .eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(63,185,80,.4)} 50%{opacity:.8;box-shadow:0 0 0 5px rgba(63,185,80,0)} }
-
 .form-h1 {
   font-family: var(--display);
   font-size: clamp(1.8rem, 4vw, 2.6rem);
@@ -115,7 +111,6 @@ main {
 }
 .form-h1 em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--blue); }
 .form-sub { font-size: .9rem; color: var(--text-3); line-height: 1.65; animation: fadeUp .6s .2s ease both; }
-
 .form-card {
   background: var(--bg-2);
   border: 1px solid var(--border-m);
@@ -132,7 +127,6 @@ main {
   background: linear-gradient(135deg, rgba(91,63,181,0.15), transparent 50%);
   z-index: -1; pointer-events: none;
 }
-
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
 .field-row.single { grid-template-columns: 1fr; }
 .field { display: flex; flex-direction: column; gap: .45rem; }
@@ -163,9 +157,7 @@ main {
 .field-select option { background: var(--bg-3); color: var(--text-1); }
 .field-error { font-family: var(--mono); font-size: .6rem; color: var(--red); display: none; }
 .field-error.visible { display: block; }
-
 .form-divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
-
 .privacy-note {
   display: flex; align-items: flex-start; gap: .6rem;
   background: var(--blue-dim); border: 1px solid rgba(45,156,219,0.12);
@@ -174,7 +166,6 @@ main {
 .privacy-icon { font-size: .85rem; flex-shrink: 0; margin-top: 1px; }
 .privacy-text { font-family: var(--mono); font-size: .62rem; color: var(--text-3); line-height: 1.6; }
 .privacy-text strong { color: var(--blue); }
-
 .submit-btn {
   width: 100%;
   background: linear-gradient(135deg, var(--purple), var(--blue));
@@ -194,7 +185,6 @@ main {
   border-radius: 50%; animation: spin .7s linear infinite; display: none;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .success-state {
   display: none; flex-direction: column; align-items: center;
   text-align: center; padding: 2rem 1rem; gap: 1rem;
@@ -211,7 +201,6 @@ main {
 .success-redirect { font-family: var(--mono); font-size: .7rem; color: var(--text-4); display: flex; align-items: center; gap: .5rem; }
 .redirect-bar { width: 120px; height: 3px; background: var(--bg-4); border-radius: 100px; overflow: hidden; }
 .redirect-fill { height: 100%; background: var(--blue); width: 0%; transition: width 3s linear; }
-
 footer {
   position: relative; z-index: 1;
   border-top: 1px solid var(--border);
@@ -219,7 +208,6 @@ footer {
   display: flex; align-items: center; justify-content: center;
 }
 .footer-txt { font-family: var(--mono); font-size: .62rem; color: var(--text-4); }
-
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 540px) {
   nav { padding: 1rem 1.25rem; }
@@ -241,7 +229,6 @@ footer {
 
 <main>
   <div class="form-container">
-
     <div class="form-header">
       <div class="form-eyebrow">
         <span class="eyebrow-dot"></span>
@@ -257,7 +244,6 @@ footer {
     </div>
 
     <div class="form-card">
-
       <form id="demoForm" novalidate>
 
         <div class="field-row">
@@ -284,13 +270,25 @@ footer {
           </div>
         </div>
 
-        <div class="field-row">
+        <div class="field-row single">
           <div class="field">
             <label class="field-label" for="phone">Phone Number <span>*</span></label>
             <input class="field-input" type="tel" id="phone" name="phone"
               placeholder="(702) 555-0100" autocomplete="tel" required>
             <span class="field-error" id="phoneError">Required</span>
           </div>
+        </div>
+
+        <div class="field-row single">
+          <div class="field">
+            <label class="field-label" for="email">Email Address <span>*</span></label>
+            <input class="field-input" type="email" id="email" name="email"
+              placeholder="your@email.com" autocomplete="email" required>
+            <span class="field-error" id="emailError">Required</span>
+          </div>
+        </div>
+
+        <div class="field-row single">
           <div class="field">
             <label class="field-label" for="industry">Industry <span>*</span></label>
             <div class="select-wrapper">
@@ -339,8 +337,8 @@ footer {
           <div class="redirect-bar"><div class="redirect-fill" id="redirectFill"></div></div>
         </div>
       </div>
-
     </div>
+
   </div>
 </main>
 
@@ -349,21 +347,21 @@ footer {
 </footer>
 
 <script>
-const form       = document.getElementById('demoForm');
-const submitBtn  = document.getElementById('submitBtn');
-const btnText    = document.getElementById('btnText');
+const form = document.getElementById('demoForm');
+const submitBtn = document.getElementById('submitBtn');
+const btnText = document.getElementById('btnText');
 const btnSpinner = document.getElementById('btnSpinner');
 const successState = document.getElementById('successState');
 
 function validateField(id, errorId) {
-  const el  = document.getElementById(id);
+  const el = document.getElementById(id);
   const err = document.getElementById(errorId);
   const val = el.value.trim();
   if (!val) { el.classList.add('error'); err.classList.add('visible'); return false; }
   el.classList.remove('error'); err.classList.remove('visible'); return true;
 }
 
-['firstName','lastName','businessName','phone','industry'].forEach(id => {
+['firstName','lastName','businessName','phone','email','industry'].forEach(id => {
   const el = document.getElementById(id);
   const errId = id + 'Error';
   el.addEventListener('input', () => {
@@ -377,11 +375,12 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const valid = [
-    validateField('firstName',    'firstNameError'),
-    validateField('lastName',     'lastNameError'),
+    validateField('firstName', 'firstNameError'),
+    validateField('lastName', 'lastNameError'),
     validateField('businessName', 'businessNameError'),
-    validateField('phone',        'phoneError'),
-    validateField('industry',     'industryError'),
+    validateField('phone', 'phoneError'),
+    validateField('email', 'emailError'),
+    validateField('industry', 'industryError'),
   ].every(Boolean);
 
   if (!valid) return;
@@ -391,27 +390,29 @@ form.addEventListener('submit', async (e) => {
   btnSpinner.style.display = 'block';
 
   const businessName = document.getElementById('businessName').value.trim();
+  const email = document.getElementById('email').value.trim();
 
   const payload = {
-    firstName:    document.getElementById('firstName').value.trim(),
-    lastName:     document.getElementById('lastName').value.trim(),
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName: document.getElementById('lastName').value.trim(),
     businessName,
-    phone:        document.getElementById('phone').value.trim(),
-    industry:     document.getElementById('industry').value,
+    phone: document.getElementById('phone').value.trim(),
+    email,
+    industry: document.getElementById('industry').value,
   };
 
   // Save to sessionStorage IMMEDIATELY — before network call
   try { sessionStorage.setItem('flowdesk_business_name', businessName); } catch(e) {}
+  try { sessionStorage.setItem('flowdesk_email', email); } catch(e) {}
 
   try {
-    const res  = await fetch('/.netlify/functions/submit', {
+    const res = await fetch('/.netlify/functions/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
 
     const data = await res.json().catch(() => ({}));
-
     if (!res.ok) throw new Error(data.error || 'Request failed');
 
     // Store ref_slug too if returned
@@ -426,7 +427,6 @@ form.addEventListener('submit', async (e) => {
 
     // Redirect to page-2.html
     setTimeout(() => {
-      const slug = data.ref_slug || encodeURIComponent(businessName).replace(/%20/g, '-').toLowerCase();
       window.location.href = '/page-2.html?business=' + encodeURIComponent(businessName);
     }, 3200);
 
