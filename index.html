@@ -96,54 +96,20 @@
     img { display: block; max-width: 100%; }
 
     /* ── NAV ── */
-    nav {
-      position: sticky; top: 0; z-index: 50;
-      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-      padding: 0 clamp(1rem,4vw,2.5rem);
-      height: 68px;
-      background: rgba(5,12,26,0.88);
-      border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(20px);
-    }
-    .nav-logo { display: flex; align-items: center; gap: 0.8rem; }
-    .nav-logo img { height: 34px; width: auto; filter: drop-shadow(0 0 8px rgba(45,156,219,0.45)); }
-    .nav-logo-text {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent3);
-    }
-    .nav-links { display: flex; align-items: center; gap: 0.3rem; }
-    .nav-link {
-      font-size: 0.82rem; font-weight: 600;
-      color: var(--muted);
-      padding: 0.5rem 0.85rem;
-      border-radius: 999px;
-      transition: background 0.15s, color 0.15s;
-    }
-    .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
-    .nav-cta {
-      font-family: var(--mono);
-      font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.08em;
-      color: #03101f;
-      background: linear-gradient(130deg, var(--accent3), var(--accent), var(--accent2));
-      border-radius: 999px;
-      padding: 0.65rem 1.3rem;
-      white-space: nowrap;
-      box-shadow: 0 0 24px rgba(45,156,219,0.32);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 0 38px rgba(45,156,219,0.48); }
-    .hamburger { display: none; }
 
     /* ══════════════════════════════════════════
        SECTION 1 — CINEMATIC LOGO SPLASH
     ══════════════════════════════════════════ */
-    .hero-cinematic {
+    .arc-svg-lm { width: min(500px, 90vw); display: block; margin: 0 auto 0; }
+    .arc-text-lm {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 800;
+      fill: var(--blue);
+      letter-spacing: 0.18em; text-transform: uppercase;
+    }
+        .hero-cinematic {
       position: relative; z-index: 1;
-      min-height: calc(100vh - 68px);
+      min-height: 100vh;
       display: flex; flex-direction: column;
       border-bottom: 1px solid var(--line);
       overflow: hidden;
@@ -619,7 +585,6 @@
 
     /* ── MOBILE ── */
     @media (max-width: 1024px) {
-      nav .nav-links { display: none; }
       #hero-landing { grid-template-columns: 1fr; }
       .hero-left { height: 50vh; }
       .hero-right { padding: 4rem 2rem; }
@@ -631,64 +596,15 @@
       .workspace { grid-template-columns: 1fr; }
     }
     @media (max-width: 960px) {
-      .hamburger {
-        display: flex; flex-direction: column; gap: 5px;
-        cursor: pointer; padding: 4px;
       }
-      .hamburger span { width: 22px; height: 2px; background: var(--muted); border-radius: 2px; }
-    }
     @media (max-width: 600px) {
       .metrics { grid-template-columns: repeat(2,1fr); }
     }
-    .mobile-nav { display: none; }
-    .mobile-nav.open {
-      display: flex; flex-direction: column; gap: 0.25rem;
-      position: fixed; inset: 68px 0 0 0; z-index: 49;
-      background: rgba(5,12,26,0.97);
-      padding: 1.5rem;
-      backdrop-filter: blur(20px);
-    }
-    .mobile-nav a {
-      font-size: 1.1rem; font-weight: 600;
-      color: var(--silver);
-      padding: 0.9rem 1rem;
-      border-radius: var(--radius);
-      border: 1px solid transparent;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .mobile-nav a:hover { border-color: var(--line2); background: rgba(45,156,219,0.06); color: var(--white); }
   </style>
 </head>
 <body>
 
-  <!-- ── NAV ── -->
-  <nav>
-    <a class="nav-logo" href="/">
-      <img src="AI4-FLOWDESK-PRO-LOGO.png" alt="FlowDesk Pro" />
-      <span class="nav-logo-text">Intelligent Workflow Automation</span>
-    </a>
-    <div class="nav-links">
-      <a class="nav-link" href="#hero-landing">Lead Manager</a>
-      <a class="nav-link" href="#features-ldg">Features</a>
-      <a class="nav-link" href="#live-demo-ldg">Live Demo</a>
-      <a class="nav-link" href="https://aiflowdeskpro.com">FlowDesk Pro</a>
-    </div>
-    <div style="display:flex;gap:0.75rem;align-items:center;">
-      <a class="nav-cta" href="demo-request.html">Get Demo →</a>
-      <div class="hamburger" id="hamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-  </nav>
 
-  <!-- MOBILE NAV -->
-  <div class="mobile-nav" id="mobileNav">
-    <a href="#hero-landing">Lead Manager</a>
-    <a href="#features-ldg">Features</a>
-    <a href="#live-demo-ldg">Live Demo</a>
-    <a href="https://aiflowdeskpro.com">FlowDesk Pro</a>
-    <a href="demo-request.html" style="margin-top:0.5rem;background:rgba(45,156,219,0.12);border-color:var(--line2);color:var(--accent3);">Request Demo →</a>
-  </div>
 
   <!-- ══════════════════════════════════════════
        SECTION 1 — CINEMATIC LOGO SPLASH
@@ -697,7 +613,17 @@
 
     <div class="hero-splash">
       <div class="hero-logo-wrap">
-        <img src="AI4-FLOWDESK-PRO-LOGO.png" alt="AI4 FlowDesk Pro — Intelligent Workflow Automation" />
+        <svg class="arc-svg-lm" viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <path id="arc-lm" d="M 40,110 A 215,215 0 0,1 460,110"/>
+          </defs>
+          <text class="arc-text-lm">
+            <textPath href="#arc-lm" startOffset="50%" text-anchor="middle">
+              CRM LEAD MANAGEMENT SYSTEM
+            </textPath>
+          </text>
+        </svg>
+                <img src="AI4-FLOWDESK-PRO-LOGO.png" alt="AI4 FlowDesk Pro — Intelligent Workflow Automation" />
       </div>
     </div>
 
@@ -892,9 +818,6 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     // ── MOBILE NAV ──
-    const hamburger = document.getElementById('hamburger');
-    const mobileNav = document.getElementById('mobileNav');
-    hamburger.addEventListener('click', () => mobileNav.classList.toggle('open'));
     mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileNav.classList.remove('open')));
 
     // ── REVEAL ON SCROLL ──
