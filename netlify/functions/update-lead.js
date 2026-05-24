@@ -213,65 +213,69 @@ function splitName(fullName) {
 }
 
 
-async function getLeadById(config, id, tenantId) {
-  const query = [
-    'select=*',
-    `id=eq.${encodeQueryValue(id)}`,
-    `tenant_id=eq.${encodeQueryValue(tenantId)}`,
-    'limit=1'
-  ].join('&');
-
-  const records = await supabaseRequest('GET', `${config.tableName}?${query}`);
-  return Array.isArray(records) && records.length ? records[0] : null;
+function normalizeBoolean(value, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const lowered = value.trim().toLowerCase();
+    if (['true', 'yes', '1', 'on'].includes(lowered)) return true;
+    if (['false', 'no', '0', 'off'].includes(lowered)) return false;
+  }
+  if (value === null || value === undefined) return fallback;
+  return Boolean(value);
 }
 
-function buildCustomerUpdateEmail(record, message) {
-  const config = getConfig();
-  const firstName = record.first_name || (record.contact_name ? record.contact_name.split(/\s+/)[0] : '');
-  const brand = config.clientBrandName || record.business_name || 'Our Team';
+function buildUpdatePayload(body) {
+  const allowed = [
+    'lead_status',
+    'urgency',
+    'service_needed',
+    'category',
+    'preferred_contact_method',
+    'preferred_callback_time',
+    'message',
+    'details',
+    'ai_summary',
+    'next_action',
+    'internal_notes',
+    'assigned_to',
+    'customer_status_message'
+  ];
 
-  const html = `
-    <div style="font-family:Arial,sans-serif;background:#07111f;color:#f5f8ff;padding:28px;border-radius:18px;max-width:640px;margin:0 auto;">
-      <div style="color:#5BD3FF;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;margin-bottom:16px;">${escapeHtml(brand)}</div>
-      <h2 style="margin:0 0 12px;color:#ffffff;">Update on your request</h2>
-      <p style="line-height:1.7;color:#c9d6e5;margin:0 0 16px;">${firstName ? `Hi ${escapeHtml(firstName)},` : 'Hi,'}</p>
-      <div style="background:#0d1f34;border:1px solid rgba(91,211,255,.28);border-radius:14px;padding:16px;margin:18px 0;">
-        <div style="font-size:12px;color:#90A3BC;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;">Message</div>
-        <div style="line-height:1.7;color:#f5f8ff;white-space:pre-wrap;">${escapeHtml(message)}</div>
-      </div>
-      <table style="width:100%;border-collapse:collapse;margin-top:18px;">
-        <tr><td style="padding:8px;color:#90A3BC;width:150px;">Business</td><td style="padding:8px;color:#ffffff;font-weight:700;">${escapeHtml(record.business_name || brand)}</td></tr>
-        <tr><td style="padding:8px;color:#90A3BC;">Status</td><td style="padding:8px;color:#ffffff;">${escapeHtml(record.lead_status || 'In Review')}</td></tr>
-        <tr><td style="padding:8px;color:#90A3BC;">Request</td><td style="padding:8px;color:#ffffff;">${escapeHtml(record.service_needed || 'General inquiry')}</td></tr>
-      </table>
-      <p style="font-size:12px;line-height:1.6;color:#90A3BC;margin-top:22px;">Powered by FlowDesk Pro Lead Manager.</p>
-    </div>
-  `;
+  const payload = { updated_at: nowIso() };
 
-  const text = [
-    `Update from ${brand}`,
-    '',
-    firstName ? `Hi ${firstName},` : 'Hi,',
-    '',
-    message,
-    '',
-    `Status: ${record.lead_status || 'In Review'}`,
-    `Request: ${record.service_needed || 'General inquiry'}`,
-    '',
-    'Powered by FlowDesk Pro Lead Manager.'
-  ].join('\n');
+  for (const field of allowed) {
+    if (Object.prototype.hasOwnProperty.call(body, field)) {
+      payload[field] = safeString(body[field]);
+    }
+  }
 
-  return {
-    to: record.email,
-    subject: `Update on your request — ${brand}`,
-    html,
-    text
-  };
+  if (Object.prototype.hasOwnProperty.call(body, 'follow_up_needed')) {
+    payload.follow_up_needed = normalizeBoolean(body.follow_up_needed, true);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'appointment_requested')) {
+    payload.appointment_requested = normalizeBoolean(body.appointment_requested, false);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'appointment_status')) {
+    payload.appointment_status = safeString(body.appointment_status);
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(body, 'customer_status_message') &&
+    safeString(body.customer_status_message)
+  ) {
+    payload.last_customer_update_at = nowIso();
+  }
+
+  return payload;
 }
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return json(204, {});
-  if (event.httpMethod !== 'POST') return json(405, { ok: false, error: 'Method not allowed' });
+  if (!['POST', 'PATCH'].includes(event.httpMethod)) {
+    return json(405, { ok: false, error: 'Method not allowed' });
+  }
 
   let body;
   try {
@@ -283,62 +287,37 @@ exports.handler = async (event) => {
   const id = safeString(body.id || body.record_id);
   if (!id) return json(400, { ok: false, error: 'Lead record id is required.' });
 
-  const message = safeString(body.customer_status_message || body.message);
-  if (!message) return json(400, { ok: false, error: 'Customer status message is required.' });
-
   let config;
   try {
     config = getConfig();
   } catch (error) {
-    console.error('email-lead config error:', error.message);
+    console.error('update-lead config error:', error.message);
     return json(500, { ok: false, error: 'Lead Manager is not configured.' });
   }
 
-  if (!config.resendKey) {
-    return json(500, { ok: false, error: 'Email service is not configured.' });
+  const tenantId = safeString(body.tenant_id || config.tenantId || 'default');
+  const updatePayload = buildUpdatePayload(body);
+
+  if (Object.keys(updatePayload).length <= 1) {
+    return json(400, { ok: false, error: 'No update fields were provided.' });
   }
 
-  const tenantId = safeString(body.tenant_id || config.tenantId || 'default');
-
   try {
-    const record = await getLeadById(config, id, tenantId);
+    const path = `${config.tableName}?id=eq.${encodeQueryValue(id)}&tenant_id=eq.${encodeQueryValue(tenantId)}`;
+    const updated = await supabaseRequest('PATCH', path, updatePayload);
+    const record = Array.isArray(updated) && updated.length ? updated[0] : null;
 
     if (!record) {
       return json(404, { ok: false, error: 'Lead record was not found for this tenant.' });
     }
 
-    if (!isValidEmail(record.email)) {
-      return json(400, { ok: false, error: 'Lead record does not contain a valid email address.' });
-    }
-
-    const emailResult = await sendResendEmail(buildCustomerUpdateEmail(record, message));
-
-    const updatePayload = {
-      customer_status_message: message,
-      last_customer_update_at: nowIso(),
-      updated_at: nowIso()
-    };
-
-    if (safeString(body.lead_status)) {
-      updatePayload.lead_status = safeString(body.lead_status);
-    }
-
-    const updated = await supabaseRequest(
-      'PATCH',
-      `${config.tableName}?id=eq.${encodeQueryValue(id)}&tenant_id=eq.${encodeQueryValue(tenantId)}`,
-      updatePayload
-    );
-
-    const updatedRecord = Array.isArray(updated) && updated.length ? updated[0] : null;
-
     return json(200, {
       ok: true,
-      message: 'Customer update email sent.',
-      email: emailResult,
-      record: updatedRecord
+      message: 'Lead updated successfully.',
+      record
     });
   } catch (error) {
-    console.error('email-lead error:', error.message);
-    return json(500, { ok: false, error: 'Unable to email lead right now.' });
+    console.error('update-lead error:', error.message);
+    return json(500, { ok: false, error: 'Unable to update lead right now.' });
   }
 };
