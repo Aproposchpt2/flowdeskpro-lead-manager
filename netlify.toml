@@ -2,56 +2,49 @@
   publish = "."
   functions = "netlify/functions"
 
-[build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "FLOWDESK_SITE_URL"
-
 [functions]
   node_bundler = "esbuild"
 
-# ─── CLEAN URL REDIRECTS ───────────────────────────────────────
+# Clean URL redirects
 
 [[redirects]]
-from = "/"
-to = "/landing-page.html"
-status = 200
+  from = "/"
+  to = "/index.html"
+  status = 200
 
 [[redirects]]
-from = "/demo"
-to = "/demo-request.html"
-status = 200
+  from = "/intake"
+  to = "/intake.html"
+  status = 200
 
 [[redirects]]
-from = "/start"
-to = "/demo-request.html"
-status = 200
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
 
 [[redirects]]
-from = "/dashboard"
-to = "/dashboard.html"
-status = 200
+  from = "/thankyou"
+  to = "/thankyou.html"
+  status = 200
 
 [[redirects]]
-from = "/leads"
-to = "/dashboard.html"
-status = 200
+  from = "/thank-you"
+  to = "/thankyou.html"
+  status = 200
 
-[[redirects]]
-from = "/welcome"
-to = "/welcome.html"
-status = 200
-
-# ─── SECURITY HEADERS ──────────────────────────────────────────
+# Security headers
 
 [[headers]]
-for = "/*"
+  for = "/*"
   [headers.values]
-  X-Content-Type-Options = "nosniff"
-  Referrer-Policy = "strict-origin-when-cross-origin"
-  Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    X-Frame-Options = "SAMEORIGIN"
 
 [[headers]]
-for = "/.netlify/functions/*"
+  for = "/.netlify/functions/*"
   [headers.values]
-  Access-Control-Allow-Origin = "*"
-  Access-Control-Allow-Methods = "GET, POST, OPTIONS"
-  Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PATCH, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"

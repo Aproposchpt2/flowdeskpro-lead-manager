@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lead Manager Dashboard — FlowDesk Pro</title>
+  <meta name="description" content="FlowDesk Pro Lead Manager dashboard." />
+  <title>Dashboard — FlowDesk Pro Lead Manager</title>
   <style>
     :root {
       --bg: #050b14;
       --bg-2: #071423;
       --panel: rgba(10, 24, 42, 0.9);
-      --panel-2: rgba(13, 32, 54, 0.94);
+      --panel-2: rgba(13, 32, 54, 0.95);
       --line: rgba(142, 184, 222, 0.18);
-      --line-strong: rgba(83, 201, 255, 0.36);
+      --line-strong: rgba(83, 201, 255, 0.38);
       --text: #f2f8ff;
       --muted: #a7bbcf;
       --soft: #7088a1;
@@ -21,600 +22,643 @@
       --gold: #f5c968;
       --red: #ff6d76;
       --purple: #9c8cff;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
       --radius: 18px;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
     * { box-sizing: border-box; }
-
     body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
+      margin: 0; min-height: 100vh; color: var(--text);
       background:
         linear-gradient(rgba(39, 174, 251, 0.035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(39, 174, 251, 0.03) 1px, transparent 1px),
-        radial-gradient(circle at 12% 0%, rgba(39, 174, 251, 0.17), transparent 30rem),
+        radial-gradient(circle at 12% 0%, rgba(39, 174, 251, 0.18), transparent 30rem),
         radial-gradient(circle at 90% 16%, rgba(75, 216, 157, 0.12), transparent 32rem),
         linear-gradient(180deg, #030712 0%, var(--bg) 44%, var(--bg-2) 100%);
       background-size: 64px 64px, 64px 64px, auto, auto, auto;
     }
-
     button, input, select, textarea { font: inherit; }
-    a { color: inherit; }
-
-    /* ── INCOMING CALL FLASH BANNER ─────────────────────────── */
-    #incomingBanner {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 9999;
-      padding: 14px 24px;
-      background: linear-gradient(90deg, rgba(75,216,157,0.18), rgba(39,174,251,0.14));
-      border-bottom: 2px solid var(--green);
-      font-family: inherit;
-      font-size: 1rem; font-weight: 800;
-      color: var(--green);
-      text-align: center;
-      letter-spacing: .04em;
-      text-shadow: 0 0 20px rgba(75,216,157,0.5);
-    }
-    #incomingBanner.show { display: block; }
-    @keyframes flashBanner {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0.35; }
-    }
-    #incomingBanner.flashing { animation: flashBanner 0.5s ease-in-out 6; }
-
-    .app { min-height: 100vh; display: grid; grid-template-columns: 260px minmax(0, 1fr); }
-
+    a { color: inherit; text-decoration: none; }
+    .app { min-height: 100vh; display: grid; grid-template-columns: 270px minmax(0, 1fr); }
     aside {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      padding: 24px 18px;
+      position: sticky; top: 0; height: 100vh; padding: 24px 18px;
       border-right: 1px solid var(--line);
-      background: rgba(3, 8, 18, 0.86);
-      backdrop-filter: blur(18px);
+      background: rgba(3, 8, 18, 0.88); backdrop-filter: blur(18px);
     }
-
     .brand { display: flex; align-items: center; gap: 12px; padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
-    .brand-text strong { display: block; font-size: 0.94rem; line-height: 1.1; }
-    .brand-text span { display: block; margin-top: 4px; color: var(--soft); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; }
     .brand-logo {
-      width: 40px; height: 40px; border-radius: 9px;
-      background: linear-gradient(135deg, #5B3FB5, #27aefb);
+      width: 42px; height: 42px; border-radius: 13px;
+      background: linear-gradient(135deg, #5B3FB5, var(--blue) 54%, var(--green));
       display: flex; align-items: center; justify-content: center;
-      font-size: .8rem; font-weight: 700; color: #fff;
-      box-shadow: 0 0 20px rgba(91,63,181,0.4);
+      font-size: .88rem; font-weight: 950; color: #fff; letter-spacing: -.05em;
+      box-shadow: 0 0 24px rgba(39,174,251,.32);
       flex-shrink: 0;
     }
-
+    .brand-text strong { display: block; font-size: .94rem; line-height: 1.1; }
+    .brand-text span { display: block; margin-top: 4px; color: var(--soft); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
     .nav-group { display: grid; gap: 8px; }
-    .nav-link { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 42px; padding: 10px 12px; border-radius: 12px; color: var(--muted); text-decoration: none; font-size: 0.88rem; border: 1px solid transparent; }
-    .nav-link.active, .nav-link:hover { color: var(--text); background: rgba(39, 174, 251, 0.09); border-color: rgba(39, 174, 251, 0.2); }
-    .nav-pill { color: var(--cyan); font-size: 0.68rem; font-weight: 800; border: 1px solid rgba(111, 220, 255, 0.22); border-radius: 999px; padding: 2px 8px; }
-    .sidebar-note { margin-top: 28px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, 0.04); color: var(--soft); font-size: 0.78rem; line-height: 1.55; }
-
+    .nav-link { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 42px; padding: 10px 12px; border-radius: 12px; color: var(--muted); text-decoration: none; font-size: .88rem; border: 1px solid transparent; }
+    .nav-link.active, .nav-link:hover { color: var(--text); background: rgba(39, 174, 251, .09); border-color: rgba(39, 174, 251, .2); }
+    .nav-pill { color: var(--cyan); font-size: .68rem; font-weight: 900; border: 1px solid rgba(111, 220, 255, .22); border-radius: 999px; padding: 2px 8px; }
+    .sidebar-note { margin-top: 28px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.04); color: var(--soft); font-size: .78rem; line-height: 1.55; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 6px; animation: livePulse 2s infinite; }
+    @keyframes livePulse { 0%,100%{box-shadow:0 0 0 0 rgba(75,216,157,.4)} 50%{box-shadow:0 0 0 5px rgba(75,216,157,0)} }
     main { padding: 26px; }
     .topbar { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 22px; }
-    .page-title h1 { margin: 0; font-size: clamp(1.3rem, 2.2vw, 2.2rem); letter-spacing: -.02em; line-height: 1.05; }
-    .page-title p { margin: 8px 0 0; color: var(--muted); line-height: 1.55; max-width: 780px; font-size: .88rem; }
+    .page-title h1 { margin: 0; font-size: clamp(1.45rem, 2.5vw, 2.45rem); letter-spacing: -.035em; line-height: 1.05; }
+    .page-title p { margin: 8px 0 0; color: var(--muted); line-height: 1.55; max-width: 840px; font-size: .9rem; }
     .top-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-
-    .btn { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 999px; min-height: 42px; padding: 0 16px; color: var(--text); background: rgba(255, 255, 255, 0.05); cursor: pointer; font-weight: 800; text-decoration: none; transition: transform 0.18s, border-color 0.18s, background 0.18s; }
-    .btn:hover { transform: translateY(-1px); border-color: var(--line-strong); background: rgba(39, 174, 251, 0.1); }
-    .btn.primary { color: #021323; background: linear-gradient(135deg, #f7fbff, var(--cyan) 48%, var(--blue)); border-color: rgba(111, 220, 255, 0.45); box-shadow: 0 0 34px rgba(39, 174, 251, 0.32); }
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-
+    .btn { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 999px; min-height: 42px; padding: 0 16px; color: var(--text); background: rgba(255,255,255,.05); cursor: pointer; font-weight: 850; text-decoration: none; transition: transform .18s, border-color .18s, background .18s; }
+    .btn:hover { transform: translateY(-1px); border-color: var(--line-strong); background: rgba(39,174,251,.1); }
+    .btn.primary { color: #021323; background: linear-gradient(135deg, #f7fbff, var(--cyan) 48%, var(--blue)); border-color: rgba(111,220,255,.45); box-shadow: 0 0 34px rgba(39,174,251,.32); }
+    .btn.success { color:#02170f; background: linear-gradient(135deg, #f4fff8, #78f1bb, var(--green)); border-color: rgba(75,216,157,.45); }
+    .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
     .metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
-    .metric { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)), var(--panel); padding: 18px; box-shadow: 0 16px 44px rgba(0, 0, 0, 0.2); }
-    .metric span { display: block; color: var(--soft); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.68rem; font-weight: 900; margin-bottom: 10px; }
+    .metric { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(145deg, rgba(255,255,255,.065), rgba(255,255,255,.018)), var(--panel); padding: 18px; box-shadow: 0 16px 44px rgba(0,0,0,.2); }
+    .metric span { display: block; color: var(--soft); text-transform: uppercase; letter-spacing: .1em; font-size: .68rem; font-weight: 950; margin-bottom: 10px; }
     .metric strong { display: block; font-size: 2rem; line-height: 1; }
     .metric small { display: block; color: var(--muted); margin-top: 8px; line-height: 1.45; font-size: .78rem; }
-
-    .workspace { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(380px, 0.95fr); gap: 18px; align-items: start; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(410px, .94fr); gap: 18px; align-items: start; }
     .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: var(--shadow); overflow: hidden; }
-    .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 14px; min-height: 72px; padding: 18px; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, 0.035); }
+    .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 14px; min-height: 72px; padding: 18px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.035); }
     .panel-head h2 { margin: 0; font-size: 1rem; }
-    .panel-head span { display: block; color: var(--soft); margin-top: 4px; font-size: 0.78rem; }
-
-    .filters { display: grid; grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(145px, 0.7fr)); gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
-    .field { min-height: 42px; width: 100%; border: 1px solid var(--line); border-radius: 12px; background: rgba(3, 8, 18, 0.78); color: var(--text); padding: 0 12px; outline: none; }
+    .panel-head span { display: block; color: var(--soft); margin-top: 4px; font-size: .78rem; }
+    .filters { display: grid; grid-template-columns: minmax(220px, 1.2fr) repeat(4, minmax(132px, .7fr)); gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+    .field { min-height: 42px; width: 100%; border: 1px solid var(--line); border-radius: 12px; background: rgba(3,8,18,.78); color: var(--text); padding: 0 12px; outline: none; }
     textarea.field { min-height: 96px; padding: 12px; resize: vertical; line-height: 1.5; }
-    .field:focus { border-color: var(--line-strong); box-shadow: 0 0 0 3px rgba(39, 174, 251, 0.1); }
-
+    .field:focus { border-color: var(--line-strong); box-shadow: 0 0 0 3px rgba(39,174,251,.1); }
     .notice { margin: 12px 18px 0; border: 1px solid var(--line); border-radius: 13px; padding: 11px 13px; color: var(--muted); background: rgba(255,255,255,.04); font-size: .84rem; line-height: 1.45; }
     .notice.success { color: #b7ffe0; border-color: rgba(75,216,157,.35); background: rgba(75,216,157,.08); }
     .notice.error { color: #ffd3d6; border-color: rgba(255,109,118,.36); background: rgba(255,109,118,.08); }
-
-    .lead-list { display: grid; gap: 10px; padding: 16px; max-height: 760px; overflow: auto; }
-    .lead-card { text-align: left; border: 1px solid var(--line); border-radius: 16px; background: rgba(5, 12, 24, 0.74); padding: 15px; color: inherit; cursor: pointer; transition: border-color 0.18s, background 0.18s, transform 0.18s; }
-    .lead-card:hover, .lead-card.active { transform: translateY(-1px); border-color: var(--line-strong); background: rgba(10, 30, 52, 0.9); }
-
-    /* New lead animation */
-    @keyframes slideInLead {
-      from { opacity: 0; transform: translateY(-12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .lead-card.new-arrival { animation: slideInLead .4s ease both; }
-    @keyframes highlightNew {
-      0%,100% { border-color: var(--green); box-shadow: 0 0 0 0 rgba(75,216,157,0); }
-      50%      { border-color: var(--green); box-shadow: 0 0 0 4px rgba(75,216,157,0.2); }
-    }
-    .lead-card.highlight { animation: slideInLead .4s ease both, highlightNew 1s ease 0.4s 5; }
-
+    .lead-list { display: grid; gap: 10px; padding: 16px; max-height: 780px; overflow: auto; }
+    .lead-card { text-align: left; border: 1px solid var(--line); border-radius: 16px; background: rgba(5, 12, 24, .74); padding: 15px; color: inherit; cursor: pointer; transition: border-color .18s, background .18s, transform .18s; }
+    .lead-card:hover, .lead-card.active { transform: translateY(-1px); border-color: var(--line-strong); background: rgba(10, 30, 52, .9); }
     .lead-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
     .lead-top h3 { margin: 0 0 4px; font-size: 1rem; }
-    .lead-top p { margin: 0; color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
-
-    .badge { display: inline-flex; align-items: center; justify-content: center; min-height: 25px; border-radius: 999px; padding: 4px 10px; font-size: 0.68rem; font-weight: 900; white-space: nowrap; border: 1px solid transparent; }
-    .priority { color: #3b1900; background: var(--gold); border-color: rgba(245, 201, 104, 0.5); }
-    .new { color: #041b2e; background: var(--cyan); border-color: rgba(111, 220, 255, 0.5); }
-    .progress { color: #07192f; background: var(--green); border-color: rgba(75, 216, 157, 0.5); }
-    .closed { color: #e7edff; background: rgba(156, 140, 255, 0.18); border-color: rgba(156, 140, 255, 0.38); }
-    .voice { color: #f2eaff; background: rgba(156, 140, 255, 0.18); border-color: rgba(156, 140, 255, 0.38); }
-    .web { color: #d8fff0; background: rgba(75, 216, 157, 0.14); border-color: rgba(75, 216, 157, 0.32); }
-    .unknown { color: #d8e5f3; background: rgba(167, 187, 207, 0.12); border-color: rgba(167, 187, 207, 0.2); }
-
+    .lead-top p { margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.45; }
+    .badge { display: inline-flex; align-items: center; justify-content: center; min-height: 25px; border-radius: 999px; padding: 4px 10px; font-size: .68rem; font-weight: 950; white-space: nowrap; border: 1px solid transparent; }
+    .priority { color: #3b1900; background: var(--gold); border-color: rgba(245,201,104,.5); }
+    .new { color: #041b2e; background: var(--cyan); border-color: rgba(111,220,255,.5); }
+    .progress { color: #07192f; background: var(--green); border-color: rgba(75,216,157,.5); }
+    .closed { color: #e7edff; background: rgba(156,140,255,.18); border-color: rgba(156,140,255,.38); }
+    .source { color: #d8fff0; background: rgba(75,216,157,.14); border-color: rgba(75,216,157,.32); }
+    .unknown { color: #d8e5f3; background: rgba(167,187,207,.12); border-color: rgba(167,187,207,.2); }
     .meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-    .meta { border: 1px solid rgba(142, 184, 222, 0.12); border-radius: 11px; padding: 9px; background: rgba(255, 255, 255, 0.03); min-width: 0; }
-    .meta span { display: block; color: var(--soft); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
-    .meta strong { display: block; color: var(--text); font-size: 0.78rem; line-height: 1.35; overflow-wrap: anywhere; }
-
+    .meta { border: 1px solid rgba(142,184,222,.12); border-radius: 11px; padding: 9px; background: rgba(255,255,255,.03); min-width: 0; }
+    .meta span { display: block; color: var(--soft); font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+    .meta strong { display: block; color: var(--text); font-size: .78rem; line-height: 1.35; overflow-wrap: anywhere; }
     .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .detail-body { padding: 18px; display: grid; gap: 16px; }
     .detail-title { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
     .detail-title h2 { margin: 0 0 6px; font-size: 1.4rem; line-height: 1.12; }
     .detail-title p { margin: 0; color: var(--muted); line-height: 1.55; }
-    .detail-section { border: 1px solid var(--line); border-radius: 15px; padding: 14px; background: rgba(255, 255, 255, 0.03); }
-    .detail-section h3 { margin: 0 0 10px; color: var(--cyan); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; }
-    .detail-section p { margin: 0; color: var(--muted); line-height: 1.65; font-size: 0.92rem; white-space: pre-wrap; }
+    .detail-section { border: 1px solid var(--line); border-radius: 15px; padding: 14px; background: rgba(255,255,255,.03); }
+    .detail-section h3 { margin: 0 0 10px; color: var(--cyan); font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; }
+    .detail-section p { margin: 0; color: var(--muted); line-height: 1.65; font-size: .92rem; white-space: pre-wrap; }
     .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .action-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
     .action-row { display: flex; flex-wrap: wrap; gap: 10px; }
     .empty { color: var(--soft); padding: 26px; text-align: center; line-height: 1.6; }
-    .footer-note { color: var(--soft); margin: 18px 0 0; font-size: 0.82rem; line-height: 1.55; }
-
-    /* Live indicator */
-    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 6px; animation: livePulse 2s infinite; }
-    @keyframes livePulse { 0%,100%{box-shadow:0 0 0 0 rgba(75,216,157,.4)} 50%{box-shadow:0 0 0 5px rgba(75,216,157,0)} }
-
-    @media (max-width: 1180px) {
+    .footer-note { color: var(--soft); margin: 18px 0 0; font-size: .82rem; line-height: 1.55; }
+    @media (max-width: 1260px) {
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workspace { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 940px) {
       .app { grid-template-columns: 1fr; }
       aside { position: static; height: auto; }
       .nav-group { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .sidebar-note { display: none; }
-      .workspace, .metrics { grid-template-columns: 1fr 1fr; }
+      .filters { grid-template-columns: 1fr 1fr; }
     }
-    @media (max-width: 820px) {
+    @media (max-width: 680px) {
       main { padding: 18px; }
       .topbar, .detail-title { flex-direction: column; align-items: stretch; }
-      .filters, .workspace, .metrics, .meta-grid, .detail-grid, .nav-group { grid-template-columns: 1fr; }
+      .filters, .metrics, .meta-grid, .detail-grid, .nav-group { grid-template-columns: 1fr; }
       aside { padding: 18px; }
     }
   </style>
 </head>
 <body>
-
-<!-- INCOMING CALL FLASH BANNER -->
-<div id="incomingBanner">📞 INCOMING CALL RECEIVED — NEW LEAD ADDED</div>
-
 <div class="app">
   <aside>
     <div class="brand">
       <div class="brand-logo">fd</div>
       <div class="brand-text">
-        <strong id="sidebarBizName">FlowDesk Pro</strong>
+        <strong>FlowDesk Pro</strong>
         <span>Lead Manager</span>
       </div>
     </div>
-    <nav class="nav-group" aria-label="FlowDesk navigation">
-      <a class="nav-link" href="/landing-page.html">Homepage <span class="nav-pill">01</span></a>
-      <a class="nav-link" href="/demo-request.html">Request Demo <span class="nav-pill">02</span></a>
-      <a class="nav-link active" href="/dashboard.html">Lead Manager <span class="nav-pill">03</span></a>
+    <nav class="nav-group" aria-label="Lead Manager navigation">
+      <a class="nav-link" href="/index.html">Home <span class="nav-pill">01</span></a>
+      <a class="nav-link" href="/intake.html">Intake <span class="nav-pill">02</span></a>
+      <a class="nav-link active" href="/dashboard.html">Dashboard <span class="nav-pill">03</span></a>
     </nav>
     <div class="sidebar-note">
-      <span class="live-dot"></span>Live view. Records load through Netlify Functions —
-      Supabase credentials never enter frontend code.
+      <span class="live-dot"></span>Live operational queue. This page calls Netlify Functions only — no Supabase or Resend secrets exist in browser code.
     </div>
   </aside>
 
   <main>
     <header class="topbar">
       <div class="page-title">
-        <h1 id="dashboardTitle">Lead Manager Dashboard</h1>
-        <p>Live command view — voice intake, web intake, and all lead records flowing into FlowDesk Pro.</p>
+        <h1>Lead Manager Dashboard</h1>
+        <p>Command-center view for captured leads, source tracking, urgency review, status updates, notes, next actions, and customer follow-up.</p>
       </div>
       <div class="top-actions">
-        <a class="btn" href="/demo-request.html">← New Demo</a>
+        <a class="btn" href="/intake.html">+ New Lead</a>
         <button class="btn primary" id="refreshButton" type="button">Refresh Records</button>
       </div>
     </header>
 
     <section class="metrics" aria-label="Lead metrics">
-      <article class="metric"><span>Total Leads</span><strong id="metricTotal">0</strong><small>All records from Supabase.</small></article>
+      <article class="metric"><span>Total Leads</span><strong id="metricTotal">0</strong><small>All loaded records.</small></article>
       <article class="metric"><span>New Leads</span><strong id="metricNew">0</strong><small>Needs review.</small></article>
-      <article class="metric"><span>Voice Leads</span><strong id="metricVoice">0</strong><small>Twilio voice intake.</small></article>
-      <article class="metric"><span>Web Leads</span><strong id="metricWeb">0</strong><small>Form intake.</small></article>
+      <article class="metric"><span>Need Follow-Up</span><strong id="metricFollowUp">0</strong><small>Action required.</small></article>
       <article class="metric"><span>High Urgency</span><strong id="metricHigh">0</strong><small>Time-sensitive leads.</small></article>
+      <article class="metric"><span>In Progress</span><strong id="metricProgress">0</strong><small>Active opportunities.</small></article>
     </section>
 
     <section class="workspace">
       <section class="panel" aria-labelledby="list-title">
         <div class="panel-head">
           <div>
-            <h2 id="list-title">Live Intake Queue</h2>
-            <span id="listSubtitle">Connecting to live records...</span>
+            <h2 id="list-title">Lead Queue</h2>
+            <span id="listSubtitle">Connecting to records...</span>
           </div>
         </div>
         <div class="filters">
-          <input class="field" id="searchBox" type="search" placeholder="Search name, phone, business, ID, transcript..." />
-          <select class="field" id="sourceFilter" aria-label="Filter by source"><option value="all">All sources</option><option value="web">Web intake</option><option value="voice">Twilio voice</option><option value="other">Other</option></select>
-          <select class="field" id="urgencyFilter" aria-label="Filter by urgency"><option value="all">All urgency</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option><option value="unknown">Unknown</option></select>
-          <select class="field" id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="new">New</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select>
+          <input class="field" id="searchBox" type="search" placeholder="Search name, email, phone, business, service, message..." />
+          <select class="field" id="statusFilter" aria-label="Filter by status">
+            <option value="all">All statuses</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="progress">In progress</option>
+            <option value="waiting">Waiting</option>
+            <option value="follow-up">Follow-up scheduled</option>
+            <option value="appointment">Appointment requested</option>
+            <option value="closed">Closed</option>
+            <option value="not-fit">Not a fit</option>
+          </select>
+          <select class="field" id="urgencyFilter" aria-label="Filter by urgency">
+            <option value="all">All urgency</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="normal">Normal</option>
+            <option value="low">Low</option>
+            <option value="unknown">Unknown</option>
+          </select>
+          <select class="field" id="sourceFilter" aria-label="Filter by source">
+            <option value="all">All sources</option>
+            <option value="web">Web intake</option>
+            <option value="voice">Voice</option>
+            <option value="sms">SMS</option>
+            <option value="manual">Manual</option>
+            <option value="other">Other</option>
+          </select>
+          <select class="field" id="followUpFilter" aria-label="Filter by follow-up needed">
+            <option value="all">All follow-up</option>
+            <option value="yes">Follow-up needed</option>
+            <option value="no">No follow-up</option>
+          </select>
         </div>
-        <div id="listNotice" class="notice">Connecting to live FlowDesk records...</div>
+        <div id="listNotice" class="notice">Connecting to FlowDesk Pro Lead Manager records...</div>
         <div class="lead-list" id="leadList"></div>
       </section>
 
       <section class="panel" aria-labelledby="detail-title">
         <div class="panel-head">
-          <div><h2 id="detail-title">Record Detail</h2><span>Review, classify, and update lead status.</span></div>
+          <div>
+            <h2 id="detail-title">Record Detail</h2>
+            <span>Review, classify, update, and follow up.</span>
+          </div>
         </div>
         <div class="detail-body" id="detailPanel"><div class="empty">Select a lead after records load.</div></div>
       </section>
     </section>
 
-    <p class="footer-note">Security note: this page calls Netlify Functions only. Supabase keys and Twilio tokens are not present in frontend code.</p>
+    <p class="footer-note">Security note: dashboard actions call <code>/.netlify/functions/get-leads</code>, <code>update-lead</code>, and <code>email-lead</code>. Backend secrets remain in Netlify environment variables.</p>
   </main>
 </div>
 
 <script>
-// ── Business name ─────────────────────────────────────────────
-function getBusinessName() {
-  const params = new URLSearchParams(window.location.search);
-  const fromUrl = params.get('business') || params.get('name') || '';
-  if (fromUrl) return fromUrl;
-  try { return sessionStorage.getItem('flowdesk_business_name') || 'FlowDesk Pro'; } catch(e) { return 'FlowDesk Pro'; }
-}
+  const STATUS_OPTIONS = [
+    'New / Needs Review',
+    'New / Priority Review',
+    'Contacted',
+    'In Progress',
+    'Waiting on Customer',
+    'Follow-Up Scheduled',
+    'Appointment Requested',
+    'Closed / Resolved',
+    'Not a Fit'
+  ];
 
-const BUSINESS_NAME = getBusinessName();
+  const state = {
+    records: [],
+    selectedId: '',
+    loading: false,
+    error: ''
+  };
 
-// Inject business name
-document.getElementById('dashboardTitle').textContent = BUSINESS_NAME + ' — Lead Manager Dashboard';
-document.getElementById('sidebarBizName').textContent = BUSINESS_NAME;
-document.title = BUSINESS_NAME + ' — Lead Manager Dashboard';
+  const els = {
+    leadList: document.getElementById('leadList'),
+    detailPanel: document.getElementById('detailPanel'),
+    listSubtitle: document.getElementById('listSubtitle'),
+    listNotice: document.getElementById('listNotice'),
+    searchBox: document.getElementById('searchBox'),
+    statusFilter: document.getElementById('statusFilter'),
+    urgencyFilter: document.getElementById('urgencyFilter'),
+    sourceFilter: document.getElementById('sourceFilter'),
+    followUpFilter: document.getElementById('followUpFilter'),
+    refreshButton: document.getElementById('refreshButton')
+  };
 
-// ── State ─────────────────────────────────────────────────────
-const state = { records: [], selectedKey: '', loading: false, error: '', lastCount: -1 };
-const els = {
-  leadList:       document.getElementById('leadList'),
-  detailPanel:    document.getElementById('detailPanel'),
-  listSubtitle:   document.getElementById('listSubtitle'),
-  listNotice:     document.getElementById('listNotice'),
-  searchBox:      document.getElementById('searchBox'),
-  sourceFilter:   document.getElementById('sourceFilter'),
-  urgencyFilter:  document.getElementById('urgencyFilter'),
-  statusFilter:   document.getElementById('statusFilter'),
-  refreshButton:  document.getElementById('refreshButton'),
-  incomingBanner: document.getElementById('incomingBanner'),
-};
-
-els.searchBox.addEventListener('input', render);
-els.sourceFilter.addEventListener('change', render);
-els.urgencyFilter.addEventListener('change', render);
-els.statusFilter.addEventListener('change', render);
-els.refreshButton.addEventListener('click', () => loadRecords(true));
-
-// ── Supabase real-time polling ────────────────────────────────
-const POLL_INTERVAL_MS = 8000; // 8-second poll
-let pollTimer = null;
-
-function startPolling() {
-  if (pollTimer) return;
-  pollTimer = setInterval(() => loadRecords(false), POLL_INTERVAL_MS);
-}
-
-// ── Initial load ──────────────────────────────────────────────
-loadRecords(true);
-startPolling();
-
-async function loadRecords(isManual) {
-  if (isManual) {
-    state.loading = true;
-    state.error   = '';
-    els.refreshButton.disabled = true;
-    setNotice('Connecting to live FlowDesk records...', '');
-    render();
-  }
-
-  try {
-    const response = await fetch('/.netlify/functions/flowdesk-leads?limit=150');
-    const payload  = await response.json().catch(() => ({}));
-    if (!response.ok || !payload.ok) throw new Error(payload.error || 'Unable to load records.');
-
-    const incoming = Array.isArray(payload.records) ? payload.records : [];
-    const prevCount = state.lastCount;
-    const newCount  = incoming.length;
-
-    // Detect new arrivals
-    if (prevCount >= 0 && newCount > prevCount) {
-      const newLeadCount = newCount - prevCount;
-      triggerIncomingCallFlash(newLeadCount);
-      // Mark newest leads for animation
-      incoming.slice(0, newLeadCount).forEach(r => {
-        const key = recordKey(r);
-        if (!r._highlight) r._highlight = true;
-      });
-    }
-
-    state.records   = incoming;
-    state.lastCount = newCount;
-
-    if (isManual) {
-      state.selectedKey = incoming[0] ? recordKey(incoming[0]) : '';
-      setNotice(
-        incoming.length
-          ? `Loaded ${incoming.length} live records from Supabase.`
-          : 'No FlowDesk records found yet. Make a call to (725) 330-5102!',
-        incoming.length ? 'success' : ''
-      );
-    }
-  } catch (error) {
-    if (isManual) {
-      state.error = error.message;
-      setNotice(error.message, 'error');
-    }
-  } finally {
-    if (isManual) {
-      state.loading = false;
-      els.refreshButton.disabled = false;
-    }
-    render();
-  }
-}
-
-// ── Flash banner ──────────────────────────────────────────────
-function triggerIncomingCallFlash(count) {
-  const banner = els.incomingBanner;
-  const label = count === 1
-    ? '📞 INCOMING CALL RECEIVED — NEW LEAD ADDED'
-    : `📞 ${count} NEW CALLS RECEIVED — LEADS ADDED`;
-
-  banner.textContent = label;
-  banner.className = 'show flashing';
-  document.body.style.paddingTop = banner.offsetHeight + 'px';
-
-  // After 3 flashes stay solid, then fade after 5 seconds total
-  setTimeout(() => {
-    banner.className = 'show'; // solid
-  }, 3000);
-  setTimeout(() => {
-    banner.className = '';
-    document.body.style.paddingTop = '';
-  }, 8000);
-}
-
-// ── Render ────────────────────────────────────────────────────
-function render() {
-  const visible = filteredRecords();
-  if (!visible.some(r => recordKey(r) === state.selectedKey)) {
-    state.selectedKey = visible[0] ? recordKey(visible[0]) : '';
-  }
-  renderMetrics();
-  renderLeadList(visible);
-  renderDetail();
-  els.listSubtitle.textContent = state.loading
-    ? 'Loading records from Supabase...'
-    : `${visible.length} visible / ${state.records.length} total · auto-refreshing`;
-}
-
-function filteredRecords() {
-  const q = els.searchBox.value.trim().toLowerCase();
-  return state.records
-    .filter(r => sourceMatches(r, els.sourceFilter.value))
-    .filter(r => urgencyMatches(r, els.urgencyFilter.value))
-    .filter(r => statusMatches(r, els.statusFilter.value))
-    .filter(r => !q || searchableText(r).includes(q))
-    .sort((a, b) => new Date(value(b.created_at, 0)) - new Date(value(a.created_at, 0)));
-}
-
-function renderMetrics() {
-  const total  = state.records.length;
-  const newL   = state.records.filter(r => ['new','priority'].includes(statusBucket(r))).length;
-  const voice  = state.records.filter(r => sourceBucket(r) === 'voice').length;
-  const web    = state.records.filter(r => sourceBucket(r) === 'web').length;
-  const high   = state.records.filter(r => urgencyBucket(r) === 'high').length;
-  setText('metricTotal', total);
-  setText('metricNew',   newL);
-  setText('metricVoice', voice);
-  setText('metricWeb',   web);
-  setText('metricHigh',  high);
-}
-
-function renderLeadList(visible) {
-  if (state.loading) { els.leadList.innerHTML = '<div class="empty">Loading live FlowDesk records...</div>'; return; }
-  if (state.error)   { els.leadList.innerHTML = '<div class="empty">Could not load records. Check Netlify function log.</div>'; return; }
-  if (!visible.length) { els.leadList.innerHTML = '<div class="empty">No records match filters.<br><br>Make a call to (725) 330-5102!</div>'; return; }
-
-  els.leadList.innerHTML = visible.map(r => {
-    const key    = recordKey(r);
-    const active = key === state.selectedKey ? ' active' : '';
-    const extra  = r._highlight ? ' highlight' : '';
-    return `<button class="lead-card${active}${extra}" type="button" data-key="${escapeAttr(key)}">
-      <div class="lead-top">
-        <div><h3>${escapeHtml(displayBusiness(r))}</h3><p>${escapeHtml(displayName(r))} · ${escapeHtml(value(r.phone || r.From, 'No phone'))}</p></div>
-        ${statusBadge(r)}
-      </div>
-      <div class="chip-row">${sourceBadge(r)}${urgencyBadge(r)}</div>
-      <div class="meta-grid">
-        ${meta('Phone', value(r.phone || r.From, 'Not provided'))}
-        ${meta('Created', formatDate(r.created_at))}
-        ${meta('Intake ID', value(r.intake_id || r.id, 'None'))}
-      </div>
-    </button>`;
-  }).join('');
-
-  document.querySelectorAll('.lead-card').forEach(card => {
-    card.addEventListener('click', () => { state.selectedKey = card.dataset.key; render(); });
+  ['input', 'change'].forEach((eventName) => {
+    els.searchBox.addEventListener(eventName, render);
+    els.statusFilter.addEventListener(eventName, render);
+    els.urgencyFilter.addEventListener(eventName, render);
+    els.sourceFilter.addEventListener(eventName, render);
+    els.followUpFilter.addEventListener(eventName, render);
   });
 
-  // Clear highlight flag after one render
-  state.records.forEach(r => { if (r._highlight) r._highlight = false; });
-}
+  els.refreshButton.addEventListener('click', () => loadRecords());
 
-function renderDetail() {
-  const record = state.records.find(r => recordKey(r) === state.selectedKey);
-  if (!record) { els.detailPanel.innerHTML = '<div class="empty">Select a lead to review details.</div>'; return; }
-  els.detailPanel.innerHTML = `
-    <div class="detail-title">
-      <div>
-        <h2>${escapeHtml(displayBusiness(record))}</h2>
-        <p>${escapeHtml(displayName(record))} / ${escapeHtml(value(record.phone || record.From, 'No phone'))}</p>
-        <div class="chip-row">${sourceBadge(record)}${urgencyBadge(record)}${statusBadge(record)}</div>
-      </div>
-    </div>
-    <div class="detail-grid">
-      ${meta('Request Type', value(record.request_type || (sourceBucket(record) === 'voice' ? 'AI Voice Call' : ''), 'Not provided'))}
-      ${meta('Service Needed', value(record.service_needed, 'Not provided'))}
-      ${meta('Preferred Contact', value(record.preferred_contact_method, 'Not provided'))}
-      ${meta('Callback Window', value(record.preferred_callback_time, 'Not provided'))}
-      ${meta('Category', value(record.category, 'Not provided'))}
-      ${meta('Created', formatDate(record.created_at))}
-    </div>
-    ${detailSection('Summary', value(record.ai_summary || record.summary, 'No summary available.'))}
-    ${detailSection(sourceBucket(record) === 'voice' ? 'Voice Transcript / Details' : 'Message / Details', value(record.details || record.message, 'No message captured.'))}
-    ${detailSection('Next Action', value(record.next_action, 'Review and decide next follow-up step.'))}
-    <section class="detail-section">
-      <h3>Status Update</h3>
-      <div class="action-grid">
-        <select class="field" id="leadStatusSelect">
-          <option value="New / Needs Review">New / Needs Review</option>
-          <option value="New / Priority Review">New / Priority Review</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Closed / Resolved">Closed / Resolved</option>
-        </select>
-        <textarea class="field" id="internalNotes" placeholder="Internal notes...">${escapeHtml(value(record.internal_notes, ''))}</textarea>
-        <div class="action-row">
-          <button class="btn primary" type="button" id="saveStatusButton">Save Update</button>
-          <a class="btn" href="tel:${escapeAttr(value(record.phone || record.From, ''))}">Call</a>
-          <button class="btn" type="button" id="sendLeadEmailButton">Email Lead</button>
-          <button class="btn" type="button" id="callbackTaskButton">Callback Task</button>
+  loadRecords();
+
+  async function loadRecords() {
+    state.loading = true;
+    state.error = '';
+    els.refreshButton.disabled = true;
+    setNotice('Connecting to FlowDesk Pro Lead Manager records...', '');
+    render();
+
+    try {
+      const response = await fetch('/.netlify/functions/get-leads?limit=150');
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || 'Unable to load records.');
+      }
+
+      state.records = Array.isArray(payload.records) ? payload.records : [];
+      if (!state.selectedId && state.records[0]) state.selectedId = state.records[0].id;
+      setNotice(state.records.length ? `Loaded ${state.records.length} lead records.` : 'No lead records found yet. Submit the intake form to create the first lead.', state.records.length ? 'success' : '');
+    } catch (error) {
+      console.error('get-leads error:', error);
+      state.error = error.message || 'Unable to load records.';
+      setNotice(state.error, 'error');
+    } finally {
+      state.loading = false;
+      els.refreshButton.disabled = false;
+      render();
+    }
+  }
+
+  function render() {
+    const visible = filteredRecords();
+    if (!visible.some(record => record.id === state.selectedId)) {
+      state.selectedId = visible[0] ? visible[0].id : '';
+    }
+    renderMetrics();
+    renderLeadList(visible);
+    renderDetail();
+    els.listSubtitle.textContent = state.loading
+      ? 'Loading records from Supabase...'
+      : `${visible.length} visible / ${state.records.length} total`;
+  }
+
+  function filteredRecords() {
+    const query = els.searchBox.value.trim().toLowerCase();
+    return state.records
+      .filter(record => statusMatches(record, els.statusFilter.value))
+      .filter(record => urgencyMatches(record, els.urgencyFilter.value))
+      .filter(record => sourceMatches(record, els.sourceFilter.value))
+      .filter(record => followUpMatches(record, els.followUpFilter.value))
+      .filter(record => !query || searchableText(record).includes(query))
+      .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  }
+
+  function renderMetrics() {
+    const total = state.records.length;
+    const newCount = state.records.filter(record => statusBucket(record) === 'new').length;
+    const followUp = state.records.filter(record => Boolean(record.follow_up_needed)).length;
+    const high = state.records.filter(record => urgencyBucket(record) === 'high').length;
+    const progress = state.records.filter(record => statusBucket(record) === 'progress').length;
+
+    setText('metricTotal', total);
+    setText('metricNew', newCount);
+    setText('metricFollowUp', followUp);
+    setText('metricHigh', high);
+    setText('metricProgress', progress);
+  }
+
+  function renderLeadList(visible) {
+    if (state.loading) {
+      els.leadList.innerHTML = '<div class="empty">Loading live records...</div>';
+      return;
+    }
+    if (state.error) {
+      els.leadList.innerHTML = '<div class="empty">Could not load records. Check Netlify function logs and environment variables.</div>';
+      return;
+    }
+    if (!visible.length) {
+      els.leadList.innerHTML = '<div class="empty">No records match these filters.</div>';
+      return;
+    }
+
+    els.leadList.innerHTML = visible.map(record => {
+      const active = record.id === state.selectedId ? ' active' : '';
+      return `
+        <button class="lead-card${active}" type="button" data-id="${escapeAttr(record.id)}">
+          <div class="lead-top">
+            <div>
+              <h3>${escapeHtml(displayBusiness(record))}</h3>
+              <p>${escapeHtml(displayName(record))} · ${escapeHtml(value(record.email, 'No email'))}</p>
+            </div>
+            ${statusBadge(record)}
+          </div>
+          <div class="chip-row">${sourceBadge(record)}${urgencyBadge(record)}${followUpBadge(record)}</div>
+          <div class="meta-grid">
+            ${meta('Phone', value(record.phone, 'Not provided'))}
+            ${meta('Created', formatDate(record.created_at))}
+            ${meta('Service', value(record.service_needed, 'General inquiry'))}
+          </div>
+        </button>
+      `;
+    }).join('');
+
+    document.querySelectorAll('.lead-card').forEach(card => {
+      card.addEventListener('click', () => {
+        state.selectedId = card.dataset.id;
+        render();
+      });
+    });
+  }
+
+  function renderDetail() {
+    const record = state.records.find(item => item.id === state.selectedId);
+    if (!record) {
+      els.detailPanel.innerHTML = '<div class="empty">Select a lead to review details.</div>';
+      return;
+    }
+
+    els.detailPanel.innerHTML = `
+      <div class="detail-title">
+        <div>
+          <h2>${escapeHtml(displayBusiness(record))}</h2>
+          <p>${escapeHtml(displayName(record))} · ${escapeHtml(value(record.email, 'No email'))} · ${escapeHtml(value(record.phone, 'No phone'))}</p>
+          <div class="chip-row">${sourceBadge(record)}${urgencyBadge(record)}${statusBadge(record)}${followUpBadge(record)}</div>
         </div>
       </div>
-    </section>`;
 
-  document.getElementById('leadStatusSelect').value = normalizeLeadStatus(record.lead_status);
-  document.getElementById('saveStatusButton').addEventListener('click', () => updateLead(record));
-  document.getElementById('sendLeadEmailButton').addEventListener('click', () => sendLeadEmail(record));
-  document.getElementById('callbackTaskButton').addEventListener('click', () => createCallbackTask(record));
-}
+      <div class="detail-grid">
+        ${meta('Service Needed', value(record.service_needed, 'Not provided'))}
+        ${meta('Urgency', value(record.urgency, 'Unknown'))}
+        ${meta('Preferred Contact', value(record.preferred_contact_method, 'Not provided'))}
+        ${meta('Callback Window', value(record.preferred_callback_time, 'Not provided'))}
+        ${meta('Assigned To', value(record.assigned_to, 'Unassigned'))}
+        ${meta('Created', formatDate(record.created_at))}
+      </div>
 
-async function updateLead(record) {
-  const btn = document.getElementById('saveStatusButton');
-  const status = document.getElementById('leadStatusSelect').value;
-  const notes  = document.getElementById('internalNotes').value;
-  btn.disabled = true; btn.textContent = 'Saving...';
-  setNotice('Saving lead update...', '');
-  try {
-    const res = await fetch('/.netlify/functions/flowdesk-update-lead', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: record.id, intake_id: record.intake_id, lead_status: status, internal_notes: notes })
-    });
-    const payload = await res.json().catch(() => ({}));
-    if (!res.ok || !payload.ok) throw new Error(payload.error || 'Unable to update lead.');
-    const updated = payload.record || { ...record, lead_status: status, internal_notes: notes };
-    state.records = state.records.map(r => recordKey(r) === recordKey(record) ? { ...r, ...updated } : r);
-    setNotice('Lead updated successfully.', 'success');
-    render();
-  } catch (err) {
-    setNotice(err.message, 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Save Update';
+      ${detailSection('Message / Details', value(record.details || record.message, 'No message captured.'))}
+      ${detailSection('Current Next Action', value(record.next_action, 'Review this lead and determine next follow-up step.'))}
+      ${detailSection('Customer Status Message', value(record.customer_status_message, 'No customer update has been sent yet.'))}
+
+      <section class="detail-section">
+        <h3>Workflow Update</h3>
+        <div class="action-grid">
+          <select class="field" id="leadStatusSelect">
+            ${STATUS_OPTIONS.map(option => `<option value="${escapeAttr(option)}"${option === record.lead_status ? ' selected' : ''}>${escapeHtml(option)}</option>`).join('')}
+          </select>
+          <select class="field" id="followUpNeededSelect">
+            <option value="true"${record.follow_up_needed ? ' selected' : ''}>Follow-up needed</option>
+            <option value="false"${!record.follow_up_needed ? ' selected' : ''}>No follow-up needed</option>
+          </select>
+          <input class="field" id="assignedToInput" placeholder="Assigned to..." value="${escapeAttr(value(record.assigned_to, ''))}" />
+          <textarea class="field" id="nextActionInput" placeholder="Next action...">${escapeHtml(value(record.next_action, ''))}</textarea>
+          <textarea class="field" id="internalNotesInput" placeholder="Internal notes...">${escapeHtml(value(record.internal_notes, ''))}</textarea>
+          <textarea class="field" id="customerMessageInput" placeholder="Customer status message / email body...">${escapeHtml(value(record.customer_status_message, ''))}</textarea>
+          <div class="action-row">
+            <button class="btn primary" type="button" id="saveUpdateButton">Save Update</button>
+            <button class="btn success" type="button" id="emailLeadButton">Email Lead</button>
+          </div>
+        </div>
+      </section>
+    `;
+
+    document.getElementById('saveUpdateButton').addEventListener('click', () => saveUpdate(record.id));
+    document.getElementById('emailLeadButton').addEventListener('click', () => emailLead(record.id));
   }
-}
 
-async function sendLeadEmail(record) {
-  const btn   = document.getElementById('sendLeadEmailButton');
-  const email = value(record.email, '');
-  if (!isSendableEmail(email)) { setNotice('Lead has no valid email address.', 'error'); return; }
-  btn.disabled = true; btn.textContent = 'Sending...';
-  setNotice('Sending follow-up email...', '');
-  try {
-    const res = await fetch('/.netlify/functions/flowdesk-email-lead', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lead: record })
-    });
-    const payload = await res.json().catch(() => ({}));
-    if (!res.ok || !payload.ok) throw new Error(payload.error || 'Unable to send email.');
-    setNotice(`Email sent to ${payload.email}.`, 'success');
-  } catch (err) {
-    setNotice(err.message || 'Unable to send email.', 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Email Lead';
+  async function saveUpdate(id) {
+    const button = document.getElementById('saveUpdateButton');
+    button.disabled = true;
+    button.textContent = 'Saving...';
+
+    const payload = {
+      id,
+      lead_status: document.getElementById('leadStatusSelect').value,
+      follow_up_needed: document.getElementById('followUpNeededSelect').value === 'true',
+      assigned_to: document.getElementById('assignedToInput').value.trim(),
+      next_action: document.getElementById('nextActionInput').value.trim(),
+      internal_notes: document.getElementById('internalNotesInput').value.trim(),
+      customer_status_message: document.getElementById('customerMessageInput').value.trim()
+    };
+
+    try {
+      const response = await fetch('/.netlify/functions/update-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Unable to save update.');
+
+      const updated = result.record;
+      state.records = state.records.map(record => record.id === id ? { ...record, ...updated } : record);
+      setNotice('Lead update saved.', 'success');
+      render();
+    } catch (error) {
+      console.error('update-lead error:', error);
+      setNotice(error.message || 'Unable to save update.', 'error');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Save Update';
+    }
   }
-}
 
-async function createCallbackTask(record) {
-  const btn   = document.getElementById('callbackTaskButton');
-  const phone = value(record.phone || record.From, '');
-  if (!phone) { setNotice('Lead has no phone number.', 'error'); return; }
-  const now   = new Date().toLocaleString();
-  const exist = document.getElementById('internalNotes').value.trim();
-  const note  = `[${now}] Callback task — ${phone}. Window: ${value(record.preferred_callback_time, 'Not provided')}.`;
-  const notes = exist ? `${exist}\n\n${note}` : note;
-  const next  = `Call ${displayName(record)} at ${phone}.`;
-  btn.disabled = true; btn.textContent = 'Creating...';
-  setNotice('Creating callback task...', '');
-  try {
-    const res = await fetch('/.netlify/functions/flowdesk-update-lead', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: record.id, intake_id: record.intake_id, lead_status: 'In Progress', internal_notes: notes, next_action: next, follow_up_needed: true })
-    });
-    const payload = await res.json().catch(() => ({}));
-    if (!res.ok || !payload.ok) throw new Error(payload.error || 'Unable to create task.');
-    const updated = payload.record || { ...record, lead_status: 'In Progress', internal_notes: notes, next_action: next };
-    state.records = state.records.map(r => recordKey(r) === recordKey(record) ? { ...r, ...updated } : r);
-    setNotice('Callback task created.', 'success');
-    render();
-  } catch (err) {
-    setNotice(err.message, 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Callback Task';
+  async function emailLead(id) {
+    const button = document.getElementById('emailLeadButton');
+    const message = document.getElementById('customerMessageInput').value.trim();
+
+    if (!message) {
+      setNotice('Add a customer status message before emailing the lead.', 'error');
+      document.getElementById('customerMessageInput').focus();
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Sending...';
+
+    try {
+      const response = await fetch('/.netlify/functions/email-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, customer_status_message: message })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Unable to email lead.');
+
+      if (result.record) {
+        state.records = state.records.map(record => record.id === id ? { ...record, ...result.record } : record);
+      }
+      setNotice('Customer update email sent.', 'success');
+      render();
+    } catch (error) {
+      console.error('email-lead error:', error);
+      setNotice(error.message || 'Unable to email lead.', 'error');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Email Lead';
+    }
   }
-}
 
-// ── Helpers ───────────────────────────────────────────────────
-function sourceMatches(r, f) { return f === 'all' || sourceBucket(r) === f; }
-function urgencyMatches(r, f) { return f === 'all' || urgencyBucket(r) === f; }
-function statusMatches(r, f) {
-  if (f === 'all') return true;
-  const b = statusBucket(r);
-  if (['contacted','scheduled','follow-up'].includes(f)) return b === 'contacted';
-  return b === f;
-}
-function sourceBucket(r) { const s = String(r.source_page || r.source || '').toLowerCase(); if (s.includes('voice')) return 'voice'; if (s.includes('web') || s === '') return 'web'; return 'other'; }
-function urgencyBucket(r) { const u = String(r.urgency || '').toLowerCase(); if (u.includes('urgent') || u.includes('time') || u.includes('high')) return 'high'; if (u.includes('normal') || u.includes('medium')) return 'medium'; if (u.includes('low')) return 'low'; return 'unknown'; }
-function statusBucket(r) { const s = normalizeLeadStatus(r.lead_status); if (s === 'Closed / Resolved') return 'closed'; if (s === 'In Progress') return 'contacted'; if (s === 'New / Priority Review') return 'priority'; return 'new'; }
-function normalizeLeadStatus(s) { const v = String(s || '').trim(); return ['New / Needs Review','New / Priority Review','In Progress','Closed / Resolved'].includes(v) ? v : 'New / Needs Review'; }
-function recordKey(r) { return String(r.id || r.intake_id || r.created_at || Math.random()); }
-function displayBusiness(r) { return value(r.business_name || r.company, 'Unknown business'); }
-function displayName(r) { return value(r.full_name || r.name || r.customer_name || r.caller_name, 'Unknown contact'); }
-function searchableText(r) { return [r.id, r.intake_id, r.full_name, r.name, r.customer_name, r.email, r.phone, r.From, r.business_name, r.service_needed, r.details, r.message, r.ai_summary, r.summary].map(v => String(v || '')).join(' ').toLowerCase(); }
-function isSendableEmail(e) { const v = String(e || '').trim().toLowerCase(); return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) && !v.endsWith('@flowdesk.local'); }
-function statusBadge(r) { const s = normalizeLeadStatus(r.lead_status); const cls = s === 'New / Priority Review' ? 'priority' : s === 'In Progress' ? 'progress' : s === 'Closed / Resolved' ? 'closed' : 'new'; return `<span class="badge ${cls}">${escapeHtml(s)}</span>`; }
-function sourceBadge(r) { const b = sourceBucket(r); return `<span class="badge ${b === 'voice' ? 'voice' : b === 'web' ? 'web' : 'unknown'}">${b === 'voice' ? 'Twilio Voice' : b === 'web' ? 'Web Intake' : 'Other'}</span>`; }
-function urgencyBadge(r) { const b = urgencyBucket(r); const cls = b === 'high' ? 'priority' : b === 'low' ? 'closed' : b === 'medium' ? 'new' : 'unknown'; return `<span class="badge ${cls}">${escapeHtml(value(r.urgency, 'Unknown urgency'))}</span>`; }
-function detailSection(title, text) { return `<section class="detail-section"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></section>`; }
-function meta(label, val) { return `<div class="meta"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value(val, 'Not provided'))}</strong></div>`; }
-function formatDate(v) { if (!v) return 'Not provided'; const d = new Date(v); if (isNaN(d.getTime())) return String(v); return new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}).format(d); }
-function setNotice(msg, type) { els.listNotice.textContent = msg; els.listNotice.className = `notice ${type || ''}`.trim(); }
-function setText(id, text) { document.getElementById(id).textContent = text; }
-function value(v, fb) { const s = String(v ?? '').trim(); return s || fb; }
-function escapeHtml(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
-function escapeAttr(v) { return escapeHtml(v).replace(/`/g,'&#096;'); }
+  function searchableText(record) {
+    return [
+      record.id, record.contact_name, record.first_name, record.last_name, record.email, record.phone,
+      record.company, record.business_name, record.source, record.lead_status, record.urgency,
+      record.service_needed, record.category, record.preferred_contact_method, record.preferred_callback_time,
+      record.message, record.details, record.ai_summary, record.next_action, record.internal_notes, record.assigned_to
+    ].map(value => String(value || '').toLowerCase()).join(' ');
+  }
+
+  function statusMatches(record, filter) {
+    if (filter === 'all') return true;
+    return statusBucket(record) === filter;
+  }
+
+  function urgencyMatches(record, filter) {
+    if (filter === 'all') return true;
+    return urgencyBucket(record) === filter;
+  }
+
+  function sourceMatches(record, filter) {
+    if (filter === 'all') return true;
+    return sourceBucket(record) === filter;
+  }
+
+  function followUpMatches(record, filter) {
+    if (filter === 'all') return true;
+    if (filter === 'yes') return Boolean(record.follow_up_needed);
+    if (filter === 'no') return !record.follow_up_needed;
+    return true;
+  }
+
+  function statusBucket(record) {
+    const status = String(record.lead_status || '').toLowerCase();
+    if (status.includes('priority') || status.includes('needs review') || status === 'new') return 'new';
+    if (status.includes('contacted')) return 'contacted';
+    if (status.includes('progress')) return 'progress';
+    if (status.includes('waiting')) return 'waiting';
+    if (status.includes('follow')) return 'follow-up';
+    if (status.includes('appointment')) return 'appointment';
+    if (status.includes('closed') || status.includes('resolved')) return 'closed';
+    if (status.includes('not a fit')) return 'not-fit';
+    return 'new';
+  }
+
+  function urgencyBucket(record) {
+    const urgency = String(record.urgency || '').toLowerCase();
+    if (urgency.includes('high') || urgency.includes('urgent')) return 'high';
+    if (urgency.includes('medium')) return 'medium';
+    if (urgency.includes('low')) return 'low';
+    if (urgency.includes('normal')) return 'normal';
+    return 'unknown';
+  }
+
+  function sourceBucket(record) {
+    const source = String(record.source || record.source_page || '').toLowerCase();
+    if (source.includes('web') || source.includes('form') || source.includes('intake')) return 'web';
+    if (source.includes('voice') || source.includes('call') || source.includes('twilio')) return 'voice';
+    if (source.includes('sms') || source.includes('text')) return 'sms';
+    if (source.includes('manual')) return 'manual';
+    return 'other';
+  }
+
+  function displayBusiness(record) {
+    return value(record.business_name || record.company || record.client_name, 'Unassigned Business');
+  }
+
+  function displayName(record) {
+    return value(record.contact_name || [record.first_name, record.last_name].filter(Boolean).join(' '), 'Unknown Contact');
+  }
+
+  function statusBadge(record) {
+    const bucket = statusBucket(record);
+    const label = value(record.lead_status, 'New / Needs Review');
+    const cls = bucket === 'closed' ? 'closed' : bucket === 'progress' ? 'progress' : bucket === 'new' ? 'new' : 'unknown';
+    return `<span class="badge ${cls}">${escapeHtml(label)}</span>`;
+  }
+
+  function urgencyBadge(record) {
+    const bucket = urgencyBucket(record);
+    const cls = bucket === 'high' ? 'priority' : bucket === 'medium' || bucket === 'normal' ? 'new' : 'unknown';
+    return `<span class="badge ${cls}">${escapeHtml(value(record.urgency, 'Unknown'))}</span>`;
+  }
+
+  function sourceBadge(record) {
+    const bucket = sourceBucket(record);
+    const label = bucket === 'web' ? 'Web Intake' : bucket === 'voice' ? 'Voice' : bucket === 'sms' ? 'SMS' : bucket === 'manual' ? 'Manual' : 'Other Source';
+    return `<span class="badge source">${escapeHtml(label)}</span>`;
+  }
+
+  function followUpBadge(record) {
+    return record.follow_up_needed
+      ? '<span class="badge priority">Follow-Up Needed</span>'
+      : '<span class="badge unknown">No Follow-Up</span>';
+  }
+
+  function meta(label, content) {
+    return `<div class="meta"><span>${escapeHtml(label)}</span><strong>${escapeHtml(content)}</strong></div>`;
+  }
+
+  function detailSection(label, content) {
+    return `<section class="detail-section"><h3>${escapeHtml(label)}</h3><p>${escapeHtml(content)}</p></section>`;
+  }
+
+  function setNotice(message, type) {
+    els.listNotice.textContent = message;
+    els.listNotice.className = 'notice' + (type ? ' ' + type : '');
+  }
+
+  function setText(id, content) {
+    document.getElementById(id).textContent = String(content);
+  }
+
+  function value(content, fallback) {
+    const text = String(content ?? '').trim();
+    return text || fallback || '';
+  }
+
+  function formatDate(input) {
+    if (!input) return 'Not recorded';
+    const date = new Date(input);
+    if (Number.isNaN(date.getTime())) return String(input);
+    return date.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+  }
+
+  function escapeHtml(input) {
+    return String(input ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function escapeAttr(input) {
+    return escapeHtml(input).replace(/`/g, '&#096;');
+  }
 </script>
 </body>
 </html>
