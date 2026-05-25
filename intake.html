@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Intake — FlowDesk Pro Lead Manager</title>
+  <meta name="description" content="Fallback lead intake form for FlowDesk Pro Lead Manager." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <nav class="nav" aria-label="Lead Manager navigation">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="lead-management-logo.png" alt="" /></span>
+        <span class="brand-text"><strong>FlowDesk Pro</strong><span>Lead Manager</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/intake">Fallback Intake</a></li>
+        <li><a href="/">Overview</a></li>
+      </ul>
+      <a class="nav-action" href="/dashboard">Open Dashboard</a>
+    </nav>
+
+    <main class="form-shell">
+      <section class="form-card">
+        <img class="hero-logo" src="lead-management-logo.png" alt="FlowDesk Pro Lead Manager" />
+        <div class="eyebrow"><span>Fallback Intake</span></div>
+        <h1>Capture a lead record manually when needed.</h1>
+        <p class="hero-copy">
+          Primary records should come from external sources like AI4 Product Purchasing. This form exists as a fallback/admin intake path for direct lead capture.
+        </p>
+
+        <form id="leadForm" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="firstName">First Name</label>
+              <input id="firstName" name="first_name" autocomplete="given-name" required />
+            </div>
+            <div class="field">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" name="last_name" autocomplete="family-name" required />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+            <div class="field">
+              <label for="company">Business Name</label>
+              <input id="company" name="company" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label for="serviceNeeded">Product / Service Needed</label>
+              <select id="serviceNeeded" name="service_needed" required>
+                <option value="">Select product or service</option>
+                <option>Website Design Studio Purchase Plans</option>
+                <option>FlowDesk Pro Lead Manager / CRM</option>
+                <option>Smart Auto-Attendant System</option>
+                <option>AI Voice Attendant System</option>
+                <option>Business Intake Engine System</option>
+                <option>SMS Follow-Up System</option>
+                <option>Appointment Request Workflow</option>
+                <option>General AI4 Businesses Inquiry</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="selectedPlan">Selected Plan</label>
+              <input id="selectedPlan" name="selected_plan" placeholder="Starter, Growth, Premium, etc." />
+            </div>
+            <div class="field">
+              <label for="urgency">Urgency</label>
+              <select id="urgency" name="urgency">
+                <option>Normal</option>
+                <option>High</option>
+                <option>Low</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="contactMethod">Preferred Contact</label>
+              <select id="contactMethod" name="preferred_contact_method">
+                <option>Email or phone</option>
+                <option>Email</option>
+                <option>Phone</option>
+                <option>SMS</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="callback">Preferred Callback Time</label>
+              <input id="callback" name="preferred_callback_time" placeholder="Morning, afternoon, specific date/time" />
+            </div>
+            <div class="field full">
+              <label for="message">Message / Details</label>
+              <textarea id="message" name="message" placeholder="Describe the request, product interest, setup need, or follow-up context." required></textarea>
+            </div>
+            <div class="field full">
+              <label for="nextAction">Initial Next Action</label>
+              <input id="nextAction" name="next_action" value="Review lead and follow up with setup or consultation details." />
+            </div>
+            <div class="field full">
+              <label>Options</label>
+              <label class="checkbox-row"><input id="followUp" name="follow_up_needed" type="checkbox" checked />Follow-up needed</label>
+              <label class="checkbox-row"><input id="appointment" name="appointment_requested" type="checkbox" />Appointment requested</label>
+              <label class="checkbox-row"><input id="smsConsent" name="sms_consent" type="checkbox" />Customer consented to SMS follow-up where applicable</label>
+            </div>
+          </div>
+
+          <div class="actions" style="margin-top:22px;">
+            <button class="btn primary" id="submitButton" type="submit">Submit Lead Record</button>
+            <a class="btn" href="/dashboard">Back to Dashboard</a>
+          </div>
+          <div id="formNotice" class="notice" aria-live="polite"></div>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <div>Fallback intake only. External product and purchase records should come from approved source sites.</div>
+        <div class="footer-links"><a href="/dashboard">Dashboard</a><a href="/">Overview</a></div>
+      </div>
+    </footer>
+  </div>
+
+<script>
+'use strict';
+
+const $ = (id) => document.getElementById(id);
+const form = $('leadForm');
+const notice = $('formNotice');
+const button = $('submitButton');
+
+const params = new URLSearchParams(window.location.search);
+function fillFromQuery(id, keys) {
+  for (const key of keys) {
+    const value = params.get(key);
+    if (value && $(id)) { $(id).value = value; return; }
+  }
+}
+fillFromQuery('serviceNeeded', ['product', 'service', 'selected_product']);
+fillFromQuery('selectedPlan', ['plan', 'selected_plan']);
+fillFromQuery('message', ['message', 'details']);
+
+function showNotice(message, type) {
+  notice.textContent = message;
+  notice.className = `notice show ${type || ''}`.trim();
+}
+
+function bool(id) { return Boolean($(id)?.checked); }
+function val(id) { return ($(id)?.value || '').trim(); }
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const firstName = val('firstName');
+  const lastName = val('lastName');
+  const email = val('email');
+  const serviceNeeded = val('serviceNeeded');
+  const message = val('message');
+
+  if (!firstName || !lastName || !email || !serviceNeeded || !message) {
+    showNotice('Please complete first name, last name, email, product/service, and message.', 'error');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Submitting...';
+  showNotice('Submitting lead record to FlowDesk Pro Lead Manager...', '');
+
+  const selectedPlan = val('selectedPlan');
+  const payload = {
+    tenant_id: 'apropos-ai4-businesses',
+    client_name: 'Apropos Group LLC',
+    business_name: 'AI4 Businesses',
+    first_name: firstName,
+    last_name: lastName,
+    contact_name: `${firstName} ${lastName}`.trim(),
+    email,
+    phone: val('phone'),
+    company: val('company'),
+    source: 'lead_manager_fallback_intake',
+    channel: 'web',
+    source_page: 'intake.html',
+    source_url: window.location.href,
+    lead_status: 'New / Needs Review',
+    urgency: val('urgency') || 'Normal',
+    service_needed: serviceNeeded,
+    category: 'Fallback Lead Intake',
+    preferred_contact_method: val('contactMethod') || 'Email or phone',
+    preferred_callback_time: val('callback'),
+    message,
+    details: [
+      `Product / service: ${serviceNeeded}`,
+      selectedPlan ? `Selected plan: ${selectedPlan}` : '',
+      `Message: ${message}`,
+    ].filter(Boolean).join('\n'),
+    follow_up_needed: bool('followUp'),
+    appointment_requested: bool('appointment'),
+    sms_consent: bool('smsConsent'),
+    next_action: val('nextAction'),
+    metadata: {
+      origin_site: window.location.hostname,
+      lead_source_type: 'fallback_manual_intake',
+      selected_product: serviceNeeded,
+      selected_plan: selectedPlan,
+      source_url: window.location.href,
+      payment_site: false,
+      payment_status: 'not_applicable',
+      requires_sales_follow_up: true,
+      sms_consent: bool('smsConsent')
+    }
+  };
+
+  try {
+    const response = await fetch('/.netlify/functions/submit-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) throw new Error(data.error || 'Unable to submit lead.');
+    const id = data.record_id ? `?lead=${encodeURIComponent(data.record_id)}` : '';
+    window.location.href = `/thankyou.html${id}`;
+  } catch (error) {
+    console.error(error);
+    showNotice(error.message || 'Unable to submit right now. Check Netlify Function logs.', 'error');
+    button.disabled = false;
+    button.textContent = 'Submit Lead Record';
+  }
+});
+</script>
+</body>
+</html>
