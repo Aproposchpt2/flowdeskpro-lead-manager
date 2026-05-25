@@ -3,613 +3,596 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI4 Businesses Lead Manager — Command Center</title>
+  <title>Lead Manager Dashboard — FlowDesk Pro</title>
+  <meta name="description" content="FlowDesk Pro Lead Manager V1 Platinum Command Center dashboard." />
   <style>
-    :root {
-      --bg:#050b14; --bg2:#071423; --panel:rgba(10,24,42,.88); --panel2:rgba(13,32,54,.94);
-      --line:rgba(142,184,222,.18); --line2:rgba(83,201,255,.36);
-      --text:#f2f8ff; --muted:#a7bbcf; --soft:#7088a1; --blue:#27aefb; --cyan:#6fdcff;
-      --green:#4bd89d; --gold:#f5c968; --red:#ff6d76; --purple:#9c8cff;
-      --shadow:0 24px 80px rgba(0,0,0,.38); --radius:22px;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    :root{
+      --bg:#020407;--deep:#06101f;--panel:rgba(10,22,40,.92);--panel2:rgba(13,29,51,.95);
+      --line:rgba(116,184,255,.18);--line2:rgba(115,230,255,.42);
+      --text:#f4f8ff;--muted:#a8b8d0;--soft:#6d819b;
+      --blue:#4a7fff;--cyan:#73e6ff;--green:#55e6a5;--gold:#e6c26b;--red:#ff6b7a;--purple:#a993ff;
+      --shadow:0 28px 90px rgba(0,0,0,.45);--radius:20px;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    *{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--text);background:
-      linear-gradient(rgba(39,174,251,.035) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(39,174,251,.03) 1px,transparent 1px),
-      radial-gradient(circle at 12% 0%,rgba(39,174,251,.18),transparent 31rem),
-      radial-gradient(circle at 90% 14%,rgba(75,216,157,.11),transparent 34rem),
-      linear-gradient(180deg,#030712 0%,var(--bg) 48%,var(--bg2) 100%);
-      background-size:64px 64px,64px 64px,auto,auto,auto;}
-    a{color:inherit} button,input,select,textarea{font:inherit}
-    .shell{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:28px 0 54px}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:48px}
-    .brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#5b3fb5,var(--blue));display:grid;place-items:center;font-weight:950;box-shadow:0 0 30px rgba(39,174,251,.28)}
-    .brand strong{display:block;line-height:1.1}.brand span{display:block;color:var(--soft);font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;margin-top:4px}
-    .navlinks{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);font-weight:900;text-decoration:none;cursor:pointer;transition:.18s}
-    .btn:hover{transform:translateY(-1px);border-color:var(--line2);background:rgba(39,174,251,.1)}.btn.primary{color:#021323;background:linear-gradient(135deg,#f7fbff,var(--cyan) 48%,var(--blue));border-color:rgba(111,220,255,.45);box-shadow:0 0 34px rgba(39,174,251,.32)}
-    .grid{display:grid;gap:18px}.hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:22px;align-items:stretch}
-    .card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018)),var(--panel);box-shadow:var(--shadow);padding:26px;position:relative;overflow:hidden}.card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(111,220,255,.1),transparent 22rem);pointer-events:none}
-    .card>*{position:relative}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;margin-bottom:16px}.eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(75,216,157,.12)}
-    h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:.95;letter-spacing:-.055em;margin:0 0 18px}h2{font-size:clamp(1.25rem,2.5vw,2rem);line-height:1.08;margin:0 0 12px}p{color:var(--muted);line-height:1.7;margin:0}
-    .hero-copy{font-size:1.05rem;max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{border:1px solid rgba(142,184,222,.14);border-radius:18px;background:rgba(3,8,18,.5);padding:16px}.stat span{display:block;color:var(--soft);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:900}.stat strong{display:block;font-size:1.8rem;margin-top:8px}.features{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
-    .feature h3{margin:0 0 8px;font-size:1rem;color:#fff}.feature p{font-size:.9rem}.pill{display:inline-flex;border:1px solid rgba(111,220,255,.25);background:rgba(111,220,255,.08);color:var(--cyan);border-radius:999px;padding:6px 10px;font-size:.72rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.footer{margin-top:22px;color:var(--soft);font-size:.82rem}
-    .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.fieldwrap{display:grid;gap:7px}.fieldwrap.full{grid-column:1/-1}label{color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.09em}.field{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;background:rgba(3,8,18,.78);color:var(--text);padding:0 13px;outline:none}.field:focus{border-color:var(--line2);box-shadow:0 0 0 3px rgba(39,174,251,.1)}textarea.field{min-height:130px;padding:13px;resize:vertical;line-height:1.55}.notice{border:1px solid var(--line);border-radius:15px;padding:12px 14px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.88rem;line-height:1.55;margin-top:14px}.notice.success{color:#b7ffe0;border-color:rgba(75,216,157,.35);background:rgba(75,216,157,.08)}.notice.error{color:#ffd3d6;border-color:rgba(255,109,118,.36);background:rgba(255,109,118,.08)}
-    @media(max-width:900px){.hero,.features,.form{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.navlinks{justify-content:flex-start}.shell{width:min(100% - 28px,1180px);padding-top:18px}.statgrid{grid-template-columns:1fr}}
-
-    .app{min-height:100vh;display:grid;grid-template-columns:270px minmax(0,1fr)}
-    aside{position:sticky;top:0;height:100vh;padding:24px 18px;border-right:1px solid var(--line);background:rgba(3,8,18,.86);backdrop-filter:blur(18px)}
-    main{padding:26px}.side-note{margin-top:24px;padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);color:var(--soft);font-size:.78rem;line-height:1.55}
-    .navgroup{display:grid;gap:8px;margin-top:22px}.navitem{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px;padding:10px 12px;border-radius:13px;text-decoration:none;color:var(--muted);border:1px solid transparent;font-size:.9rem;font-weight:800}.navitem:hover,.navitem.active{color:var(--text);background:rgba(39,174,251,.09);border-color:rgba(39,174,251,.2)}.navpill{color:var(--cyan);font-size:.68rem;border:1px solid rgba(111,220,255,.22);border-radius:999px;padding:2px 8px}
-    .topbar{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}.topbar h1{font-size:clamp(1.65rem,3vw,2.6rem);margin-bottom:8px}.topbar p{max-width:820px;font-size:.94rem}
-    .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:18px}.metric{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018)),var(--panel);padding:18px;box-shadow:0 16px 44px rgba(0,0,0,.2)}.metric span{display:block;color:var(--soft);text-transform:uppercase;letter-spacing:.1em;font-size:.68rem;font-weight:950;margin-bottom:10px}.metric strong{display:block;font-size:2rem;line-height:1}.metric small{display:block;color:var(--muted);margin-top:8px;font-size:.78rem;line-height:1.45}
-    .workspace{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(390px,.95fr);gap:18px;align-items:start}.panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow);overflow:hidden}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:74px;padding:18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.035)}.panelhead h2{font-size:1rem;margin:0}.panelhead span{display:block;color:var(--soft);font-size:.78rem;margin-top:4px}
-    .filters{display:grid;grid-template-columns:minmax(220px,1.3fr) repeat(4,minmax(130px,.65fr));gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}.field{width:100%;min-height:42px;border:1px solid var(--line);border-radius:12px;background:rgba(3,8,18,.78);color:var(--text);padding:0 12px;outline:none}.field:focus{border-color:var(--line2);box-shadow:0 0 0 3px rgba(39,174,251,.1)}textarea.field{min-height:104px;padding:12px;resize:vertical;line-height:1.55}
-    .notice{margin:12px 18px 0}.leadlist{display:grid;gap:10px;padding:16px;max-height:760px;overflow:auto}.leadcard{text-align:left;border:1px solid var(--line);border-radius:17px;background:rgba(5,12,24,.74);padding:15px;color:inherit;cursor:pointer;transition:.18s}.leadcard:hover,.leadcard.active{transform:translateY(-1px);border-color:var(--line2);background:rgba(10,30,52,.9)}.leadtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.leadtop h3{font-size:1rem;margin:0 0 4px}.leadtop p{font-size:.82rem;line-height:1.45}
-    .badge{display:inline-flex;align-items:center;justify-content:center;min-height:25px;border-radius:999px;padding:4px 10px;font-size:.68rem;font-weight:950;white-space:nowrap;border:1px solid transparent}.b-new{color:#041b2e;background:var(--cyan)}.b-priority{color:#3b1900;background:var(--gold)}.b-active{color:#07192f;background:var(--green)}.b-closed{color:#e7edff;background:rgba(156,140,255,.18);border-color:rgba(156,140,255,.38)}.b-source{color:#d8fff0;background:rgba(75,216,157,.14);border-color:rgba(75,216,157,.32)}.b-voice{color:#f2eaff;background:rgba(156,140,255,.18);border-color:rgba(156,140,255,.38)}.b-warn{color:#ffd3d6;background:rgba(255,109,118,.12);border-color:rgba(255,109,118,.32)}
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.metagrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.meta{border:1px solid rgba(142,184,222,.12);border-radius:12px;padding:9px;background:rgba(255,255,255,.03);min-width:0}.meta span{display:block;color:var(--soft);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:900}.meta strong{display:block;color:var(--text);font-size:.78rem;line-height:1.35;overflow-wrap:anywhere}
-    .detail{padding:18px;display:grid;gap:16px}.detailtitle{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid var(--line)}.detailtitle h2{font-size:1.45rem;margin:0 0 6px}.section{border:1px solid var(--line);border-radius:16px;padding:14px;background:rgba(255,255,255,.03)}.section h3{margin:0 0 10px;color:var(--cyan);font-size:.78rem;text-transform:uppercase;letter-spacing:.1em}.section p{font-size:.92rem;white-space:pre-wrap}.detailgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.actiongrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.actiongrid .full{grid-column:1/-1}.checkrow{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9rem}.checkrow input{width:18px;height:18px}.actionrow{display:flex;flex-wrap:wrap;gap:10px}.empty{color:var(--soft);padding:28px;text-align:center;line-height:1.65}.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:7px;animation:pulse 2s infinite}@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(75,216,157,.4)}50%{box-shadow:0 0 0 6px rgba(75,216,157,0)}}
-    .btn.danger{border-color:rgba(255,109,118,.3);color:#ffd3d6}.btn.small{min-height:36px;padding:0 13px;font-size:.84rem}.statusline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    @media(max-width:1180px){.app{grid-template-columns:1fr}aside{position:static;height:auto}.navgroup{grid-template-columns:repeat(3,minmax(0,1fr))}.side-note{display:none}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace{grid-template-columns:1fr}}@media(max-width:820px){main{padding:18px}.topbar{flex-direction:column}.filters,.metagrid,.detailgrid,.actiongrid,.metrics,.navgroup{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}.panelhead{align-items:flex-start;flex-direction:column}.app aside{padding:18px}}
-</style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;color:var(--text);
+      background:
+        linear-gradient(rgba(115,230,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(115,230,255,.025) 1px,transparent 1px),
+        radial-gradient(circle at 8% 0%,rgba(74,127,255,.24),transparent 34rem),
+        radial-gradient(circle at 88% 15%,rgba(85,230,165,.11),transparent 34rem),
+        linear-gradient(180deg,#020407 0%,#06101f 48%,#071725 100%);
+      background-size:72px 72px,72px 72px,auto,auto,auto;
+    }
+    button,input,select,textarea{font:inherit} a{color:inherit} img{display:block;max-width:100%}
+    .app{min-height:100vh;display:grid;grid-template-columns:286px minmax(0,1fr)}
+    aside{
+      position:sticky;top:0;height:100vh;padding:22px 18px;
+      border-right:1px solid var(--line);background:rgba(2,4,7,.82);backdrop-filter:blur(22px);
+      overflow:auto;
+    }
+    .brand{display:flex;align-items:center;gap:12px;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:20px;text-decoration:none}
+    .brand-logo{width:52px;height:52px;border-radius:14px;border:1px solid rgba(115,230,255,.25);background:rgba(6,16,31,.88);display:grid;place-items:center;overflow:hidden;box-shadow:0 0 34px rgba(74,127,255,.26)}
+    .brand-logo img{width:92%;height:92%;object-fit:contain;filter:drop-shadow(0 0 18px rgba(115,230,255,.5))}
+    .brand-text strong{display:block;color:var(--cyan);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;line-height:1.25}
+    .brand-text span{display:block;margin-top:3px;color:var(--soft);font-size:.68rem;letter-spacing:.13em;text-transform:uppercase}
+    .nav-group{display:grid;gap:9px}
+    .nav-link{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:10px 12px;border-radius:14px;color:var(--muted);border:1px solid transparent;text-decoration:none;font-size:.86rem;font-weight:800}
+    .nav-link:hover,.nav-link.active{color:var(--text);background:rgba(115,230,255,.08);border-color:rgba(115,230,255,.22)}
+    .nav-pill{font-size:.66rem;color:var(--cyan);border:1px solid rgba(115,230,255,.22);border-radius:999px;padding:2px 8px}
+    .side-note{margin-top:24px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:14px;color:var(--soft);font-size:.78rem;line-height:1.55}
+    .side-note strong{display:block;color:var(--green);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+    main{padding:24px}
+    .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}
+    .page-title h1{font-size:clamp(1.55rem,2.7vw,2.7rem);line-height:1.05;letter-spacing:-.02em}
+    .page-title p{margin-top:9px;color:var(--muted);line-height:1.65;max-width:850px;font-size:.92rem}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 15px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);text-decoration:none;cursor:pointer;font-weight:900;font-size:.78rem;letter-spacing:.06em;transition:.2s}
+    .btn:hover{transform:translateY(-1px);border-color:var(--line2);background:rgba(115,230,255,.08)}
+    .btn.primary{color:#03101f;background:linear-gradient(135deg,var(--text),var(--cyan) 48%,var(--blue));border-color:rgba(115,230,255,.52);box-shadow:0 0 34px rgba(74,127,255,.26)}
+    .btn.danger{border-color:rgba(255,107,122,.38);color:#ffd1d6}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
+    .metric{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.018)),var(--panel);padding:16px;box-shadow:0 16px 44px rgba(0,0,0,.22)}
+    .metric span{display:block;color:var(--soft);font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px}
+    .metric strong{display:block;font-size:1.8rem;line-height:1}
+    .metric small{display:block;color:var(--muted);font-size:.76rem;margin-top:8px;line-height:1.4}
+    .workspace{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(430px,.95fr);gap:16px;align-items:start}
+    .panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.035)}
+    .panel-head h2{font-size:1rem}
+    .panel-head span{display:block;color:var(--soft);font-size:.78rem;margin-top:4px}
+    .filters{display:grid;grid-template-columns:minmax(210px,1.3fr) repeat(4,minmax(130px,.7fr));gap:9px;padding:13px 16px;border-bottom:1px solid var(--line)}
+    .filters.secondary{grid-template-columns:repeat(5,minmax(0,1fr));padding-top:0}
+    .field{width:100%;min-height:42px;border:1px solid var(--line);border-radius:12px;background:rgba(2,4,7,.58);color:var(--text);padding:0 11px;outline:none}
+    textarea.field{min-height:98px;padding:12px;resize:vertical;line-height:1.5}
+    .field:focus{border-color:var(--line2);box-shadow:0 0 0 4px rgba(115,230,255,.08)}
+    .notice{margin:12px 16px 0;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);padding:10px 12px;color:var(--muted);font-size:.83rem;line-height:1.45}
+    .notice.success{color:#b8ffdf;border-color:rgba(85,230,165,.36);background:rgba(85,230,165,.08)}
+    .notice.error{color:#ffd3d9;border-color:rgba(255,107,122,.38);background:rgba(255,107,122,.08)}
+    .lead-list{display:grid;gap:10px;padding:15px;max-height:760px;overflow:auto}
+    .lead-card{width:100%;text-align:left;border:1px solid var(--line);border-radius:16px;background:rgba(5,13,25,.74);padding:14px;color:inherit;cursor:pointer;transition:.18s}
+    .lead-card:hover,.lead-card.active{transform:translateY(-1px);border-color:var(--line2);background:rgba(10,30,52,.9)}
+    .lead-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .lead-top h3{font-size:1rem;margin-bottom:4px}
+    .lead-top p{color:var(--muted);font-size:.82rem;line-height:1.4}
+    .chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+    .badge{display:inline-flex;align-items:center;justify-content:center;min-height:24px;border-radius:999px;padding:4px 9px;font-size:.66rem;font-weight:900;white-space:nowrap;border:1px solid transparent}
+    .b-new{color:#03101f;background:var(--cyan)}
+    .b-active{color:#03101f;background:var(--green)}
+    .b-priority{color:#2d1900;background:var(--gold)}
+    .b-closed{color:#ece8ff;background:rgba(169,147,255,.18);border-color:rgba(169,147,255,.34)}
+    .b-web{color:#d9fff0;background:rgba(85,230,165,.13);border-color:rgba(85,230,165,.3)}
+    .b-voice{color:#efeaff;background:rgba(169,147,255,.17);border-color:rgba(169,147,255,.34)}
+    .b-sms{color:#dff8ff;background:rgba(115,230,255,.13);border-color:rgba(115,230,255,.3)}
+    .b-other{color:#d9e5f3;background:rgba(168,184,208,.12);border-color:rgba(168,184,208,.2)}
+    .meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+    .meta{border:1px solid rgba(116,184,255,.12);border-radius:11px;background:rgba(255,255,255,.03);padding:8px;min-width:0}
+    .meta span{display:block;color:var(--soft);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+    .meta strong{display:block;color:var(--text);font-size:.76rem;line-height:1.3;overflow-wrap:anywhere}
+    .detail-body{display:grid;gap:14px;padding:16px}
+    .detail-title{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:15px;border-bottom:1px solid var(--line)}
+    .detail-title h2{font-size:1.35rem;line-height:1.1;margin-bottom:6px}
+    .detail-title p{color:var(--muted);line-height:1.55}
+    .detail-section{border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.03);padding:13px}
+    .detail-section h3{color:var(--cyan);font-size:.76rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px}
+    .detail-section p{color:var(--muted);line-height:1.65;font-size:.9rem;white-space:pre-wrap}
+    .detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .action-grid{display:grid;gap:10px}
+    .action-row{display:flex;flex-wrap:wrap;gap:10px}
+    .empty{color:var(--soft);padding:28px;text-align:center;line-height:1.6}
+    .footer-note{margin-top:16px;color:var(--soft);font-size:.82rem;line-height:1.55}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:7px;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(85,230,165,.4)}50%{box-shadow:0 0 0 6px rgba(85,230,165,0)}}
+    @media(max-width:1280px){.metrics{grid-template-columns:repeat(3,1fr)}.workspace{grid-template-columns:1fr}.filters,.filters.secondary{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:900px){.app{grid-template-columns:1fr}aside{position:static;height:auto}.nav-group{grid-template-columns:repeat(3,1fr)}.side-note{display:none}}
+    @media(max-width:700px){main{padding:16px}.topbar,.detail-title{flex-direction:column}.metrics,.filters,.filters.secondary,.detail-grid,.meta-grid,.nav-group{grid-template-columns:1fr}.lead-list{max-height:none}}
+  </style>
 </head>
 <body>
-  <div class="app">
-    <aside>
-      <div class="brand">
-        <div class="logo">AI4</div>
-        <div><strong id="sideBrand">AI4 Businesses</strong><span>Lead Manager</span></div>
+<div class="app">
+  <aside>
+    <a class="brand" href="/">
+      <div class="brand-logo"><img src="/assets/lead-management-logo.png" alt="" /></div>
+      <div class="brand-text"><strong>FlowDesk Pro</strong><span>Lead Manager</span></div>
+    </a>
+    <nav class="nav-group" aria-label="Dashboard navigation">
+      <a class="nav-link active" href="/dashboard">Dashboard <span class="nav-pill">01</span></a>
+      <a class="nav-link" href="/intake">Fallback Intake <span class="nav-pill">02</span></a>
+      <a class="nav-link" href="/">Overview <span class="nav-pill">03</span></a>
+    </nav>
+    <div class="side-note">
+      <strong><span class="live-dot"></span>Live Supabase View</strong>
+      Records load through Netlify Functions. No Supabase service keys, Resend keys, Twilio tokens, or payment credentials are present in browser code.
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div class="page-title">
+        <h1>AI4 Businesses — Lead Manager Command Center</h1>
+        <p>Receive and manage records from AI4 Product Purchasing, web intake forms, calls, SMS, missed calls, and appointment requests. Payment activity belongs to the purchasing site; this dashboard tracks the record and follow-up workflow.</p>
       </div>
-      <nav class="navgroup" aria-label="Lead Manager navigation">
-        <a class="navitem" href="/">Access <span class="navpill">01</span></a>
-        <a class="navitem" href="/intake">Intake <span class="navpill">02</span></a>
-        <a class="navitem active" href="/dashboard">Command <span class="navpill">03</span></a>
-      </nav>
-      <div class="side-note"><span class="live"></span>Live command view. Records load through Netlify Functions only. Secrets never enter browser code.</div>
-    </aside>
+      <div class="top-actions">
+        <a class="btn" href="https://ai4-product-purchasing.ai4businesses.org" target="_blank" rel="noopener">Product Purchasing Site</a>
+        <button class="btn primary" id="refreshButton" type="button">Refresh Records</button>
+      </div>
+    </header>
 
-    <main>
-      <header class="topbar">
-        <div>
-          <div class="eyebrow">V1 Platinum Command Center</div>
-          <h1 id="dashboardTitle">AI4 Businesses Lead Manager</h1>
-          <p>Review new opportunities, classify urgency, update pipeline status, assign follow-up, and send customer updates from one executive dashboard.</p>
-        </div>
-        <div class="actions" style="margin-top:0">
-          <a class="btn" href="/intake">+ New Lead</a>
-          <button class="btn primary" id="refreshButton" type="button">Refresh Records</button>
-        </div>
-      </header>
+    <section class="metrics" aria-label="Lead metrics">
+      <article class="metric"><span>Total Records</span><strong id="metricTotal">0</strong><small>All loaded records.</small></article>
+      <article class="metric"><span>Needs Review</span><strong id="metricReview">0</strong><small>New or priority.</small></article>
+      <article class="metric"><span>Follow-Up</span><strong id="metricFollow">0</strong><small>Action required.</small></article>
+      <article class="metric"><span>Appointments</span><strong id="metricAppt">0</strong><small>Requested.</small></article>
+      <article class="metric"><span>Purchase Site</span><strong id="metricPurchase">0</strong><small>AI4 product records.</small></article>
+      <article class="metric"><span>High Urgency</span><strong id="metricHigh">0</strong><small>Time-sensitive.</small></article>
+    </section>
 
-      <section class="metrics" aria-label="Lead metrics">
-        <article class="metric"><span>Total Leads</span><strong id="metricTotal">0</strong><small>All records for this tenant.</small></article>
-        <article class="metric"><span>Open</span><strong id="metricOpen">0</strong><small>Not closed or resolved.</small></article>
-        <article class="metric"><span>Needs Review</span><strong id="metricReview">0</strong><small>New and priority items.</small></article>
-        <article class="metric"><span>Priority</span><strong id="metricPriority">0</strong><small>High urgency or priority status.</small></article>
-        <article class="metric"><span>Follow-Up</span><strong id="metricFollow">0</strong><small>Callback or response needed.</small></article>
-      </section>
-
-      <section class="workspace">
-        <section class="panel" aria-labelledby="queueTitle">
-          <div class="panelhead">
-            <div><h2 id="queueTitle">Live Intake Queue</h2><span id="listSubtitle">Connecting to Supabase...</span></div>
-            <div class="statusline"><span class="badge b-source" id="tenantBadge">Tenant</span></div>
-          </div>
-          <div class="filters">
-            <input class="field" id="searchBox" type="search" placeholder="Search name, email, phone, company, notes..." />
-            <select class="field" id="sourceFilter" aria-label="Filter source">
-              <option value="all">All sources</option>
-              <option value="web">Web</option>
-              <option value="voice">Voice</option>
-              <option value="sms">SMS</option>
-              <option value="appointment">Appointment</option>
-              <option value="other">Other</option>
-            </select>
-            <select class="field" id="urgencyFilter" aria-label="Filter urgency">
-              <option value="all">All urgency</option>
-              <option value="high">High</option>
-              <option value="normal">Normal</option>
-              <option value="low">Low</option>
-            </select>
-            <select class="field" id="statusFilter" aria-label="Filter status">
-              <option value="all">All statuses</option>
-              <option value="needs_review">Needs review</option>
-              <option value="active">Active</option>
-              <option value="closed">Closed</option>
-            </select>
-            <select class="field" id="followFilter" aria-label="Filter follow-up">
-              <option value="all">All follow-up</option>
-              <option value="needed">Follow-up needed</option>
-              <option value="not_needed">No follow-up needed</option>
-            </select>
-          </div>
-          <div id="listNotice" class="notice">Connecting to live lead records...</div>
-          <div class="leadlist" id="leadList"><div class="empty">Loading records...</div></div>
-        </section>
-
-        <section class="panel" aria-labelledby="detailTitle">
-          <div class="panelhead">
-            <div><h2 id="detailTitle">Record Detail</h2><span>Review, update, and trigger follow-up actions.</span></div>
-          </div>
-          <div class="detail" id="detailPanel"><div class="empty">Select a lead after records load.</div></div>
-        </section>
-      </section>
-    </main>
-  </div>
-
-  <script>
-    const state = {
-      config: null,
-      records: [],
-      selectedId: '',
-      loading: false,
-      error: '',
-      lastCount: -1,
-      polling: null
-    };
-
-    const els = {
-      sideBrand: document.getElementById('sideBrand'),
-      dashboardTitle: document.getElementById('dashboardTitle'),
-      tenantBadge: document.getElementById('tenantBadge'),
-      refreshButton: document.getElementById('refreshButton'),
-      listSubtitle: document.getElementById('listSubtitle'),
-      listNotice: document.getElementById('listNotice'),
-      leadList: document.getElementById('leadList'),
-      detailPanel: document.getElementById('detailPanel'),
-      searchBox: document.getElementById('searchBox'),
-      sourceFilter: document.getElementById('sourceFilter'),
-      urgencyFilter: document.getElementById('urgencyFilter'),
-      statusFilter: document.getElementById('statusFilter'),
-      followFilter: document.getElementById('followFilter'),
-      metricTotal: document.getElementById('metricTotal'),
-      metricOpen: document.getElementById('metricOpen'),
-      metricReview: document.getElementById('metricReview'),
-      metricPriority: document.getElementById('metricPriority'),
-      metricFollow: document.getElementById('metricFollow')
-    };
-
-    function escapeHtml(value) {
-      return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function value(v, fallback = '') {
-      const out = v === null || v === undefined ? '' : String(v).trim();
-      return out || fallback;
-    }
-
-    function setNotice(message, type = '') {
-      els.listNotice.textContent = message;
-      els.listNotice.className = 'notice' + (type ? ' ' + type : '');
-    }
-
-    function formatDate(input) {
-      if (!input) return 'Not set';
-      const date = new Date(input);
-      if (Number.isNaN(date.getTime())) return 'Not set';
-      return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-    }
-
-    function sourceBucket(record) {
-      const src = `${record.source || ''} ${record.source_page || ''}`.toLowerCase();
-      if (src.includes('voice') || src.includes('call') || src.includes('twilio')) return 'voice';
-      if (src.includes('sms') || src.includes('text')) return 'sms';
-      if (src.includes('appointment')) return 'appointment';
-      if (src.includes('web') || src.includes('intake')) return 'web';
-      return 'other';
-    }
-
-    function urgencyBucket(record) {
-      const urgency = String(record.urgency || '').toLowerCase();
-      if (urgency.includes('high') || urgency.includes('urgent') || urgency.includes('asap')) return 'high';
-      if (urgency.includes('low')) return 'low';
-      return 'normal';
-    }
-
-    function statusGroup(record) {
-      const status = String(record.lead_status || '').toLowerCase();
-      if (status.includes('closed') || status.includes('resolved') || status.includes('not a fit')) return 'closed';
-      if (status.includes('progress') || status.includes('contacted') || status.includes('waiting') || status.includes('scheduled') || status.includes('appointment')) return 'active';
-      return 'needs_review';
-    }
-
-    function statusBadge(record) {
-      const group = statusGroup(record);
-      if (record.lead_status && String(record.lead_status).toLowerCase().includes('priority')) {
-        return `<span class="badge b-priority">${escapeHtml(record.lead_status)}</span>`;
-      }
-      if (group === 'closed') return `<span class="badge b-closed">${escapeHtml(value(record.lead_status, 'Closed'))}</span>`;
-      if (group === 'active') return `<span class="badge b-active">${escapeHtml(value(record.lead_status, 'Active'))}</span>`;
-      return `<span class="badge b-new">${escapeHtml(value(record.lead_status, 'New / Needs Review'))}</span>`;
-    }
-
-    function sourceBadge(record) {
-      const bucket = sourceBucket(record);
-      const cls = bucket === 'voice' ? 'b-voice' : 'b-source';
-      const label = bucket.charAt(0).toUpperCase() + bucket.slice(1);
-      return `<span class="badge ${cls}">${label}</span>`;
-    }
-
-    function urgencyBadge(record) {
-      const bucket = urgencyBucket(record);
-      const cls = bucket === 'high' ? 'b-warn' : 'b-source';
-      return `<span class="badge ${cls}">${escapeHtml(value(record.urgency, 'Normal'))}</span>`;
-    }
-
-    function meta(label, val) {
-      return `<div class="meta"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value(val, 'Not provided'))}</strong></div>`;
-    }
-
-    function displayName(record) {
-      return value(record.contact_name || [record.first_name, record.last_name].filter(Boolean).join(' '), 'Unknown Contact');
-    }
-
-    function displayBusiness(record) {
-      return value(record.business_name || record.company || record.client_name, 'Unknown Business');
-    }
-
-    function searchableText(record) {
-      return [
-        record.id, record.contact_name, record.first_name, record.last_name, record.email, record.phone,
-        record.company, record.business_name, record.service_needed, record.category, record.message,
-        record.details, record.ai_summary, record.next_action, record.internal_notes, record.lead_status
-      ].filter(Boolean).join(' ').toLowerCase();
-    }
-
-    function filteredRecords() {
-      const q = els.searchBox.value.trim().toLowerCase();
-      return state.records
-        .filter(record => els.sourceFilter.value === 'all' || sourceBucket(record) === els.sourceFilter.value)
-        .filter(record => els.urgencyFilter.value === 'all' || urgencyBucket(record) === els.urgencyFilter.value)
-        .filter(record => els.statusFilter.value === 'all' || statusGroup(record) === els.statusFilter.value)
-        .filter(record => {
-          if (els.followFilter.value === 'all') return true;
-          return els.followFilter.value === 'needed' ? record.follow_up_needed === true : record.follow_up_needed !== true;
-        })
-        .filter(record => !q || searchableText(record).includes(q))
-        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-    }
-
-    async function loadConfig() {
-      const res = await fetch('/.netlify/functions/config');
-      const cfg = await res.json();
-      if (!res.ok || !cfg.ok) throw new Error(cfg.error || 'Unable to load config.');
-      state.config = cfg;
-      const brand = cfg.tenant.brandName || 'AI4 Businesses';
-      els.sideBrand.textContent = brand;
-      els.dashboardTitle.textContent = brand + ' — Lead Manager';
-      els.tenantBadge.textContent = cfg.tenant.id || 'default';
-      document.title = brand + ' Lead Manager — Command Center';
-      return cfg;
-    }
-
-    async function loadRecords(isManual = false) {
-      if (isManual) {
-        state.loading = true;
-        state.error = '';
-        els.refreshButton.disabled = true;
-        setNotice('Loading live lead records...', '');
-        render();
-      }
-
-      try {
-        const res = await fetch('/.netlify/functions/get-leads?limit=250');
-        const payload = await res.json().catch(() => ({}));
-        if (!res.ok || !payload.ok) throw new Error(payload.error || 'Unable to load records.');
-
-        const records = Array.isArray(payload.records) ? payload.records : [];
-        const before = state.lastCount;
-        state.records = records;
-        state.lastCount = records.length;
-
-        const urlLead = new URLSearchParams(window.location.search).get('lead');
-        if (urlLead && records.some(r => r.id === urlLead)) state.selectedId = urlLead;
-        if (!state.selectedId && records[0]) state.selectedId = records[0].id;
-
-        if (isManual) {
-          setNotice(records.length ? `Loaded ${records.length} lead records from Supabase.` : 'No lead records found yet. Submit a test lead from the intake page.', records.length ? 'success' : '');
-        } else if (before >= 0 && records.length > before) {
-          setNotice(`${records.length - before} new lead record(s) received.`, 'success');
-        }
-      } catch (error) {
-        state.error = error.message;
-        if (isManual) setNotice(error.message, 'error');
-      } finally {
-        state.loading = false;
-        els.refreshButton.disabled = false;
-        render();
-      }
-    }
-
-    function renderMetrics() {
-      const total = state.records.length;
-      const open = state.records.filter(r => statusGroup(r) !== 'closed').length;
-      const review = state.records.filter(r => statusGroup(r) === 'needs_review').length;
-      const priority = state.records.filter(r => String(r.lead_status || '').toLowerCase().includes('priority') || urgencyBucket(r) === 'high').length;
-      const follow = state.records.filter(r => r.follow_up_needed === true).length;
-
-      els.metricTotal.textContent = total;
-      els.metricOpen.textContent = open;
-      els.metricReview.textContent = review;
-      els.metricPriority.textContent = priority;
-      els.metricFollow.textContent = follow;
-    }
-
-    function renderList(records) {
-      if (state.loading) {
-        els.leadList.innerHTML = '<div class="empty">Loading live lead records...</div>';
-        return;
-      }
-
-      if (state.error) {
-        els.leadList.innerHTML = '<div class="empty">Could not load records. Check Netlify Function logs.</div>';
-        return;
-      }
-
-      if (!records.length) {
-        els.leadList.innerHTML = '<div class="empty">No records match the current filters.</div>';
-        return;
-      }
-
-      els.leadList.innerHTML = records.map(record => {
-        const active = record.id === state.selectedId ? ' active' : '';
-        return `<button class="leadcard${active}" type="button" data-id="${escapeHtml(record.id)}">
-          <div class="leadtop">
-            <div>
-              <h3>${escapeHtml(displayBusiness(record))}</h3>
-              <p>${escapeHtml(displayName(record))} · ${escapeHtml(value(record.email || record.phone, 'No contact'))}</p>
-            </div>
-            ${statusBadge(record)}
-          </div>
-          <div class="chips">${sourceBadge(record)}${urgencyBadge(record)}${record.follow_up_needed ? '<span class="badge b-warn">Follow-Up</span>' : ''}</div>
-          <div class="metagrid">
-            ${meta('Service', record.service_needed)}
-            ${meta('Created', formatDate(record.created_at))}
-            ${meta('Phone', record.phone)}
-          </div>
-        </button>`;
-      }).join('');
-
-      els.leadList.querySelectorAll('.leadcard').forEach(card => {
-        card.addEventListener('click', () => {
-          state.selectedId = card.dataset.id;
-          render();
-        });
-      });
-    }
-
-    function section(title, body) {
-      return `<section class="section"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(value(body, 'Not provided'))}</p></section>`;
-    }
-
-    function renderDetail() {
-      const record = state.records.find(r => r.id === state.selectedId);
-      if (!record) {
-        els.detailPanel.innerHTML = '<div class="empty">Select a lead to review details.</div>';
-        return;
-      }
-
-      const statuses = (state.config?.statuses || [
-        'New / Needs Review', 'New / Priority Review', 'Contacted', 'In Progress', 'Waiting on Customer',
-        'Follow-Up Scheduled', 'Appointment Requested', 'Closed / Resolved', 'Not a Fit'
-      ]).map(status => `<option value="${escapeHtml(status)}"${status === record.lead_status ? ' selected' : ''}>${escapeHtml(status)}</option>`).join('');
-
-      els.detailPanel.innerHTML = `
-        <div class="detailtitle">
+    <section class="workspace">
+      <section class="panel" aria-labelledby="queue-title">
+        <div class="panel-head">
           <div>
-            <h2>${escapeHtml(displayBusiness(record))}</h2>
-            <p>${escapeHtml(displayName(record))} · ${escapeHtml(value(record.email || record.phone, 'No contact'))}</p>
-            <div class="chips">${sourceBadge(record)}${urgencyBadge(record)}${statusBadge(record)}</div>
+            <h2 id="queue-title">External Intake Queue</h2>
+            <span id="listSubtitle">Connecting to Lead Manager records...</span>
           </div>
         </div>
-
-        <div class="detailgrid">
-          ${meta('Email', record.email)}
-          ${meta('Phone', record.phone)}
-          ${meta('Service Needed', record.service_needed)}
-          ${meta('Category', record.category)}
-          ${meta('Preferred Contact', record.preferred_contact_method)}
-          ${meta('Callback Window', record.preferred_callback_time)}
-          ${meta('Assigned To', record.assigned_to)}
-          ${meta('Created', formatDate(record.created_at))}
+        <div class="filters">
+          <input class="field" id="searchBox" type="search" placeholder="Search name, email, phone, business, product, plan..." />
+          <select class="field" id="sourceSiteFilter"><option value="all">All source sites</option></select>
+          <select class="field" id="productFilter"><option value="all">All products</option></select>
+          <select class="field" id="statusFilter">
+            <option value="all">All statuses</option>
+            <option value="new">New / Review</option>
+            <option value="active">Active / Contacted</option>
+            <option value="closed">Closed / Not a fit</option>
+          </select>
+          <select class="field" id="urgencyFilter"><option value="all">All urgency</option><option value="high">High</option><option value="normal">Normal</option><option value="low">Low</option></select>
         </div>
+        <div class="filters secondary">
+          <select class="field" id="channelFilter"><option value="all">All channels</option><option value="web">Web</option><option value="voice">Voice call</option><option value="sms">SMS</option><option value="appointment">Appointment</option><option value="other">Other</option></select>
+          <select class="field" id="followFilter"><option value="all">Follow-up: all</option><option value="yes">Follow-up needed</option><option value="no">No follow-up</option></select>
+          <select class="field" id="appointmentFilter"><option value="all">Appointments: all</option><option value="yes">Appointment requested</option><option value="no">No appointment</option></select>
+          <input class="field" id="assignedFilter" type="search" placeholder="Assigned to..." />
+          <input class="field" id="dateFromFilter" type="date" />
+        </div>
+        <div id="listNotice" class="notice">Connecting to live records...</div>
+        <div class="lead-list" id="leadList"></div>
+      </section>
 
-        ${section('Lead Message / Details', record.details || record.message)}
-        ${section('AI / Staff Summary', record.ai_summary)}
-        ${section('Current Next Action', record.next_action)}
+      <section class="panel" aria-labelledby="detail-title">
+        <div class="panel-head">
+          <div><h2 id="detail-title">Record Detail</h2><span>Product context, customer info, payment-source metadata, and CRM workflow.</span></div>
+        </div>
+        <div class="detail-body" id="detailPanel"><div class="empty">Select a lead after records load.</div></div>
+      </section>
+    </section>
 
-        <section class="section">
-          <h3>CRM Workflow Update</h3>
-          <div class="actiongrid">
-            <div>
-              <label for="detailStatus">Status</label>
-              <select class="field" id="detailStatus">${statuses}</select>
-            </div>
-            <div>
-              <label for="detailUrgency">Urgency</label>
-              <select class="field" id="detailUrgency">
-                <option${urgencyBucket(record) === 'high' ? ' selected' : ''}>High</option>
-                <option${urgencyBucket(record) === 'normal' ? ' selected' : ''}>Normal</option>
-                <option${urgencyBucket(record) === 'low' ? ' selected' : ''}>Low</option>
-              </select>
-            </div>
-            <div class="full">
-              <label for="detailNextAction">Next Action</label>
-              <input class="field" id="detailNextAction" value="${escapeHtml(value(record.next_action))}" placeholder="Example: Call back tomorrow morning" />
-            </div>
-            <div class="full">
-              <label for="detailNotes">Internal Notes</label>
-              <textarea class="field" id="detailNotes" placeholder="Internal notes, callback history, decision notes...">${escapeHtml(value(record.internal_notes))}</textarea>
-            </div>
-            <div class="full">
-              <label for="detailCustomerMessage">Customer Status Message</label>
-              <textarea class="field" id="detailCustomerMessage" placeholder="Optional message to send to customer...">${escapeHtml(value(record.customer_status_message))}</textarea>
-            </div>
-            <label class="checkrow full"><input type="checkbox" id="detailFollowNeeded"${record.follow_up_needed ? ' checked' : ''} /> Follow-up needed</label>
-            <div class="actionrow full">
-              <button class="btn primary" id="saveRecordButton" type="button">Save Update</button>
-              <button class="btn" id="callbackButton" type="button">Create Callback Task</button>
-              <button class="btn" id="emailButton" type="button">Email Lead</button>
-            </div>
-          </div>
-        </section>
-      `;
+    <p class="footer-note">Security note: this page calls Netlify Functions only. The Lead Manager does not process payments and does not store checkout secrets in frontend code.</p>
+  </main>
+</div>
 
-      document.getElementById('saveRecordButton').addEventListener('click', () => saveRecord(record));
-      document.getElementById('callbackButton').addEventListener('click', () => createCallbackTask(record));
-      document.getElementById('emailButton').addEventListener('click', () => emailLead(record));
-    }
+<script>
+'use strict';
 
-    function render() {
-      const visible = filteredRecords();
-      if (state.selectedId && !visible.some(r => r.id === state.selectedId) && visible[0]) {
-        state.selectedId = visible[0].id;
-      }
-      renderMetrics();
-      renderList(visible);
-      renderDetail();
-      els.listSubtitle.textContent = state.loading ? 'Loading records...' : `${visible.length} visible / ${state.records.length} total · auto-refreshing`;
-    }
+const state = { records: [], selectedId: '', loading: false, error: '', config: null };
+const els = {
+  refreshButton: byId('refreshButton'),
+  leadList: byId('leadList'),
+  detailPanel: byId('detailPanel'),
+  listSubtitle: byId('listSubtitle'),
+  listNotice: byId('listNotice'),
+  searchBox: byId('searchBox'),
+  sourceSiteFilter: byId('sourceSiteFilter'),
+  productFilter: byId('productFilter'),
+  statusFilter: byId('statusFilter'),
+  urgencyFilter: byId('urgencyFilter'),
+  channelFilter: byId('channelFilter'),
+  followFilter: byId('followFilter'),
+  appointmentFilter: byId('appointmentFilter'),
+  assignedFilter: byId('assignedFilter'),
+  dateFromFilter: byId('dateFromFilter')
+};
 
-    async function postJson(url, payload) {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) throw new Error(data.error || 'Request failed.');
-      return data;
-    }
+['searchBox','sourceSiteFilter','productFilter','statusFilter','urgencyFilter','channelFilter','followFilter','appointmentFilter','assignedFilter','dateFromFilter'].forEach(id => {
+  els[id].addEventListener('input', render);
+  els[id].addEventListener('change', render);
+});
+els.refreshButton.addEventListener('click', () => loadRecords(true));
 
-    function updateLocalRecord(record) {
-      if (!record || !record.id) return;
-      state.records = state.records.map(item => item.id === record.id ? { ...item, ...record } : item);
-    }
+loadConfig();
+loadRecords(true);
+setInterval(() => loadRecords(false), 15000);
 
-    async function saveRecord(record) {
-      const button = document.getElementById('saveRecordButton');
-      button.disabled = true;
-      button.textContent = 'Saving...';
-      setNotice('Saving lead update...', '');
+function byId(id){ return document.getElementById(id); }
+function value(v, fallback=''){ return v === undefined || v === null || v === '' ? fallback : String(v); }
+function meta(record, key, fallback=''){
+  const m = record && record.metadata && typeof record.metadata === 'object' ? record.metadata : {};
+  return value(m[key], fallback);
+}
+function escapeHtml(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+function escapeAttr(v){ return escapeHtml(v).replace(/`/g, '&#096;'); }
+function boolLabel(v){ return v ? 'Yes' : 'No'; }
+function normalize(v){ return String(v || '').trim().toLowerCase(); }
+function formatDate(v){
+  if (!v) return 'Not set';
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) return value(v);
+  return d.toLocaleString([], { year:'numeric', month:'short', day:'2-digit', hour:'numeric', minute:'2-digit' });
+}
+function contactName(r){ return value(r.contact_name || [r.first_name,r.last_name].filter(Boolean).join(' '), 'Unknown Contact'); }
+function businessName(r){ return value(r.company || r.business_name || r.client_name, 'No business listed'); }
+function selectedProduct(r){ return value(meta(r,'selected_product') || r.service_needed || meta(r,'product_name') || meta(r,'purchase_product'), 'Not provided'); }
+function selectedPlan(r){ return value(meta(r,'selected_plan') || meta(r,'purchase_plan_name') || meta(r,'plan') || meta(r,'plan_selected'), 'Not provided'); }
+function sourceSite(r){
+  const raw = meta(r,'origin_site') || meta(r,'source_site') || meta(r,'payment_processed_by') || r.source_page || r.source || '';
+  try {
+    if (String(raw).startsWith('http')) return new URL(raw).hostname;
+  } catch(_){}
+  return value(raw, 'Unknown source');
+}
+function sourcePage(r){
+  return value(meta(r,'pricing_page') || meta(r,'source_page') || r.source_page || meta(r,'source_url'), 'Not provided');
+}
+function paymentStatus(r){
+  return value(meta(r,'payment_status') || meta(r,'purchase_status') || (meta(r,'payment_site') === true ? 'not_configured_yet' : ''), 'Not provided');
+}
+function channelBucket(r){
+  const v = normalize(meta(r,'channel') || r.channel || r.source || r.source_page);
+  if (v.includes('voice') || v.includes('call')) return 'voice';
+  if (v.includes('sms') || v.includes('text')) return 'sms';
+  if (v.includes('appointment')) return 'appointment';
+  if (v.includes('web') || v.includes('intake') || v.includes('purchasing') || v.includes('pricing')) return 'web';
+  return 'other';
+}
+function statusBucket(r){
+  const v = normalize(r.lead_status);
+  if (v.includes('closed') || v.includes('resolved') || v.includes('not a fit')) return 'closed';
+  if (v.includes('progress') || v.includes('contacted') || v.includes('waiting') || v.includes('scheduled') || v.includes('appointment')) return 'active';
+  return 'new';
+}
+function urgencyBucket(r){
+  const v = normalize(r.urgency);
+  if (v.includes('high') || v.includes('urgent') || v.includes('asap')) return 'high';
+  if (v.includes('low')) return 'low';
+  return 'normal';
+}
+function paymentLabel(v){
+  const raw = value(v,'').replace(/_/g,' ');
+  return raw ? raw.replace(/\b\w/g, s => s.toUpperCase()) : 'Not provided';
+}
 
-      try {
-        const payload = await postJson('/.netlify/functions/update-lead', {
-          id: record.id,
-          lead_status: document.getElementById('detailStatus').value,
-          urgency: document.getElementById('detailUrgency').value,
-          next_action: document.getElementById('detailNextAction').value,
-          internal_notes: document.getElementById('detailNotes').value,
-          customer_status_message: document.getElementById('detailCustomerMessage').value,
-          follow_up_needed: document.getElementById('detailFollowNeeded').checked
-        });
+async function loadConfig(){
+  try {
+    const res = await fetch('/.netlify/functions/config');
+    const data = await res.json().catch(() => null);
+    if (data && data.ok) state.config = data;
+  } catch(err) {
+    console.warn('Public config unavailable:', err.message);
+  }
+}
 
-        updateLocalRecord(payload.record);
-        setNotice('Lead updated successfully.', 'success');
-        render();
-      } catch (error) {
-        setNotice(error.message, 'error');
-      } finally {
-        button.disabled = false;
-        button.textContent = 'Save Update';
-      }
-    }
+async function loadRecords(isManual){
+  if (isManual) {
+    state.loading = true;
+    state.error = '';
+    els.refreshButton.disabled = true;
+    setNotice('Connecting to live Lead Manager records...', '');
+    render();
+  }
+  try {
+    const params = new URLSearchParams({ limit: '250' });
+    const selectedLead = new URLSearchParams(window.location.search).get('lead');
+    const res = await fetch(`/.netlify/functions/get-leads?${params.toString()}`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error || 'Unable to load records.');
 
-    async function createCallbackTask(record) {
-      const button = document.getElementById('callbackButton');
-      const phone = value(record.phone, '');
-      if (!phone) {
-        setNotice('This lead does not have a phone number for a callback task.', 'error');
-        return;
-      }
+    state.records = Array.isArray(data.records) ? data.records : [];
+    if (selectedLead && state.records.some(r => r.id === selectedLead)) state.selectedId = selectedLead;
+    if (!state.selectedId && state.records.length) state.selectedId = state.records[0].id;
+    buildDynamicFilters();
+    if (isManual) setNotice(state.records.length ? `Loaded ${state.records.length} records from Supabase.` : 'No lead records found yet.', state.records.length ? 'success' : '');
+  } catch(err) {
+    state.error = err.message;
+    if (isManual) setNotice(err.message, 'error');
+  } finally {
+    state.loading = false;
+    els.refreshButton.disabled = false;
+    render();
+  }
+}
 
-      button.disabled = true;
-      button.textContent = 'Creating...';
-      setNotice('Creating callback task...', '');
+function setNotice(message, type){
+  els.listNotice.textContent = message;
+  els.listNotice.className = `notice ${type || ''}`.trim();
+}
 
-      const now = new Date().toLocaleString();
-      const existingNotes = document.getElementById('detailNotes').value.trim();
-      const note = `[${now}] Callback task created — call ${displayName(record)} at ${phone}. Preferred window: ${value(record.preferred_callback_time, 'Not provided')}.`;
-      const notes = existingNotes ? `${existingNotes}\n\n${note}` : note;
+function buildDynamicFilters(){
+  const currentSource = els.sourceSiteFilter.value;
+  const currentProduct = els.productFilter.value;
+  const sourceOptions = unique(state.records.map(sourceSite)).filter(Boolean).sort();
+  const productOptions = unique(state.records.map(selectedProduct)).filter(v => v && v !== 'Not provided').sort();
 
-      try {
-        const payload = await postJson('/.netlify/functions/update-lead', {
-          id: record.id,
-          lead_status: 'Follow-Up Scheduled',
-          next_action: `Call ${displayName(record)} at ${phone}.`,
-          internal_notes: notes,
-          follow_up_needed: true
-        });
+  els.sourceSiteFilter.innerHTML = '<option value="all">All source sites</option>' + sourceOptions.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
+  els.productFilter.innerHTML = '<option value="all">All products</option>' + productOptions.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
 
-        updateLocalRecord(payload.record);
-        setNotice('Callback task created.', 'success');
-        render();
-      } catch (error) {
-        setNotice(error.message, 'error');
-      } finally {
-        button.disabled = false;
-        button.textContent = 'Create Callback Task';
-      }
-    }
+  if (sourceOptions.includes(currentSource)) els.sourceSiteFilter.value = currentSource;
+  if (productOptions.includes(currentProduct)) els.productFilter.value = currentProduct;
+}
+function unique(arr){ return [...new Set(arr.map(v => value(v).trim()).filter(Boolean))]; }
 
-    async function emailLead(record) {
-      const button = document.getElementById('emailButton');
-      const message = document.getElementById('detailCustomerMessage').value.trim();
+function filteredRecords(){
+  const q = normalize(els.searchBox.value);
+  const source = els.sourceSiteFilter.value;
+  const product = els.productFilter.value;
+  const status = els.statusFilter.value;
+  const urgency = els.urgencyFilter.value;
+  const channel = els.channelFilter.value;
+  const follow = els.followFilter.value;
+  const appointment = els.appointmentFilter.value;
+  const assigned = normalize(els.assignedFilter.value);
+  const dateFrom = els.dateFromFilter.value ? new Date(`${els.dateFromFilter.value}T00:00:00`) : null;
 
-      if (!record.email || !record.email.includes('@')) {
-        setNotice('This lead does not have a valid email address.', 'error');
-        return;
-      }
+  return state.records
+    .filter(r => source === 'all' || sourceSite(r) === source)
+    .filter(r => product === 'all' || selectedProduct(r) === product)
+    .filter(r => status === 'all' || statusBucket(r) === status)
+    .filter(r => urgency === 'all' || urgencyBucket(r) === urgency)
+    .filter(r => channel === 'all' || channelBucket(r) === channel)
+    .filter(r => follow === 'all' || (follow === 'yes' ? r.follow_up_needed === true : r.follow_up_needed !== true))
+    .filter(r => appointment === 'all' || (appointment === 'yes' ? r.appointment_requested === true : r.appointment_requested !== true))
+    .filter(r => !assigned || normalize(r.assigned_to).includes(assigned))
+    .filter(r => !dateFrom || new Date(r.created_at) >= dateFrom)
+    .filter(r => !q || searchableText(r).includes(q))
+    .sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+}
+function searchableText(r){
+  return normalize([
+    contactName(r), r.email, r.phone, businessName(r), selectedProduct(r), selectedPlan(r),
+    sourceSite(r), sourcePage(r), r.lead_status, r.urgency, r.message, r.details, r.internal_notes,
+    r.next_action, r.assigned_to, paymentStatus(r), JSON.stringify(r.metadata || {})
+  ].join(' '));
+}
 
-      button.disabled = true;
-      button.textContent = 'Sending...';
-      setNotice('Sending lead email...', '');
+function render(){
+  const visible = filteredRecords();
+  if (!visible.some(r => r.id === state.selectedId)) state.selectedId = visible[0]?.id || '';
+  renderMetrics();
+  renderList(visible);
+  renderDetail();
+  els.listSubtitle.textContent = state.loading ? 'Loading records from Supabase...' : `${visible.length} visible / ${state.records.length} total · auto-refreshing`;
+}
 
-      try {
-        const payload = await postJson('/.netlify/functions/email-lead', {
-          id: record.id,
-          message: message || undefined,
-          customer_status_message: message || undefined
-        });
+function renderMetrics(){
+  const total = state.records.length;
+  const review = state.records.filter(r => statusBucket(r) === 'new').length;
+  const follow = state.records.filter(r => r.follow_up_needed === true).length;
+  const appt = state.records.filter(r => r.appointment_requested === true).length;
+  const purchase = state.records.filter(r => normalize(sourceSite(r)).includes('ai4-product-purchasing') || normalize(r.source).includes('ai4_product_purchasing') || meta(r,'payment_site') === true).length;
+  const high = state.records.filter(r => urgencyBucket(r) === 'high').length;
+  setText('metricTotal', total); setText('metricReview', review); setText('metricFollow', follow);
+  setText('metricAppt', appt); setText('metricPurchase', purchase); setText('metricHigh', high);
+}
+function setText(id, val){ byId(id).textContent = String(val); }
 
-        updateLocalRecord(payload.record);
-        setNotice(`Email sent to ${payload.email}.`, 'success');
-        render();
-      } catch (error) {
-        setNotice(error.message, 'error');
-      } finally {
-        button.disabled = false;
-        button.textContent = 'Email Lead';
-      }
-    }
+function renderList(records){
+  if (state.loading) { els.leadList.innerHTML = '<div class="empty">Loading live records...</div>'; return; }
+  if (state.error) { els.leadList.innerHTML = '<div class="empty">Could not load records. Check Netlify Function logs.</div>'; return; }
+  if (!records.length) { els.leadList.innerHTML = '<div class="empty">No records match the current filters.</div>'; return; }
 
-    ['input', 'change'].forEach(eventName => {
-      els.searchBox.addEventListener(eventName, render);
-      els.sourceFilter.addEventListener(eventName, render);
-      els.urgencyFilter.addEventListener(eventName, render);
-      els.statusFilter.addEventListener(eventName, render);
-      els.followFilter.addEventListener(eventName, render);
+  els.leadList.innerHTML = records.map(r => {
+    const active = r.id === state.selectedId ? ' active' : '';
+    return `<button class="lead-card${active}" type="button" data-id="${escapeAttr(r.id)}">
+      <div class="lead-top">
+        <div>
+          <h3>${escapeHtml(contactName(r))}</h3>
+          <p>${escapeHtml(businessName(r))} · ${escapeHtml(value(r.email,'No email'))}</p>
+        </div>
+        ${statusBadge(r)}
+      </div>
+      <div class="chip-row">${channelBadge(r)}${urgencyBadge(r)}${followBadge(r)}${appointmentBadge(r)}</div>
+      <div class="meta-grid">
+        ${metaBox('Product', selectedProduct(r))}
+        ${metaBox('Plan', selectedPlan(r))}
+        ${metaBox('Payment', paymentLabel(paymentStatus(r)))}
+        ${metaBox('Phone', value(r.phone,'Not provided'))}
+        ${metaBox('Source', sourceSite(r))}
+        ${metaBox('Created', formatDate(r.created_at))}
+      </div>
+    </button>`;
+  }).join('');
+
+  [...document.querySelectorAll('.lead-card')].forEach(card => {
+    card.addEventListener('click', () => {
+      state.selectedId = card.dataset.id;
+      const url = new URL(window.location.href);
+      url.searchParams.set('lead', state.selectedId);
+      window.history.replaceState({}, '', url);
+      render();
     });
+  });
+}
 
-    els.refreshButton.addEventListener('click', () => loadRecords(true));
+function renderDetail(){
+  const r = state.records.find(item => item.id === state.selectedId);
+  if (!r) { els.detailPanel.innerHTML = '<div class="empty">Select a lead to review customer, product, source, and workflow details.</div>'; return; }
 
-    async function init() {
-      try {
-        await loadConfig();
-      } catch (error) {
-        console.warn('Config error:', error);
-      }
+  els.detailPanel.innerHTML = `
+    <div class="detail-title">
+      <div>
+        <h2>${escapeHtml(contactName(r))}</h2>
+        <p>${escapeHtml(businessName(r))}<br>${escapeHtml(value(r.email,'No email'))} / ${escapeHtml(value(r.phone,'No phone'))}</p>
+        <div class="chip-row">${statusBadge(r)}${channelBadge(r)}${urgencyBadge(r)}${followBadge(r)}${appointmentBadge(r)}</div>
+      </div>
+    </div>
 
-      await loadRecords(true);
-      state.polling = setInterval(() => loadRecords(false), 10000);
-    }
+    <div class="detail-grid">
+      ${metaBox('Product Selected / Purchased', selectedProduct(r))}
+      ${metaBox('Selected Plan', selectedPlan(r))}
+      ${metaBox('Source Site', sourceSite(r))}
+      ${metaBox('Source Page', sourcePage(r))}
+      ${metaBox('Payment Status', paymentLabel(paymentStatus(r)))}
+      ${metaBox('Payment Processed By', value(meta(r,'payment_processed_by'), 'External site / not provided'))}
+      ${metaBox('Preferred Contact', value(r.preferred_contact_method, 'Not provided'))}
+      ${metaBox('Callback Window', value(r.preferred_callback_time, 'Not provided'))}
+      ${metaBox('Assigned To', value(r.assigned_to, 'Unassigned'))}
+      ${metaBox('Created', formatDate(r.created_at))}
+    </div>
 
-    init();
-  </script>
+    ${detailSection('Message / Details', value(r.details || r.message, 'No message captured.'))}
+    ${detailSection('Internal Notes', value(r.internal_notes, 'No internal notes yet.'))}
+    ${detailSection('Next Action', value(r.next_action, 'Review and decide the next follow-up step.'))}
+    ${detailSection('Customer Status Message', value(r.customer_status_message, 'No customer status message sent yet.'))}
+
+    <section class="detail-section">
+      <h3>CRM Workflow Update</h3>
+      <div class="action-grid">
+        <select class="field" id="editStatus">
+          ${statusOptions(r.lead_status)}
+        </select>
+        <select class="field" id="editUrgency">
+          ${urgencyOptions(r.urgency)}
+        </select>
+        <input class="field" id="editAssigned" placeholder="Assigned to..." value="${escapeAttr(value(r.assigned_to,''))}" />
+        <input class="field" id="editCallback" placeholder="Preferred callback / follow-up time..." value="${escapeAttr(value(r.preferred_callback_time,''))}" />
+        <textarea class="field" id="editNextAction" placeholder="Next action...">${escapeHtml(value(r.next_action,''))}</textarea>
+        <textarea class="field" id="editNotes" placeholder="Internal notes...">${escapeHtml(value(r.internal_notes,''))}</textarea>
+        <textarea class="field" id="editCustomerMessage" placeholder="Customer follow-up email message...">${escapeHtml(value(r.customer_status_message,''))}</textarea>
+        <div class="action-row">
+          <label class="badge b-other" style="cursor:pointer;"><input id="editFollowUp" type="checkbox" ${r.follow_up_needed ? 'checked' : ''} style="margin-right:6px;"> Follow-up needed</label>
+          <label class="badge b-other" style="cursor:pointer;"><input id="editAppointment" type="checkbox" ${r.appointment_requested ? 'checked' : ''} style="margin-right:6px;"> Appointment requested</label>
+        </div>
+        <div class="action-row">
+          <button class="btn primary" type="button" id="saveButton">Save CRM Update</button>
+          <button class="btn" type="button" id="emailButton">Send Customer Email</button>
+        </div>
+        <div id="detailNotice" class="notice" style="margin:0;">Ready for update.</div>
+      </div>
+    </section>
+  `;
+
+  byId('saveButton').addEventListener('click', () => saveRecord(r.id));
+  byId('emailButton').addEventListener('click', () => emailLead(r.id));
+}
+
+function metaBox(label, val){
+  return `<div class="meta"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value(val,'Not provided'))}</strong></div>`;
+}
+function detailSection(title, body){
+  return `<section class="detail-section"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(body)}</p></section>`;
+}
+function statusOptions(current){
+  const opts = ['New / Needs Review','New / Priority Review','Contacted','In Progress','Waiting on Customer','Follow-Up Scheduled','Appointment Requested','Closed / Resolved','Not a Fit'];
+  return opts.map(o => `<option value="${escapeAttr(o)}" ${o === current ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
+}
+function urgencyOptions(current){
+  const opts = ['High','Normal','Low'];
+  return opts.map(o => `<option value="${escapeAttr(o)}" ${normalize(o) === normalize(current) ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
+}
+
+function statusBadge(r){
+  const b = statusBucket(r);
+  const cls = b === 'closed' ? 'b-closed' : b === 'active' ? 'b-active' : normalize(r.lead_status).includes('priority') ? 'b-priority' : 'b-new';
+  return `<span class="badge ${cls}">${escapeHtml(value(r.lead_status,'New / Needs Review'))}</span>`;
+}
+function channelBadge(r){
+  const b = channelBucket(r);
+  const labels = { web:'Web', voice:'Voice', sms:'SMS', appointment:'Appointment', other:'Other' };
+  const cls = b === 'voice' ? 'b-voice' : b === 'sms' ? 'b-sms' : b === 'web' ? 'b-web' : 'b-other';
+  return `<span class="badge ${cls}">${labels[b]}</span>`;
+}
+function urgencyBadge(r){
+  const b = urgencyBucket(r);
+  const cls = b === 'high' ? 'b-priority' : b === 'low' ? 'b-other' : 'b-web';
+  return `<span class="badge ${cls}">${escapeHtml(value(r.urgency,'Normal'))}</span>`;
+}
+function followBadge(r){ return `<span class="badge ${r.follow_up_needed ? 'b-active' : 'b-other'}">Follow-up: ${boolLabel(r.follow_up_needed)}</span>`; }
+function appointmentBadge(r){ return `<span class="badge ${r.appointment_requested ? 'b-priority' : 'b-other'}">Appt: ${boolLabel(r.appointment_requested)}</span>`; }
+
+function setDetailNotice(message, type){
+  const el = byId('detailNotice');
+  if (!el) return;
+  el.textContent = message;
+  el.className = `notice ${type || ''}`.trim();
+}
+
+async function saveRecord(id){
+  const payload = {
+    id,
+    lead_status: value(byId('editStatus').value),
+    urgency: value(byId('editUrgency').value),
+    assigned_to: value(byId('editAssigned').value),
+    preferred_callback_time: value(byId('editCallback').value),
+    next_action: value(byId('editNextAction').value),
+    internal_notes: value(byId('editNotes').value),
+    customer_status_message: value(byId('editCustomerMessage').value),
+    follow_up_needed: byId('editFollowUp').checked,
+    appointment_requested: byId('editAppointment').checked
+  };
+
+  setDetailNotice('Saving CRM update...', '');
+  try {
+    const res = await fetch('/.netlify/functions/update-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error || 'Unable to save record.');
+    const index = state.records.findIndex(r => r.id === id);
+    if (index >= 0 && data.record) state.records[index] = data.record;
+    setDetailNotice('CRM record updated successfully.', 'success');
+    render();
+  } catch(err) {
+    console.error(err);
+    setDetailNotice(err.message || 'Unable to save record. Check Netlify logs.', 'error');
+  }
+}
+
+async function emailLead(id){
+  const message = value(byId('editCustomerMessage').value);
+  if (!message) {
+    setDetailNotice('Enter a customer follow-up message before sending email.', 'error');
+    return;
+  }
+  setDetailNotice('Sending customer email...', '');
+  try {
+    const res = await fetch('/.netlify/functions/email-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, message, lead_status: value(byId('editStatus').value) || 'Contacted' })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error(data.error || 'Unable to send email.');
+    const index = state.records.findIndex(r => r.id === id);
+    if (index >= 0 && data.record) state.records[index] = data.record;
+    setDetailNotice('Customer email sent and record updated.', 'success');
+    render();
+  } catch(err) {
+    console.error(err);
+    setDetailNotice(err.message || 'Unable to send email. Check Resend and Netlify logs.', 'error');
+  }
+}
+</script>
 </body>
 </html>

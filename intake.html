@@ -3,210 +3,234 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lead Intake — AI4 Businesses Lead Manager</title>
-  <style>
-    :root {
-      --bg:#050b14; --bg2:#071423; --panel:rgba(10,24,42,.88); --panel2:rgba(13,32,54,.94);
-      --line:rgba(142,184,222,.18); --line2:rgba(83,201,255,.36);
-      --text:#f2f8ff; --muted:#a7bbcf; --soft:#7088a1; --blue:#27aefb; --cyan:#6fdcff;
-      --green:#4bd89d; --gold:#f5c968; --red:#ff6d76; --purple:#9c8cff;
-      --shadow:0 24px 80px rgba(0,0,0,.38); --radius:22px;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    }
-    *{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--text);background:
-      linear-gradient(rgba(39,174,251,.035) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(39,174,251,.03) 1px,transparent 1px),
-      radial-gradient(circle at 12% 0%,rgba(39,174,251,.18),transparent 31rem),
-      radial-gradient(circle at 90% 14%,rgba(75,216,157,.11),transparent 34rem),
-      linear-gradient(180deg,#030712 0%,var(--bg) 48%,var(--bg2) 100%);
-      background-size:64px 64px,64px 64px,auto,auto,auto;}
-    a{color:inherit} button,input,select,textarea{font:inherit}
-    .shell{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:28px 0 54px}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:48px}
-    .brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#5b3fb5,var(--blue));display:grid;place-items:center;font-weight:950;box-shadow:0 0 30px rgba(39,174,251,.28)}
-    .brand strong{display:block;line-height:1.1}.brand span{display:block;color:var(--soft);font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;margin-top:4px}
-    .navlinks{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);font-weight:900;text-decoration:none;cursor:pointer;transition:.18s}
-    .btn:hover{transform:translateY(-1px);border-color:var(--line2);background:rgba(39,174,251,.1)}.btn.primary{color:#021323;background:linear-gradient(135deg,#f7fbff,var(--cyan) 48%,var(--blue));border-color:rgba(111,220,255,.45);box-shadow:0 0 34px rgba(39,174,251,.32)}
-    .grid{display:grid;gap:18px}.hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:22px;align-items:stretch}
-    .card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018)),var(--panel);box-shadow:var(--shadow);padding:26px;position:relative;overflow:hidden}.card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(111,220,255,.1),transparent 22rem);pointer-events:none}
-    .card>*{position:relative}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;margin-bottom:16px}.eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(75,216,157,.12)}
-    h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:.95;letter-spacing:-.055em;margin:0 0 18px}h2{font-size:clamp(1.25rem,2.5vw,2rem);line-height:1.08;margin:0 0 12px}p{color:var(--muted);line-height:1.7;margin:0}
-    .hero-copy{font-size:1.05rem;max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{border:1px solid rgba(142,184,222,.14);border-radius:18px;background:rgba(3,8,18,.5);padding:16px}.stat span{display:block;color:var(--soft);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:900}.stat strong{display:block;font-size:1.8rem;margin-top:8px}.features{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
-    .feature h3{margin:0 0 8px;font-size:1rem;color:#fff}.feature p{font-size:.9rem}.pill{display:inline-flex;border:1px solid rgba(111,220,255,.25);background:rgba(111,220,255,.08);color:var(--cyan);border-radius:999px;padding:6px 10px;font-size:.72rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.footer{margin-top:22px;color:var(--soft);font-size:.82rem}
-    .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.fieldwrap{display:grid;gap:7px}.fieldwrap.full{grid-column:1/-1}label{color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.09em}.field{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;background:rgba(3,8,18,.78);color:var(--text);padding:0 13px;outline:none}.field:focus{border-color:var(--line2);box-shadow:0 0 0 3px rgba(39,174,251,.1)}textarea.field{min-height:130px;padding:13px;resize:vertical;line-height:1.55}.notice{border:1px solid var(--line);border-radius:15px;padding:12px 14px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.88rem;line-height:1.55;margin-top:14px}.notice.success{color:#b7ffe0;border-color:rgba(75,216,157,.35);background:rgba(75,216,157,.08)}.notice.error{color:#ffd3d6;border-color:rgba(255,109,118,.36);background:rgba(255,109,118,.08)}
-    @media(max-width:900px){.hero,.features,.form{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.navlinks{justify-content:flex-start}.shell{width:min(100% - 28px,1180px);padding-top:18px}.statgrid{grid-template-columns:1fr}}
-</style>
+  <title>Lead Intake — FlowDesk Pro Lead Manager</title>
+  <meta name="description" content="Fallback lead intake form for FlowDesk Pro Lead Manager." />
+  <link rel="stylesheet" href="/assets/styles.css" />
 </head>
 <body>
   <div class="shell">
-    <header class="nav">
-      <div class="brand">
-        <div class="logo">AI4</div>
-        <div><strong id="brandName">AI4 Businesses</strong><span>Lead Intake · Powered by FlowDesk Pro</span></div>
-      </div>
-      <nav class="navlinks" aria-label="Primary navigation">
-        <a class="btn" href="/">Home</a>
-        <a class="btn" href="/dashboard">Command Center</a>
-      </nav>
-    </header>
+    <nav class="nav" aria-label="Lead Manager navigation">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="/assets/lead-management-logo.png" alt="" /></span>
+        <span class="brand-text"><strong>FlowDesk Pro</strong><span>Lead Manager</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/intake">Fallback Intake</a></li>
+        <li><a href="/">Overview</a></li>
+      </ul>
+      <a class="nav-action" href="/dashboard">Open Dashboard</a>
+    </nav>
 
-    <main class="hero">
-      <section class="card">
-        <div class="eyebrow">Lead Intake</div>
-        <h1>Tell us what you need. We’ll route the next step.</h1>
-        <p class="hero-copy">Submit a new opportunity, callback request, or service inquiry into the AI4 Businesses Lead Manager command center.</p>
-        <div class="statgrid" style="margin-top:26px">
-          <div class="stat"><span>Record Type</span><strong>Lead</strong></div>
-          <div class="stat"><span>Routing</span><strong>CRM</strong></div>
-          <div class="stat"><span>Follow-Up</span><strong>Tracked</strong></div>
-          <div class="stat"><span>Powered By</span><strong>FlowDesk</strong></div>
-        </div>
-      </section>
+    <main class="form-shell">
+      <section class="form-card">
+        <img class="hero-logo" src="/assets/lead-management-logo.png" alt="FlowDesk Pro Lead Manager" />
+        <div class="eyebrow"><span>Fallback Intake</span></div>
+        <h1>Capture a lead record manually when needed.</h1>
+        <p class="hero-copy">
+          Primary records should come from external sources like AI4 Product Purchasing. This form exists as a fallback/admin intake path for direct lead capture.
+        </p>
 
-      <section class="card">
-        <div class="eyebrow">New Lead Record</div>
-        <form id="leadForm" class="form" novalidate>
-          <input type="hidden" name="source" value="web_intake" />
-          <input type="hidden" name="form_context" value="ai4_businesses_public_intake" />
-
-          <div class="fieldwrap">
-            <label for="contact_name">Contact Name *</label>
-            <input class="field" id="contact_name" name="contact_name" autocomplete="name" required />
+        <form id="leadForm" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="firstName">First Name</label>
+              <input id="firstName" name="first_name" autocomplete="given-name" required />
+            </div>
+            <div class="field">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" name="last_name" autocomplete="family-name" required />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+            <div class="field">
+              <label for="company">Business Name</label>
+              <input id="company" name="company" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label for="serviceNeeded">Product / Service Needed</label>
+              <select id="serviceNeeded" name="service_needed" required>
+                <option value="">Select product or service</option>
+                <option>Website Design Studio Purchase Plans</option>
+                <option>FlowDesk Pro Lead Manager / CRM</option>
+                <option>Smart Auto-Attendant System</option>
+                <option>AI Voice Attendant System</option>
+                <option>Business Intake Engine System</option>
+                <option>SMS Follow-Up System</option>
+                <option>Appointment Request Workflow</option>
+                <option>General AI4 Businesses Inquiry</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="selectedPlan">Selected Plan</label>
+              <input id="selectedPlan" name="selected_plan" placeholder="Starter, Growth, Premium, etc." />
+            </div>
+            <div class="field">
+              <label for="urgency">Urgency</label>
+              <select id="urgency" name="urgency">
+                <option>Normal</option>
+                <option>High</option>
+                <option>Low</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="contactMethod">Preferred Contact</label>
+              <select id="contactMethod" name="preferred_contact_method">
+                <option>Email or phone</option>
+                <option>Email</option>
+                <option>Phone</option>
+                <option>SMS</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="callback">Preferred Callback Time</label>
+              <input id="callback" name="preferred_callback_time" placeholder="Morning, afternoon, specific date/time" />
+            </div>
+            <div class="field full">
+              <label for="message">Message / Details</label>
+              <textarea id="message" name="message" placeholder="Describe the request, product interest, setup need, or follow-up context." required></textarea>
+            </div>
+            <div class="field full">
+              <label for="nextAction">Initial Next Action</label>
+              <input id="nextAction" name="next_action" value="Review lead and follow up with setup or consultation details." />
+            </div>
+            <div class="field full">
+              <label>Options</label>
+              <label class="checkbox-row"><input id="followUp" name="follow_up_needed" type="checkbox" checked />Follow-up needed</label>
+              <label class="checkbox-row"><input id="appointment" name="appointment_requested" type="checkbox" />Appointment requested</label>
+              <label class="checkbox-row"><input id="smsConsent" name="sms_consent" type="checkbox" />Customer consented to SMS follow-up where applicable</label>
+            </div>
           </div>
 
-          <div class="fieldwrap">
-            <label for="company">Business / Company</label>
-            <input class="field" id="company" name="company" autocomplete="organization" />
+          <div class="actions" style="margin-top:22px;">
+            <button class="btn primary" id="submitButton" type="submit">Submit Lead Record</button>
+            <a class="btn" href="/dashboard">Back to Dashboard</a>
           </div>
-
-          <div class="fieldwrap">
-            <label for="email">Email *</label>
-            <input class="field" id="email" name="email" type="email" autocomplete="email" required />
-          </div>
-
-          <div class="fieldwrap">
-            <label for="phone">Phone</label>
-            <input class="field" id="phone" name="phone" autocomplete="tel" />
-          </div>
-
-          <div class="fieldwrap">
-            <label for="service_needed">Service Needed</label>
-            <select class="field" id="service_needed" name="service_needed">
-              <option value="">Select one...</option>
-              <option>AI Website Design</option>
-              <option>Lead Response System</option>
-              <option>AI Voice Assistant</option>
-              <option>CRM / Workflow Automation</option>
-              <option>SMS Follow-Up</option>
-              <option>Appointment Workflow</option>
-              <option>General Business Automation</option>
-            </select>
-          </div>
-
-          <div class="fieldwrap">
-            <label for="urgency">Urgency</label>
-            <select class="field" id="urgency" name="urgency">
-              <option>Normal</option>
-              <option>High</option>
-              <option>Low</option>
-            </select>
-          </div>
-
-          <div class="fieldwrap">
-            <label for="preferred_contact_method">Preferred Contact</label>
-            <select class="field" id="preferred_contact_method" name="preferred_contact_method">
-              <option>Email or phone</option>
-              <option>Email</option>
-              <option>Phone</option>
-              <option>Text message</option>
-            </select>
-          </div>
-
-          <div class="fieldwrap">
-            <label for="preferred_callback_time">Callback Window</label>
-            <input class="field" id="preferred_callback_time" name="preferred_callback_time" placeholder="Example: Tomorrow morning" />
-          </div>
-
-          <div class="fieldwrap full">
-            <label for="message">Message / Details *</label>
-            <textarea class="field" id="message" name="message" required placeholder="What does this person need? What should the team know before follow-up?"></textarea>
-          </div>
-
-          <div class="fieldwrap full">
-            <button class="btn primary" id="submitButton" type="submit">Submit Lead</button>
-            <div class="notice" id="formNotice">This form creates a secure lead record through a Netlify Function.</div>
-          </div>
+          <div id="formNotice" class="notice" aria-live="polite"></div>
         </form>
       </section>
     </main>
+
+    <footer>
+      <div class="footer-inner">
+        <div>Fallback intake only. External product and purchase records should come from approved source sites.</div>
+        <div class="footer-links"><a href="/dashboard">Dashboard</a><a href="/">Overview</a></div>
+      </div>
+    </footer>
   </div>
 
-  <script>
-    const form = document.getElementById('leadForm');
-    const button = document.getElementById('submitButton');
-    const notice = document.getElementById('formNotice');
+<script>
+'use strict';
 
-    function setNotice(message, type) {
-      notice.textContent = message;
-      notice.className = 'notice' + (type ? ' ' + type : '');
+const $ = (id) => document.getElementById(id);
+const form = $('leadForm');
+const notice = $('formNotice');
+const button = $('submitButton');
+
+const params = new URLSearchParams(window.location.search);
+function fillFromQuery(id, keys) {
+  for (const key of keys) {
+    const value = params.get(key);
+    if (value && $(id)) { $(id).value = value; return; }
+  }
+}
+fillFromQuery('serviceNeeded', ['product', 'service', 'selected_product']);
+fillFromQuery('selectedPlan', ['plan', 'selected_plan']);
+fillFromQuery('message', ['message', 'details']);
+
+function showNotice(message, type) {
+  notice.textContent = message;
+  notice.className = `notice show ${type || ''}`.trim();
+}
+
+function bool(id) { return Boolean($(id)?.checked); }
+function val(id) { return ($(id)?.value || '').trim(); }
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const firstName = val('firstName');
+  const lastName = val('lastName');
+  const email = val('email');
+  const serviceNeeded = val('serviceNeeded');
+  const message = val('message');
+
+  if (!firstName || !lastName || !email || !serviceNeeded || !message) {
+    showNotice('Please complete first name, last name, email, product/service, and message.', 'error');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Submitting...';
+  showNotice('Submitting lead record to FlowDesk Pro Lead Manager...', '');
+
+  const selectedPlan = val('selectedPlan');
+  const payload = {
+    tenant_id: 'apropos-ai4-businesses',
+    client_name: 'Apropos Group LLC',
+    business_name: 'AI4 Businesses',
+    first_name: firstName,
+    last_name: lastName,
+    contact_name: `${firstName} ${lastName}`.trim(),
+    email,
+    phone: val('phone'),
+    company: val('company'),
+    source: 'lead_manager_fallback_intake',
+    channel: 'web',
+    source_page: 'intake.html',
+    source_url: window.location.href,
+    lead_status: 'New / Needs Review',
+    urgency: val('urgency') || 'Normal',
+    service_needed: serviceNeeded,
+    category: 'Fallback Lead Intake',
+    preferred_contact_method: val('contactMethod') || 'Email or phone',
+    preferred_callback_time: val('callback'),
+    message,
+    details: [
+      `Product / service: ${serviceNeeded}`,
+      selectedPlan ? `Selected plan: ${selectedPlan}` : '',
+      `Message: ${message}`,
+    ].filter(Boolean).join('\n'),
+    follow_up_needed: bool('followUp'),
+    appointment_requested: bool('appointment'),
+    sms_consent: bool('smsConsent'),
+    next_action: val('nextAction'),
+    metadata: {
+      origin_site: window.location.hostname,
+      lead_source_type: 'fallback_manual_intake',
+      selected_product: serviceNeeded,
+      selected_plan: selectedPlan,
+      source_url: window.location.href,
+      payment_site: false,
+      payment_status: 'not_applicable',
+      requires_sales_follow_up: true,
+      sms_consent: bool('smsConsent')
     }
+  };
 
-    function formToPayload(formEl) {
-      const data = new FormData(formEl);
-      const payload = Object.fromEntries(data.entries());
-      payload.source_page = window.location.href;
-      payload.business_name = payload.company || undefined;
-      return payload;
-    }
-
-    async function loadConfig() {
-      try {
-        const res = await fetch('/.netlify/functions/config');
-        const cfg = await res.json();
-        if (!cfg.ok) return;
-        document.getElementById('brandName').textContent = cfg.tenant.brandName || 'AI4 Businesses';
-        document.title = 'Lead Intake — ' + (cfg.tenant.brandName || 'AI4 Businesses');
-      } catch (error) {
-        console.warn('Config unavailable', error);
-      }
-    }
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        setNotice('Please complete the required fields before submitting.', 'error');
-        return;
-      }
-
-      button.disabled = true;
-      button.textContent = 'Submitting...';
-      setNotice('Submitting lead record...', '');
-
-      try {
-        const response = await fetch('/.netlify/functions/submit-lead', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formToPayload(form)),
-        });
-
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || 'Unable to submit lead.');
-        }
-
-        const id = payload.record_id ? '?record=' + encodeURIComponent(payload.record_id) : '';
-        window.location.href = '/thankyou' + id;
-      } catch (error) {
-        setNotice(error.message || 'Unable to submit lead right now.', 'error');
-        button.disabled = false;
-        button.textContent = 'Submit Lead';
-      }
+  try {
+    const response = await fetch('/.netlify/functions/submit-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-
-    loadConfig();
-  </script>
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) throw new Error(data.error || 'Unable to submit lead.');
+    const id = data.record_id ? `?lead=${encodeURIComponent(data.record_id)}` : '';
+    window.location.href = `/thankyou.html${id}`;
+  } catch (error) {
+    console.error(error);
+    showNotice(error.message || 'Unable to submit right now. Check Netlify Function logs.', 'error');
+    button.disabled = false;
+    button.textContent = 'Submit Lead Record';
+  }
+});
+</script>
 </body>
 </html>
