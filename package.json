@@ -1,13 +1,13 @@
 {
-  "name": "flowdesk-pro-lead-manager",
+  "name": "flowdesk-pro-lead-manager-v1-platinum",
   "version": "1.0.0",
   "private": true,
-  "description": "Standalone client-deployable FlowDesk Pro Lead Manager / CRM product.",
+  "description": "FlowDesk Pro Lead Manager V1 \u2014 Platinum Command Center for AI4 Businesses / Apropos Group LLC.",
   "scripts": {
-    "start": "netlify dev",
-    "deploy": "netlify deploy",
-    "deploy:prod": "netlify deploy --prod"
+    "build": "echo \"Static Netlify build \u2014 no build step required\""
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {}
 }

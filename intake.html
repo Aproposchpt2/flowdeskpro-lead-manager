@@ -3,267 +3,210 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="FlowDesk Pro Lead Manager client intake form." />
-  <title>Lead Intake — FlowDesk Pro Lead Manager</title>
+  <title>Lead Intake — AI4 Businesses Lead Manager</title>
   <style>
     :root {
-      --bg: #030712;
-      --bg-2: #071423;
-      --panel: rgba(10, 24, 42, 0.9);
-      --panel-2: rgba(13, 32, 54, 0.94);
-      --line: rgba(142, 184, 222, 0.2);
-      --line-strong: rgba(83, 201, 255, 0.42);
-      --text: #f3f8ff;
-      --muted: #a7bbcf;
-      --soft: #7288a0;
-      --blue: #27aefb;
-      --cyan: #6fdcff;
-      --green: #4bd89d;
-      --gold: #f5c968;
-      --red: #ff6d76;
-      --radius: 22px;
-      --shadow: 0 28px 90px rgba(0,0,0,.42);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg:#050b14; --bg2:#071423; --panel:rgba(10,24,42,.88); --panel2:rgba(13,32,54,.94);
+      --line:rgba(142,184,222,.18); --line2:rgba(83,201,255,.36);
+      --text:#f2f8ff; --muted:#a7bbcf; --soft:#7088a1; --blue:#27aefb; --cyan:#6fdcff;
+      --green:#4bd89d; --gold:#f5c968; --red:#ff6d76; --purple:#9c8cff;
+      --shadow:0 24px 80px rgba(0,0,0,.38); --radius:22px;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    * { box-sizing: border-box; }
-    body {
-      margin:0; min-height:100vh; color:var(--text);
-      background:
-        linear-gradient(rgba(39,174,251,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(39,174,251,.03) 1px, transparent 1px),
-        radial-gradient(circle at 12% 0%, rgba(39,174,251,.20), transparent 30rem),
-        radial-gradient(circle at 90% 16%, rgba(75,216,157,.12), transparent 34rem),
-        linear-gradient(180deg, #02050d 0%, var(--bg) 44%, var(--bg-2) 100%);
-      background-size: 64px 64px, 64px 64px, auto, auto, auto;
-    }
-    a { color:inherit; text-decoration:none; }
-    button, input, select, textarea { font: inherit; }
-    .shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
-    .nav { min-height:82px; display:flex; justify-content:space-between; align-items:center; gap:16px; }
-    .brand { display:inline-flex; align-items:center; gap:12px; }
-    .brand-mark { width:42px; height:42px; border-radius:14px; display:grid; place-items:center; background:linear-gradient(135deg,#5b3fb5,var(--blue) 54%,var(--green)); font-weight:950; color:#fff; letter-spacing:-.05em; box-shadow:0 0 34px rgba(39,174,251,.28); }
-    .brand strong { display:block; font-size:.96rem; }
-    .brand span span { display:block; color:var(--soft); text-transform:uppercase; letter-spacing:.13em; font-size:.72rem; margin-top:3px; font-weight:900; }
-    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:0 17px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.05); color:var(--text); font-weight:850; cursor:pointer; transition:transform .18s,border-color .18s,background .18s; }
-    .btn:hover { transform:translateY(-1px); border-color:var(--line-strong); background:rgba(39,174,251,.10); }
-    .btn.primary { color:#03101f; background:linear-gradient(135deg,#f7fbff,var(--cyan) 52%,var(--blue)); border-color:rgba(111,220,255,.45); box-shadow:0 0 34px rgba(39,174,251,.28); }
-    .btn:disabled { opacity:.58; cursor:not-allowed; transform:none; }
-    .layout { padding:48px 0 70px; display:grid; grid-template-columns:minmax(0,.82fr) minmax(420px,1.18fr); gap:28px; align-items:start; }
-    .eyebrow { display:inline-flex; gap:8px; align-items:center; color:var(--cyan); border:1px solid rgba(111,220,255,.23); background:rgba(111,220,255,.07); border-radius:999px; padding:8px 12px; text-transform:uppercase; letter-spacing:.13em; font-size:.7rem; font-weight:950; }
-    .pulse { width:8px; height:8px; background:var(--green); border-radius:999px; box-shadow:0 0 0 7px rgba(75,216,157,.10); }
-    h1 { margin:20px 0 14px; font-size:clamp(2.3rem,5vw,4.7rem); line-height:.94; letter-spacing:-.06em; }
-    .intro p { color:var(--muted); line-height:1.75; font-size:1.05rem; margin:0; }
-    .signal-list { display:grid; gap:12px; margin-top:28px; }
-    .signal { border:1px solid var(--line); border-radius:18px; padding:16px; background:rgba(255,255,255,.04); }
-    .signal b { color:var(--cyan); display:block; font-size:.78rem; text-transform:uppercase; letter-spacing:.11em; margin-bottom:7px; }
-    .signal span { color:var(--muted); line-height:1.6; font-size:.92rem; }
-    .form-card { border:1px solid rgba(111,220,255,.22); border-radius:28px; background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.02)),var(--panel); box-shadow:var(--shadow); overflow:hidden; }
-    .form-head { padding:24px 26px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.035); }
-    .form-head h2 { margin:0; font-size:1.2rem; }
-    .form-head p { margin:7px 0 0; color:var(--muted); line-height:1.6; font-size:.92rem; }
-    form { padding:24px 26px 26px; display:grid; gap:16px; }
-    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
-    .field-group { display:grid; gap:7px; }
-    label { color:#d9e8f7; font-weight:850; font-size:.83rem; }
-    .required { color:var(--cyan); }
-    input, select, textarea {
-      width:100%; min-height:48px; border-radius:14px; border:1px solid var(--line);
-      background:rgba(3,8,18,.74); color:var(--text); padding:0 13px; outline:none;
-      transition:border-color .18s, box-shadow .18s;
-    }
-    textarea { min-height:140px; resize:vertical; padding:13px; line-height:1.55; }
-    input:focus, select:focus, textarea:focus { border-color:var(--line-strong); box-shadow:0 0 0 4px rgba(39,174,251,.10); }
-    .full { grid-column:1 / -1; }
-    .notice { display:none; border:1px solid var(--line); border-radius:14px; padding:12px 14px; color:var(--muted); background:rgba(255,255,255,.04); line-height:1.55; font-size:.9rem; }
-    .notice.show { display:block; }
-    .notice.error { color:#ffd5d8; border-color:rgba(255,109,118,.42); background:rgba(255,109,118,.08); }
-    .notice.success { color:#c5ffe5; border-color:rgba(75,216,157,.42); background:rgba(75,216,157,.08); }
-    .form-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; }
-    .small { color:var(--soft); font-size:.8rem; line-height:1.55; max-width:520px; }
-    footer { border-top:1px solid var(--line); padding:24px 0 38px; color:var(--soft); font-size:.86rem; }
-    @media (max-width: 920px) {
-      .nav, .layout { grid-template-columns:1fr; }
-      .nav { align-items:flex-start; flex-direction:column; padding:18px 0; }
-      .grid { grid-template-columns:1fr; }
-      .layout { padding-top:24px; }
-    }
-  </style>
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--text);background:
+      linear-gradient(rgba(39,174,251,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(39,174,251,.03) 1px,transparent 1px),
+      radial-gradient(circle at 12% 0%,rgba(39,174,251,.18),transparent 31rem),
+      radial-gradient(circle at 90% 14%,rgba(75,216,157,.11),transparent 34rem),
+      linear-gradient(180deg,#030712 0%,var(--bg) 48%,var(--bg2) 100%);
+      background-size:64px 64px,64px 64px,auto,auto,auto;}
+    a{color:inherit} button,input,select,textarea{font:inherit}
+    .shell{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:28px 0 54px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:48px}
+    .brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#5b3fb5,var(--blue));display:grid;place-items:center;font-weight:950;box-shadow:0 0 30px rgba(39,174,251,.28)}
+    .brand strong{display:block;line-height:1.1}.brand span{display:block;color:var(--soft);font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;margin-top:4px}
+    .navlinks{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);font-weight:900;text-decoration:none;cursor:pointer;transition:.18s}
+    .btn:hover{transform:translateY(-1px);border-color:var(--line2);background:rgba(39,174,251,.1)}.btn.primary{color:#021323;background:linear-gradient(135deg,#f7fbff,var(--cyan) 48%,var(--blue));border-color:rgba(111,220,255,.45);box-shadow:0 0 34px rgba(39,174,251,.32)}
+    .grid{display:grid;gap:18px}.hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:22px;align-items:stretch}
+    .card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018)),var(--panel);box-shadow:var(--shadow);padding:26px;position:relative;overflow:hidden}.card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(111,220,255,.1),transparent 22rem);pointer-events:none}
+    .card>*{position:relative}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;margin-bottom:16px}.eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(75,216,157,.12)}
+    h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:.95;letter-spacing:-.055em;margin:0 0 18px}h2{font-size:clamp(1.25rem,2.5vw,2rem);line-height:1.08;margin:0 0 12px}p{color:var(--muted);line-height:1.7;margin:0}
+    .hero-copy{font-size:1.05rem;max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{border:1px solid rgba(142,184,222,.14);border-radius:18px;background:rgba(3,8,18,.5);padding:16px}.stat span{display:block;color:var(--soft);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:900}.stat strong{display:block;font-size:1.8rem;margin-top:8px}.features{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+    .feature h3{margin:0 0 8px;font-size:1rem;color:#fff}.feature p{font-size:.9rem}.pill{display:inline-flex;border:1px solid rgba(111,220,255,.25);background:rgba(111,220,255,.08);color:var(--cyan);border-radius:999px;padding:6px 10px;font-size:.72rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.footer{margin-top:22px;color:var(--soft);font-size:.82rem}
+    .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.fieldwrap{display:grid;gap:7px}.fieldwrap.full{grid-column:1/-1}label{color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.09em}.field{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;background:rgba(3,8,18,.78);color:var(--text);padding:0 13px;outline:none}.field:focus{border-color:var(--line2);box-shadow:0 0 0 3px rgba(39,174,251,.1)}textarea.field{min-height:130px;padding:13px;resize:vertical;line-height:1.55}.notice{border:1px solid var(--line);border-radius:15px;padding:12px 14px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.88rem;line-height:1.55;margin-top:14px}.notice.success{color:#b7ffe0;border-color:rgba(75,216,157,.35);background:rgba(75,216,157,.08)}.notice.error{color:#ffd3d6;border-color:rgba(255,109,118,.36);background:rgba(255,109,118,.08)}
+    @media(max-width:900px){.hero,.features,.form{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.navlinks{justify-content:flex-start}.shell{width:min(100% - 28px,1180px);padding-top:18px}.statgrid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
   <div class="shell">
-    <nav class="nav">
-      <a class="brand" href="/">
-        <span class="brand-mark">fd</span>
-        <span><strong>FlowDesk Pro</strong><span>Lead Manager</span></span>
-      </a>
-      <div>
-        <a class="btn" href="/dashboard.html">Dashboard</a>
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">AI4</div>
+        <div><strong id="brandName">AI4 Businesses</strong><span>Lead Intake · Powered by FlowDesk Pro</span></div>
       </div>
-    </nav>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a class="btn" href="/">Home</a>
+        <a class="btn" href="/dashboard">Command Center</a>
+      </nav>
+    </header>
 
-    <main class="layout">
-      <section class="intro">
-        <div class="eyebrow"><span class="pulse"></span>Secure lead capture</div>
-        <h1>Tell us what you need. We’ll route it for follow-up.</h1>
-        <p>
-          This form creates a structured lead record for the client dashboard. Contact details, urgency, service needs, and callback preferences are captured for fast review.
-        </p>
-        <div class="signal-list">
-          <div class="signal"><b>Private workflow</b><span>Your request is stored in the Lead Manager dashboard for authorized follow-up.</span></div>
-          <div class="signal"><b>Clear routing</b><span>Urgency and service category help the business respond with the right next step.</span></div>
-          <div class="signal"><b>No frontend secrets</b><span>The form submits to a Netlify Function. Supabase and Resend credentials stay server-side.</span></div>
+    <main class="hero">
+      <section class="card">
+        <div class="eyebrow">Lead Intake</div>
+        <h1>Tell us what you need. We’ll route the next step.</h1>
+        <p class="hero-copy">Submit a new opportunity, callback request, or service inquiry into the AI4 Businesses Lead Manager command center.</p>
+        <div class="statgrid" style="margin-top:26px">
+          <div class="stat"><span>Record Type</span><strong>Lead</strong></div>
+          <div class="stat"><span>Routing</span><strong>CRM</strong></div>
+          <div class="stat"><span>Follow-Up</span><strong>Tracked</strong></div>
+          <div class="stat"><span>Powered By</span><strong>FlowDesk</strong></div>
         </div>
       </section>
 
-      <section class="form-card" aria-labelledby="formTitle">
-        <div class="form-head">
-          <h2 id="formTitle">New Lead Intake</h2>
-          <p>Complete the details below. Required fields are marked with an asterisk.</p>
-        </div>
+      <section class="card">
+        <div class="eyebrow">New Lead Record</div>
+        <form id="leadForm" class="form" novalidate>
+          <input type="hidden" name="source" value="web_intake" />
+          <input type="hidden" name="form_context" value="ai4_businesses_public_intake" />
 
-        <form id="leadForm" novalidate>
-          <div id="formNotice" class="notice" role="status"></div>
-
-          <div class="grid">
-            <div class="field-group">
-              <label for="contact_name">Contact name <span class="required">*</span></label>
-              <input id="contact_name" name="contact_name" autocomplete="name" required />
-            </div>
-            <div class="field-group">
-              <label for="email">Email <span class="required">*</span></label>
-              <input id="email" name="email" type="email" autocomplete="email" required />
-            </div>
-            <div class="field-group">
-              <label for="phone">Phone</label>
-              <input id="phone" name="phone" type="tel" autocomplete="tel" />
-            </div>
-            <div class="field-group">
-              <label for="company">Business / company</label>
-              <input id="company" name="company" autocomplete="organization" />
-            </div>
-            <div class="field-group">
-              <label for="service_needed">Service needed</label>
-              <input id="service_needed" name="service_needed" placeholder="Website, CRM, automation, support..." />
-            </div>
-            <div class="field-group">
-              <label for="urgency">Urgency</label>
-              <select id="urgency" name="urgency">
-                <option value="Normal">Normal</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label for="preferred_contact_method">Preferred contact method</label>
-              <select id="preferred_contact_method" name="preferred_contact_method">
-                <option value="Email or phone">Email or phone</option>
-                <option value="Email">Email</option>
-                <option value="Phone">Phone</option>
-                <option value="Text">Text</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label for="preferred_callback_time">Preferred callback time</label>
-              <input id="preferred_callback_time" name="preferred_callback_time" placeholder="Example: Tomorrow morning" />
-            </div>
-            <div class="field-group full">
-              <label for="message">Message / details</label>
-              <textarea id="message" name="message" placeholder="Share what you need help with, key timing details, and any relevant context."></textarea>
-            </div>
+          <div class="fieldwrap">
+            <label for="contact_name">Contact Name *</label>
+            <input class="field" id="contact_name" name="contact_name" autocomplete="name" required />
           </div>
 
-          <div class="form-actions">
+          <div class="fieldwrap">
+            <label for="company">Business / Company</label>
+            <input class="field" id="company" name="company" autocomplete="organization" />
+          </div>
+
+          <div class="fieldwrap">
+            <label for="email">Email *</label>
+            <input class="field" id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+
+          <div class="fieldwrap">
+            <label for="phone">Phone</label>
+            <input class="field" id="phone" name="phone" autocomplete="tel" />
+          </div>
+
+          <div class="fieldwrap">
+            <label for="service_needed">Service Needed</label>
+            <select class="field" id="service_needed" name="service_needed">
+              <option value="">Select one...</option>
+              <option>AI Website Design</option>
+              <option>Lead Response System</option>
+              <option>AI Voice Assistant</option>
+              <option>CRM / Workflow Automation</option>
+              <option>SMS Follow-Up</option>
+              <option>Appointment Workflow</option>
+              <option>General Business Automation</option>
+            </select>
+          </div>
+
+          <div class="fieldwrap">
+            <label for="urgency">Urgency</label>
+            <select class="field" id="urgency" name="urgency">
+              <option>Normal</option>
+              <option>High</option>
+              <option>Low</option>
+            </select>
+          </div>
+
+          <div class="fieldwrap">
+            <label for="preferred_contact_method">Preferred Contact</label>
+            <select class="field" id="preferred_contact_method" name="preferred_contact_method">
+              <option>Email or phone</option>
+              <option>Email</option>
+              <option>Phone</option>
+              <option>Text message</option>
+            </select>
+          </div>
+
+          <div class="fieldwrap">
+            <label for="preferred_callback_time">Callback Window</label>
+            <input class="field" id="preferred_callback_time" name="preferred_callback_time" placeholder="Example: Tomorrow morning" />
+          </div>
+
+          <div class="fieldwrap full">
+            <label for="message">Message / Details *</label>
+            <textarea class="field" id="message" name="message" required placeholder="What does this person need? What should the team know before follow-up?"></textarea>
+          </div>
+
+          <div class="fieldwrap full">
             <button class="btn primary" id="submitButton" type="submit">Submit Lead</button>
-            <span class="small">Protected workflow: this page sends data only to <code>/.netlify/functions/submit-lead</code>.</span>
+            <div class="notice" id="formNotice">This form creates a secure lead record through a Netlify Function.</div>
           </div>
         </form>
       </section>
     </main>
-
-    <footer>
-      FlowDesk Pro Lead Manager · Standalone client intake page
-    </footer>
   </div>
 
   <script>
     const form = document.getElementById('leadForm');
-    const submitButton = document.getElementById('submitButton');
+    const button = document.getElementById('submitButton');
     const notice = document.getElementById('formNotice');
 
-    function showNotice(message, type) {
+    function setNotice(message, type) {
       notice.textContent = message;
-      notice.className = 'notice show' + (type ? ' ' + type : '');
+      notice.className = 'notice' + (type ? ' ' + type : '');
     }
 
-    function formPayload() {
-      const data = new FormData(form);
-      const payload = {};
-      for (const [key, value] of data.entries()) {
-        payload[key] = String(value || '').trim();
-      }
-      payload.business_name = payload.company || '';
-      payload.details = payload.message || '';
-      payload.source = 'web_intake';
+    function formToPayload(formEl) {
+      const data = new FormData(formEl);
+      const payload = Object.fromEntries(data.entries());
       payload.source_page = window.location.href;
-      payload.lead_status = 'New / Needs Review';
-      payload.follow_up_needed = true;
-      payload.metadata = {
-        user_agent: navigator.userAgent,
-        submitted_from: window.location.pathname,
-        submitted_at_client: new Date().toISOString()
-      };
+      payload.business_name = payload.company || undefined;
       return payload;
     }
 
-    function validEmail(value) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim().toLowerCase());
+    async function loadConfig() {
+      try {
+        const res = await fetch('/.netlify/functions/config');
+        const cfg = await res.json();
+        if (!cfg.ok) return;
+        document.getElementById('brandName').textContent = cfg.tenant.brandName || 'AI4 Businesses';
+        document.title = 'Lead Intake — ' + (cfg.tenant.brandName || 'AI4 Businesses');
+      } catch (error) {
+        console.warn('Config unavailable', error);
+      }
     }
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const payload = formPayload();
-      if (!payload.contact_name) {
-        showNotice('Contact name is required.', 'error');
-        document.getElementById('contact_name').focus();
-        return;
-      }
-      if (!validEmail(payload.email)) {
-        showNotice('Please enter a valid email address.', 'error');
-        document.getElementById('email').focus();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        setNotice('Please complete the required fields before submitting.', 'error');
         return;
       }
 
-      submitButton.disabled = true;
-      submitButton.textContent = 'Submitting...';
-      showNotice('Sending lead to FlowDesk Pro Lead Manager...', '');
+      button.disabled = true;
+      button.textContent = 'Submitting...';
+      setNotice('Submitting lead record...', '');
 
       try {
         const response = await fetch('/.netlify/functions/submit-lead', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(formToPayload(form)),
         });
 
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok || !result.ok) {
-          throw new Error(result.error || 'Unable to submit lead right now.');
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || 'Unable to submit lead.');
         }
 
-        try {
-          sessionStorage.setItem('flowdesk_last_lead_id', result.record_id || '');
-        } catch (_) {}
-
-        showNotice('Lead submitted successfully. Redirecting...', 'success');
-        window.location.href = '/thankyou.html';
+        const id = payload.record_id ? '?record=' + encodeURIComponent(payload.record_id) : '';
+        window.location.href = '/thankyou' + id;
       } catch (error) {
-        console.error('Lead submission error:', error);
-        showNotice(error.message || 'Unable to submit lead right now.', 'error');
-        submitButton.disabled = false;
-        submitButton.textContent = 'Submit Lead';
+        setNotice(error.message || 'Unable to submit lead right now.', 'error');
+        button.disabled = false;
+        button.textContent = 'Submit Lead';
       }
     });
+
+    loadConfig();
   </script>
 </body>
 </html>

@@ -3,239 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="FlowDesk Pro Lead Manager is a standalone, client-deployable lead management and CRM command center." />
-  <title>FlowDesk Pro Lead Manager</title>
+  <title>AI4 Businesses Lead Manager — Powered by FlowDesk Pro</title>
   <style>
     :root {
-      --bg: #030712;
-      --bg-2: #071423;
-      --panel: rgba(10, 24, 42, 0.86);
-      --panel-2: rgba(13, 32, 54, 0.95);
-      --line: rgba(142, 184, 222, 0.18);
-      --line-strong: rgba(83, 201, 255, 0.42);
-      --text: #f3f8ff;
-      --muted: #a7bbcf;
-      --soft: #7288a0;
-      --blue: #27aefb;
-      --cyan: #6fdcff;
-      --green: #4bd89d;
-      --gold: #f5c968;
-      --radius: 22px;
-      --shadow: 0 28px 90px rgba(0,0,0,.42);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg:#050b14; --bg2:#071423; --panel:rgba(10,24,42,.88); --panel2:rgba(13,32,54,.94);
+      --line:rgba(142,184,222,.18); --line2:rgba(83,201,255,.36);
+      --text:#f2f8ff; --muted:#a7bbcf; --soft:#7088a1; --blue:#27aefb; --cyan:#6fdcff;
+      --green:#4bd89d; --gold:#f5c968; --red:#ff6d76; --purple:#9c8cff;
+      --shadow:0 24px 80px rgba(0,0,0,.38); --radius:22px;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      background:
-        linear-gradient(rgba(39,174,251,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(39,174,251,.03) 1px, transparent 1px),
-        radial-gradient(circle at 12% 8%, rgba(39,174,251,.22), transparent 32rem),
-        radial-gradient(circle at 88% 12%, rgba(75,216,157,.13), transparent 34rem),
-        radial-gradient(circle at 70% 86%, rgba(156,140,255,.12), transparent 36rem),
-        linear-gradient(180deg, #02050d 0%, var(--bg) 48%, var(--bg-2) 100%);
-      background-size: 66px 66px, 66px 66px, auto, auto, auto, auto;
-    }
-    a { color: inherit; text-decoration: none; }
-    .shell { width: min(1180px, calc(100% - 38px)); margin: 0 auto; }
-    .nav {
-      display: flex; justify-content: space-between; align-items: center;
-      min-height: 82px; gap: 18px;
-    }
-    .brand { display: inline-flex; align-items: center; gap: 12px; }
-    .brand-mark {
-      width: 44px; height: 44px; border-radius: 14px;
-      display: grid; place-items: center;
-      color: #fff; font-weight: 950; letter-spacing: -.05em;
-      background: linear-gradient(135deg, #5b3fb5, var(--blue) 52%, var(--green));
-      box-shadow: 0 0 38px rgba(39,174,251,.24);
-    }
-    .brand strong { display: block; font-size: .98rem; }
-    .brand span { color: var(--soft); display: block; margin-top: 3px; font-size: .74rem; text-transform: uppercase; letter-spacing: .13em; font-weight: 850; }
-    .nav-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      min-height: 44px; border-radius: 999px; padding: 0 18px;
-      border: 1px solid var(--line); background: rgba(255,255,255,.05);
-      color: var(--text); font-weight: 850; transition: transform .18s, border-color .18s, background .18s;
-      cursor: pointer;
-    }
-    .btn:hover { transform: translateY(-1px); border-color: var(--line-strong); background: rgba(39,174,251,.1); }
-    .btn.primary {
-      color: #03101f; border-color: rgba(111,220,255,.46);
-      background: linear-gradient(135deg, #f7fbff, var(--cyan) 50%, var(--blue));
-      box-shadow: 0 0 34px rgba(39,174,251,.30);
-    }
-    .hero { padding: 64px 0 40px; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr); gap: 36px; align-items: center; }
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 9px;
-      color: var(--cyan); border: 1px solid rgba(111,220,255,.24);
-      background: rgba(111,220,255,.07); border-radius: 999px; padding: 8px 12px;
-      text-transform: uppercase; letter-spacing: .13em; font-size: .72rem; font-weight: 950;
-    }
-    .pulse { width: 8px; height: 8px; border-radius: 99px; background: var(--green); box-shadow: 0 0 0 7px rgba(75,216,157,.10); }
-    h1 { margin: 22px 0 16px; font-size: clamp(2.45rem, 6vw, 5.4rem); line-height: .92; letter-spacing: -.065em; }
-    .lead { color: var(--muted); font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.75; max-width: 720px; margin: 0; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
-    .trust-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 30px; }
-    .trust {
-      border: 1px solid var(--line); border-radius: 18px; padding: 16px;
-      background: rgba(255,255,255,.035);
-    }
-    .trust strong { display: block; font-size: 1.55rem; line-height: 1; }
-    .trust span { display: block; margin-top: 8px; color: var(--soft); font-size: .8rem; line-height: 1.45; }
-    .screen-card {
-      position: relative; border: 1px solid rgba(111,220,255,.22); border-radius: 28px;
-      background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02)), rgba(5,13,26,.88);
-      box-shadow: var(--shadow); overflow: hidden; padding: 18px;
-    }
-    .screen-card:before {
-      content: ""; position: absolute; inset: -1px; pointer-events: none;
-      background: radial-gradient(circle at 24% 0, rgba(111,220,255,.18), transparent 24rem);
-    }
-    .screen-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 4px 4px 16px; }
-    .dots { display: flex; gap: 6px; }
-    .dots span { width: 10px; height: 10px; border-radius: 99px; background: rgba(167,187,207,.35); }
-    .screen-top small { color: var(--soft); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-    .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .metric {
-      border: 1px solid var(--line); border-radius: 18px; padding: 18px;
-      background: rgba(7,20,35,.86);
-    }
-    .metric span { display: block; color: var(--soft); text-transform: uppercase; letter-spacing: .12em; font-size: .66rem; font-weight: 950; }
-    .metric strong { display: block; font-size: 2rem; margin-top: 8px; }
-    .queue { display: grid; gap: 10px; margin-top: 12px; }
-    .item { display: flex; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.035); padding: 14px; }
-    .item strong { display:block; font-size:.95rem; }
-    .item span { color: var(--muted); font-size:.79rem; display:block; margin-top:5px; }
-    .badge { border-radius: 999px; padding: 6px 10px; font-size: .66rem; font-weight: 950; white-space: nowrap; align-self: flex-start; }
-    .badge.hot { color:#2a1400; background: var(--gold); }
-    .badge.new { color:#03101f; background: var(--cyan); }
-    .badge.progress { color:#04190f; background: var(--green); }
-    .section { padding: 44px 0; }
-    .section-head { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin-bottom:18px; }
-    .section h2 { margin:0; font-size: clamp(1.8rem, 3vw, 3rem); letter-spacing:-.04em; }
-    .section p { color: var(--muted); line-height:1.7; margin: 8px 0 0; max-width: 760px; }
-    .grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:14px; }
-    .card { border:1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 18px 50px rgba(0,0,0,.22); padding:22px; }
-    .card b { color: var(--cyan); font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; }
-    .card h3 { margin:14px 0 8px; font-size:1.08rem; }
-    .card p { margin:0; color: var(--muted); font-size:.92rem; line-height:1.65; }
-    .cta {
-      margin: 38px 0 64px; border: 1px solid rgba(111,220,255,.24); border-radius: 30px;
-      padding: 28px; background: linear-gradient(135deg, rgba(39,174,251,.15), rgba(75,216,157,.08)), rgba(5,13,26,.85);
-      display:flex; justify-content:space-between; gap:20px; align-items:center;
-      box-shadow: var(--shadow);
-    }
-    .cta h2 { margin:0 0 8px; font-size: clamp(1.6rem, 3vw, 2.6rem); letter-spacing:-.04em; }
-    .cta p { margin:0; color:var(--muted); line-height:1.65; max-width:720px; }
-    footer { border-top:1px solid var(--line); padding:24px 0 38px; color: var(--soft); font-size:.86rem; }
-    @media (max-width: 900px) {
-      .nav, .section-head, .cta { align-items:flex-start; flex-direction:column; }
-      .hero { grid-template-columns: 1fr; padding-top: 40px; }
-      .grid, .trust-row { grid-template-columns: 1fr; }
-      .screen-card { order: -1; }
-    }
-  </style>
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--text);background:
+      linear-gradient(rgba(39,174,251,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(39,174,251,.03) 1px,transparent 1px),
+      radial-gradient(circle at 12% 0%,rgba(39,174,251,.18),transparent 31rem),
+      radial-gradient(circle at 90% 14%,rgba(75,216,157,.11),transparent 34rem),
+      linear-gradient(180deg,#030712 0%,var(--bg) 48%,var(--bg2) 100%);
+      background-size:64px 64px,64px 64px,auto,auto,auto;}
+    a{color:inherit} button,input,select,textarea{font:inherit}
+    .shell{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:28px 0 54px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:48px}
+    .brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#5b3fb5,var(--blue));display:grid;place-items:center;font-weight:950;box-shadow:0 0 30px rgba(39,174,251,.28)}
+    .brand strong{display:block;line-height:1.1}.brand span{display:block;color:var(--soft);font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;margin-top:4px}
+    .navlinks{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);font-weight:900;text-decoration:none;cursor:pointer;transition:.18s}
+    .btn:hover{transform:translateY(-1px);border-color:var(--line2);background:rgba(39,174,251,.1)}.btn.primary{color:#021323;background:linear-gradient(135deg,#f7fbff,var(--cyan) 48%,var(--blue));border-color:rgba(111,220,255,.45);box-shadow:0 0 34px rgba(39,174,251,.32)}
+    .grid{display:grid;gap:18px}.hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:22px;align-items:stretch}
+    .card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018)),var(--panel);box-shadow:var(--shadow);padding:26px;position:relative;overflow:hidden}.card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(111,220,255,.1),transparent 22rem);pointer-events:none}
+    .card>*{position:relative}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;margin-bottom:16px}.eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(75,216,157,.12)}
+    h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:.95;letter-spacing:-.055em;margin:0 0 18px}h2{font-size:clamp(1.25rem,2.5vw,2rem);line-height:1.08;margin:0 0 12px}p{color:var(--muted);line-height:1.7;margin:0}
+    .hero-copy{font-size:1.05rem;max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{border:1px solid rgba(142,184,222,.14);border-radius:18px;background:rgba(3,8,18,.5);padding:16px}.stat span{display:block;color:var(--soft);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:900}.stat strong{display:block;font-size:1.8rem;margin-top:8px}.features{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+    .feature h3{margin:0 0 8px;font-size:1rem;color:#fff}.feature p{font-size:.9rem}.pill{display:inline-flex;border:1px solid rgba(111,220,255,.25);background:rgba(111,220,255,.08);color:var(--cyan);border-radius:999px;padding:6px 10px;font-size:.72rem;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.footer{margin-top:22px;color:var(--soft);font-size:.82rem}
+    .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.fieldwrap{display:grid;gap:7px}.fieldwrap.full{grid-column:1/-1}label{color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.09em}.field{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;background:rgba(3,8,18,.78);color:var(--text);padding:0 13px;outline:none}.field:focus{border-color:var(--line2);box-shadow:0 0 0 3px rgba(39,174,251,.1)}textarea.field{min-height:130px;padding:13px;resize:vertical;line-height:1.55}.notice{border:1px solid var(--line);border-radius:15px;padding:12px 14px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.88rem;line-height:1.55;margin-top:14px}.notice.success{color:#b7ffe0;border-color:rgba(75,216,157,.35);background:rgba(75,216,157,.08)}.notice.error{color:#ffd3d6;border-color:rgba(255,109,118,.36);background:rgba(255,109,118,.08)}
+    @media(max-width:900px){.hero,.features,.form{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.navlinks{justify-content:flex-start}.shell{width:min(100% - 28px,1180px);padding-top:18px}.statgrid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
   <div class="shell">
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="brand" href="/">
-        <span class="brand-mark">fd</span>
-        <span><strong>FlowDesk Pro</strong><span>Lead Manager</span></span>
-      </a>
-      <div class="nav-actions">
-        <a class="btn" href="/dashboard.html">Open Dashboard</a>
-        <a class="btn primary" href="/intake.html">Capture a Lead</a>
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">AI4</div>
+        <div><strong id="brandName">AI4 Businesses</strong><span>Powered by FlowDesk Pro</span></div>
       </div>
-    </nav>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a class="btn" href="/intake">Lead Intake</a>
+        <a class="btn primary" href="/dashboard">Open Command Center</a>
+      </nav>
+    </header>
 
-    <main>
-      <section class="hero">
-        <div>
-          <div class="eyebrow"><span class="pulse"></span>Client-deployable CRM command center</div>
-          <h1>Capture leads. Track follow-up. Stop losing opportunities.</h1>
-          <p class="lead">
-            FlowDesk Pro Lead Manager is a standalone, brandable lead-management system for businesses that need a clean intake workflow, a private command dashboard, and reliable follow-up operations.
-          </p>
-          <div class="hero-actions">
-            <a class="btn primary" href="/intake.html">Launch Intake Form</a>
-            <a class="btn" href="/dashboard.html">View Lead Manager</a>
-          </div>
-          <div class="trust-row" aria-label="Product capabilities">
-            <div class="trust"><strong>01</strong><span>Public intake form routes leads into Supabase.</span></div>
-            <div class="trust"><strong>02</strong><span>Private dashboard tracks urgency, status, source, and next action.</span></div>
-            <div class="trust"><strong>03</strong><span>Server-side functions protect Supabase and Resend keys.</span></div>
-          </div>
+    <main class="hero">
+      <section class="card">
+        <div class="eyebrow">V1 Platinum Command Center</div>
+        <h1>Capture leads. Track follow-up. Stop losing opportunities.</h1>
+        <p class="hero-copy">A premium lead response CRM for AI4 Businesses — built as Case Use #001 for Apropos Group LLC and packaged for future FlowDesk Pro client deployments.</p>
+        <div class="actions">
+          <a class="btn primary" href="/intake">Submit a New Lead</a>
+          <a class="btn" href="/dashboard">View Dashboard</a>
         </div>
-
-        <aside class="screen-card" aria-label="Dashboard preview">
-          <div class="screen-top">
-            <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-            <small>Operational View</small>
-          </div>
-          <div class="metrics">
-            <div class="metric"><span>Total Leads</span><strong>128</strong></div>
-            <div class="metric"><span>Need Follow-Up</span><strong>24</strong></div>
-            <div class="metric"><span>High Urgency</span><strong>9</strong></div>
-            <div class="metric"><span>In Progress</span><strong>31</strong></div>
-          </div>
-          <div class="queue">
-            <div class="item"><div><strong>Blue Ridge Dental</strong><span>Website redesign inquiry · today</span></div><em class="badge hot">High</em></div>
-            <div class="item"><div><strong>Summit Roofing</strong><span>Callback requested · tomorrow morning</span></div><em class="badge new">New</em></div>
-            <div class="item"><div><strong>Horizon Med Spa</strong><span>Proposal follow-up · in progress</span></div><em class="badge progress">Active</em></div>
-          </div>
-        </aside>
+        <p class="footer">No frontend secrets. Browser pages call Netlify Functions only. Supabase and Resend stay behind the server layer.</p>
       </section>
 
-      <section class="section">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Phase 1 Foundation</div>
-            <h2>Built for repeatable client deployment.</h2>
-            <p>
-              The package is designed to be cloned, branded, connected to a client Supabase project, and deployed to Netlify without placing backend secrets in the browser.
-            </p>
-          </div>
+      <aside class="card">
+        <div class="eyebrow">Operational Snapshot</div>
+        <h2 id="snapshotTitle">Lead Manager Live System</h2>
+        <div class="statgrid" style="margin-top:18px">
+          <div class="stat"><span>Status</span><strong>Ready</strong></div>
+          <div class="stat"><span>Tenant</span><strong id="tenantId">—</strong></div>
+          <div class="stat"><span>Voice</span><strong id="voiceFlag">—</strong></div>
+          <div class="stat"><span>SMS</span><strong id="smsFlag">—</strong></div>
         </div>
-        <div class="grid">
-          <article class="card">
-            <b>Intake</b>
-            <h3>Lead capture form</h3>
-            <p>Collects contact details, service need, urgency, callback preference, and customer message through a polished public form.</p>
-          </article>
-          <article class="card">
-            <b>Dashboard</b>
-            <h3>CRM queue and detail panel</h3>
-            <p>Loads records through Netlify Functions and gives operators filters, metrics, status control, notes, next action, and email follow-up.</p>
-          </article>
-          <article class="card">
-            <b>Backend</b>
-            <h3>Server-side REST architecture</h3>
-            <p>Netlify Functions call Supabase REST and Resend using environment variables. Frontend files never contain service keys.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="cta">
-        <div>
-          <h2>Start the client workflow.</h2>
-          <p>Use the intake page for new lead capture or open the dashboard to review records, update follow-up status, and send customer updates.</p>
-        </div>
-        <div class="nav-actions">
-          <a class="btn primary" href="/intake.html">New Lead</a>
-          <a class="btn" href="/dashboard.html">Dashboard</a>
-        </div>
-      </section>
+      </aside>
     </main>
 
-    <footer>
-      FlowDesk Pro Lead Manager · Standalone Phase 1 package · Frontend pages call Netlify Functions only.
-    </footer>
+    <section class="grid features">
+      <article class="card feature"><span class="pill">Intake</span><h3>Branded lead capture</h3><p>Collect contact identity, urgency, service need, preferred follow-up, and business details through a polished public intake page.</p></article>
+      <article class="card feature"><span class="pill">Command</span><h3>Private CRM workflow</h3><p>Filter records, inspect full lead details, update status, add internal notes, and create callback actions from one dashboard.</p></article>
+      <article class="card feature"><span class="pill">Notify</span><h3>Email-ready follow-up</h3><p>Resend notifications run server-side, with client branding controlled through Netlify environment variables.</p></article>
+    </section>
   </div>
+
+  <script>
+    async function loadConfig() {
+      try {
+        const res = await fetch('/.netlify/functions/config');
+        const cfg = await res.json();
+        if (!cfg.ok) return;
+        document.getElementById('brandName').textContent = cfg.tenant.brandName || 'AI4 Businesses';
+        document.getElementById('snapshotTitle').textContent = (cfg.tenant.brandName || 'AI4 Businesses') + ' Lead Manager';
+        document.getElementById('tenantId').textContent = cfg.tenant.id || 'default';
+        document.getElementById('voiceFlag').textContent = cfg.flags.voice ? 'On' : 'Off';
+        document.getElementById('smsFlag').textContent = cfg.flags.sms ? 'On' : 'Off';
+        document.title = (cfg.tenant.brandName || 'AI4 Businesses') + ' Lead Manager — Powered by FlowDesk Pro';
+      } catch (error) {
+        console.warn('Config unavailable', error);
+      }
+    }
+    loadConfig();
+  </script>
 </body>
 </html>
