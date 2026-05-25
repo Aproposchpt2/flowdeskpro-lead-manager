@@ -28,10 +28,28 @@ function splitName(fullName) {
   };
 }
 
+function parseBoolean(value, fallback = false) {
+  if (typeof value === 'boolean') return value;
+  if (value === undefined || value === null || value === '') return fallback;
+  const normalized = String(value).trim().toLowerCase();
+  if (['true', '1', 'yes', 'on', 'checked'].includes(normalized)) return true;
+  if (['false', '0', 'no', 'off', 'unchecked'].includes(normalized)) return false;
+  return Boolean(value);
+}
+
+function safeObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+
 function buildRecord(body, event) {
   const config = getServerConfig();
-  const contactName = safeString(body.contact_name || body.full_name || body.name);
+
+  const firstName = safeString(body.first_name || body.firstName);
+  const lastName = safeString(body.last_name || body.lastName);
+  const suppliedContactName = safeString(body.contact_name || body.full_name || body.name);
+  const contactName = suppliedContactName || [firstName, lastName].filter(Boolean).join(' ');
   const split = splitName(contactName);
+
   const email = normalizeEmail(body.email);
   const businessName = safeString(
     body.business_name ||
@@ -42,7 +60,30 @@ function buildRecord(body, event) {
   );
 
   const referrer = safeString(event.headers?.referer || event.headers?.referrer || body.source_page);
-  const sourceUrl = safeString(body.source_url || body.source_page || referrer);
+  const sourceUrl = safeString(body.source_url || body.sourcePageUrl || body.source_page_url || body.source_page || referrer);
+  const sourcePage = safeString(body.source_page || body.pricing_page || body.page || sourceUrl || 'intake.html');
+
+  const incomingMetadata = safeObject(body.metadata);
+  const selectedProduct = safeString(
+    body.selected_product ||
+    body.product_selected ||
+    body.product ||
+    body.service_needed ||
+    incomingMetadata.selected_product
+  );
+  const selectedPlan = safeString(
+    body.selected_plan ||
+    body.plan_selected ||
+    body.plan ||
+    body.purchase_plan_name ||
+    incomingMetadata.selected_plan
+  );
+  const originSite = safeString(
+    incomingMetadata.origin_site ||
+    body.origin_site ||
+    body.source_site ||
+    'lead-management.aiflowdeskpro.com'
+  );
 
   return {
     created_at: nowIso(),
@@ -51,35 +92,59 @@ function buildRecord(body, event) {
     client_name: safeString(body.client_name || config.clientName),
     business_name: businessName,
     contact_name: contactName,
-    first_name: safeString(body.first_name || split.firstName),
-    last_name: safeString(body.last_name || split.lastName),
+    first_name: firstName || split.firstName,
+    last_name: lastName || split.lastName,
     email,
-    phone: safeString(body.phone),
+    phone: safeString(body.phone || body.phone_number),
     company: safeString(body.company || body.organization || businessName),
     source: safeString(body.source || 'web_intake'),
-    source_page: sourceUrl || 'intake.html',
+    source_page: sourcePage,
     lead_status: safeString(body.lead_status || 'New / Needs Review'),
     urgency: safeString(body.urgency || 'Normal'),
-    service_needed: safeString(body.service_needed || body.service || body.request_type),
-    category: safeString(body.category),
+    service_needed: safeString(body.service_needed || selectedProduct || body.service || body.request_type),
+    category: safeString(body.category || body.lead_source_type),
     preferred_contact_method: safeString(body.preferred_contact_method || 'Email or phone'),
-    preferred_callback_time: safeString(body.preferred_callback_time || body.callback_time),
+    preferred_callback_time: safeString(body.preferred_callback_time),
     message: safeString(body.message || body.details),
-    details: safeString(body.details || body.message),
+    details: safeString(
+      body.details ||
+      [
+        selectedProduct ? `Product: ${selectedProduct}` : '',
+        selectedPlan ? `Plan: ${selectedPlan}` : '',
+        safeString(body.message) ? `Message: ${safeString(body.message)}` : '',
+      ].filter(Boolean).join('\n')
+    ),
     ai_summary: safeString(body.ai_summary),
     next_action: safeString(body.next_action || 'Review the new lead and decide the next follow-up step.'),
     internal_notes: safeString(body.internal_notes),
-    follow_up_needed: body.follow_up_needed === undefined ? true : Boolean(body.follow_up_needed),
+    follow_up_needed: parseBoolean(body.follow_up_needed, true),
     assigned_to: safeString(body.assigned_to),
     customer_status_message: '',
     last_customer_update_at: null,
-    appointment_requested: Boolean(body.appointment_requested),
+    appointment_requested: parseBoolean(body.appointment_requested, false),
     appointment_status: safeString(body.appointment_status),
     metadata: {
+      ...incomingMetadata,
       intake_version: 'v1-platinum',
+      lead_source_type: safeString(incomingMetadata.lead_source_type || body.lead_source_type || body.category),
+      origin_site: originSite,
+      source_url: sourceUrl,
+      source_page: sourcePage,
+      channel: safeString(body.channel || incomingMetadata.channel || 'web'),
+      campaign_source: safeString(body.campaign_source || incomingMetadata.campaign_source),
+      product_type: safeString(body.product_type || incomingMetadata.product_type),
+      selected_product: selectedProduct || safeString(incomingMetadata.selected_product),
+      selected_plan: selectedPlan || safeString(incomingMetadata.selected_plan),
+      cta_label: safeString(body.cta_label || incomingMetadata.cta_label),
+      purchase_plan_name: safeString(body.purchase_plan_name || incomingMetadata.purchase_plan_name || selectedPlan),
+      payment_site: parseBoolean(body.payment_site ?? incomingMetadata.payment_site, false),
+      payment_processed_by: safeString(body.payment_processed_by || incomingMetadata.payment_processed_by),
+      payment_status: safeString(body.payment_status || incomingMetadata.payment_status || 'not_applicable'),
+      sms_consent: parseBoolean(body.sms_consent ?? incomingMetadata.sms_consent, false),
+      requires_sales_follow_up: parseBoolean(body.requires_sales_follow_up ?? incomingMetadata.requires_sales_follow_up, true),
       user_agent: safeString(event.headers?.['user-agent'] || event.headers?.['User-Agent']),
       referrer,
-      form_context: safeString(body.form_context || 'public_intake'),
+      form_context: safeString(body.form_context || incomingMetadata.form_context || 'public_intake'),
       submitted_at: nowIso(),
     },
   };
