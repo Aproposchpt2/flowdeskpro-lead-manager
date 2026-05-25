@@ -1,258 +1,87 @@
 'use strict';
 
-const https = require('https');
+/**
+ * FlowDesk Pro Lead Manager V1 — get-leads
+ * Private dashboard endpoint. Loads lead records for the configured tenant.
+ */
 
-const DEFAULT_TABLE = 'lead_manager_records';
+const {
+  json,
+  safeString,
+  getServerConfig,
+  supabaseRequest,
+} = require('./config');
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
-  'Content-Type': 'application/json'
-};
-
-function json(statusCode, payload) {
-  return {
-    statusCode,
-    headers: corsHeaders,
-    body: JSON.stringify(payload)
-  };
+function statusBucket(status = '') {
+  const value = String(status || '').toLowerCase();
+  if (value.includes('closed') || value.includes('resolved') || value.includes('not a fit')) return 'closed';
+  if (value.includes('priority')) return 'priority';
+  if (value.includes('progress') || value.includes('contacted') || value.includes('waiting') || value.includes('scheduled') || value.includes('appointment')) return 'active';
+  return 'new';
 }
 
-function env(name, fallback = '') {
-  return process.env[name] || fallback;
+function sourceBucket(source = '', sourcePage = '') {
+  const value = `${source || ''} ${sourcePage || ''}`.toLowerCase();
+  if (value.includes('voice') || value.includes('call') || value.includes('twilio')) return 'voice';
+  if (value.includes('sms') || value.includes('text')) return 'sms';
+  if (value.includes('appointment')) return 'appointment';
+  if (value.includes('web') || value.includes('intake')) return 'web';
+  return 'other';
 }
 
-function safeString(value, fallback = '') {
-  if (value === null || value === undefined) return fallback;
-  return String(value).trim();
+function urgencyBucket(urgency = '') {
+  const value = String(urgency || '').toLowerCase();
+  if (value.includes('high') || value.includes('urgent') || value.includes('asap')) return 'high';
+  if (value.includes('low')) return 'low';
+  return 'normal';
 }
 
-function normalizeEmail(value = '') {
-  return safeString(value).toLowerCase();
-}
+function buildSummary(records) {
+  const total = records.length;
+  const open = records.filter((r) => statusBucket(r.lead_status) !== 'closed').length;
+  const needsReview = records.filter((r) => ['new', 'priority'].includes(statusBucket(r.lead_status))).length;
+  const priority = records.filter((r) => statusBucket(r.lead_status) === 'priority' || urgencyBucket(r.urgency) === 'high').length;
+  const followUp = records.filter((r) => r.follow_up_needed === true).length;
+  const voice = records.filter((r) => sourceBucket(r.source, r.source_page) === 'voice').length;
+  const web = records.filter((r) => sourceBucket(r.source, r.source_page) === 'web').length;
 
-function isValidEmail(value = '') {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeEmail(value));
-}
-
-function nowIso() {
-  return new Date().toISOString();
-}
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-function getConfig() {
-  const supabaseUrl = env('SUPABASE_URL');
-  const supabaseKey = env('SUPABASE_SERVICE_ROLE_KEY') || env('SUPABASE_SERVICE_KEY');
-  const tableName = env('LEAD_MANAGER_TABLE', DEFAULT_TABLE);
-
-  const resendKey = env('RESEND_API_KEY');
-  const resendFrom = env('RESEND_FROM_EMAIL', 'FlowDesk Pro <notifications@aiflowdeskpro.com>');
-  const resendTo = env('RESEND_TO_EMAIL') || env('CLIENT_NOTIFICATION_EMAIL');
-
-  const siteUrl = env('LEAD_MANAGER_SITE_URL', '');
-  const clientName = env('CLIENT_NAME', 'Client');
-  const clientBrandName = env('CLIENT_BRAND_NAME', clientName);
-  const tenantId = env('CLIENT_TENANT_ID', 'default');
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Supabase environment variables are not configured.');
-  }
-
-  return {
-    supabaseUrl,
-    supabaseKey,
-    tableName,
-    resendKey,
-    resendFrom,
-    resendTo,
-    siteUrl,
-    clientName,
-    clientBrandName,
-    tenantId
-  };
-}
-
-function encodeQueryValue(value) {
-  return encodeURIComponent(String(value ?? ''));
-}
-
-function supabaseRequest(method, path, body = null, extraHeaders = {}) {
-  const config = getConfig();
-  const bodyString = body ? JSON.stringify(body) : '';
-
-  return new Promise((resolve, reject) => {
-    const base = config.supabaseUrl.replace(/\/$/, '');
-    const url = new URL(`${base}/rest/v1/${path}`);
-
-    const requestHeaders = {
-      apikey: config.supabaseKey,
-      Authorization: `Bearer ${config.supabaseKey}`,
-      'Content-Type': 'application/json',
-      ...extraHeaders
-    };
-
-    if (!requestHeaders.Prefer && ['POST', 'PATCH', 'PUT'].includes(method)) {
-      requestHeaders.Prefer = 'return=representation';
-    }
-
-    if (bodyString) requestHeaders['Content-Length'] = Buffer.byteLength(bodyString);
-
-    const req = https.request(
-      {
-        hostname: url.hostname,
-        path: `${url.pathname}${url.search}`,
-        method,
-        headers: requestHeaders
-      },
-      (res) => {
-        let data = '';
-        res.on('data', chunk => { data += chunk; });
-        res.on('end', () => {
-          let parsed = null;
-          try {
-            parsed = data ? JSON.parse(data) : null;
-          } catch (_) {
-            parsed = data;
-          }
-
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(parsed);
-            return;
-          }
-
-          reject(new Error(`Supabase ${method} failed ${res.statusCode}: ${data}`));
-        });
-      }
-    );
-
-    req.on('error', reject);
-    req.setTimeout(10000, () => req.destroy(new Error('Supabase request timed out.')));
-
-    if (bodyString) req.write(bodyString);
-    req.end();
-  });
-}
-
-function sendResendEmail({ to, subject, html, text }) {
-  const config = getConfig();
-
-  if (!config.resendKey) {
-    return Promise.reject(new Error('RESEND_API_KEY is not configured.'));
-  }
-
-  if (!to) {
-    return Promise.reject(new Error('No email recipient was provided.'));
-  }
-
-  const bodyString = JSON.stringify({
-    from: config.resendFrom,
-    to: Array.isArray(to) ? to : [to],
-    subject,
-    html,
-    text
-  });
-
-  return new Promise((resolve, reject) => {
-    const req = https.request(
-      {
-        hostname: 'api.resend.com',
-        path: '/emails',
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${config.resendKey}`,
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(bodyString)
-        }
-      },
-      (res) => {
-        let data = '';
-        res.on('data', chunk => { data += chunk; });
-        res.on('end', () => {
-          let parsed = null;
-          try {
-            parsed = data ? JSON.parse(data) : null;
-          } catch (_) {
-            parsed = data;
-          }
-
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(parsed);
-            return;
-          }
-
-          reject(new Error(`Resend failed ${res.statusCode}: ${data}`));
-        });
-      }
-    );
-
-    req.on('error', reject);
-    req.setTimeout(10000, () => req.destroy(new Error('Resend request timed out.')));
-
-    req.write(bodyString);
-    req.end();
-  });
-}
-
-function splitName(fullName) {
-  const cleaned = safeString(fullName);
-  if (!cleaned) return { firstName: '', lastName: '' };
-  const parts = cleaned.split(/\s+/);
-  return {
-    firstName: parts[0] || '',
-    lastName: parts.slice(1).join(' ')
-  };
-}
-
-
-function clampLimit(rawLimit) {
-  const parsed = parseInt(rawLimit || '100', 10);
-  if (Number.isNaN(parsed)) return 100;
-  return Math.max(1, Math.min(parsed, 250));
+  return { total, open, needsReview, priority, followUp, voice, web };
 }
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return json(204, {});
-  if (event.httpMethod !== 'GET') return json(405, { ok: false, error: 'Method not allowed' });
-
-  let config;
-  try {
-    config = getConfig();
-  } catch (error) {
-    console.error('get-leads config error:', error.message);
-    return json(500, { ok: false, error: 'Lead Manager is not configured.' });
+  if (event.httpMethod !== 'GET') {
+    return json(405, { ok: false, error: 'Method not allowed.' });
   }
 
   try {
-    const params = event.queryStringParameters || {};
-    const limit = clampLimit(params.limit);
-    const tenantId = safeString(params.tenant_id || config.tenantId || 'default');
-    const table = config.tableName;
-    const queryParts = [
-      'select=*',
-      `tenant_id=eq.${encodeQueryValue(tenantId)}`,
-      'order=created_at.desc',
-      `limit=${limit}`
-    ];
+    const config = getServerConfig();
+    const qs = event.queryStringParameters || {};
+    const limitRaw = Number(qs.limit || 150);
+    const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 500) : 150;
+    const leadId = safeString(qs.id || qs.lead || '');
+    const tenantId = safeString(qs.tenant_id || config.tenantId);
 
-    if (params.status) queryParts.push(`lead_status=ilike.${encodeQueryValue(`*${params.status}*`)}`);
-    if (params.urgency) queryParts.push(`urgency=ilike.${encodeQueryValue(`*${params.urgency}*`)}`);
-    if (params.source) queryParts.push(`source=ilike.${encodeQueryValue(`*${params.source}*`)}`);
+    const params = new URLSearchParams();
+    params.set('select', '*');
+    if (tenantId) params.set('tenant_id', `eq.${tenantId}`);
+    if (leadId) params.set('id', `eq.${leadId}`);
+    params.set('order', 'created_at.desc');
+    params.set('limit', String(limit));
 
-    const records = await supabaseRequest('GET', `${table}?${queryParts.join('&')}`);
+    const records = await supabaseRequest('GET', `${config.tableName}?${params.toString()}`, null, {
+      prefer: '',
+    });
+
+    const safeRecords = Array.isArray(records) ? records : [];
+
     return json(200, {
       ok: true,
-      records: Array.isArray(records) ? records : [],
-      count: Array.isArray(records) ? records.length : 0,
-      tenant_id: tenantId
+      records: safeRecords,
+      summary: buildSummary(safeRecords),
+      tenant_id: tenantId,
+      count: safeRecords.length,
+      loaded_at: new Date().toISOString(),
     });
   } catch (error) {
     console.error('get-leads error:', error.message);
