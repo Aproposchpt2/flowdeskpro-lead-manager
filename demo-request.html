@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request a Demo — FlowDesk Pro Lead Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    main.form-shell { display:flex; align-items:center; justify-content:center; padding:clamp(2rem,6vw,5rem) clamp(18px,5vw,48px); }
+    .form-wrap { width:100%; max-width:560px; }
+    .form-kicker {
+      font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:900;
+      letter-spacing:.2em; text-transform:uppercase; color:var(--cyan);
+      display:flex; align-items:center; gap:8px; margin-bottom:1.2rem;
+    }
+    .form-kicker::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan); animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+    .form-heading { font-family:Georgia,"Cormorant Garamond",serif; font-size:clamp(2rem,5vw,3.4rem); font-weight:400; color:var(--text); line-height:1.05; margin-bottom:.8rem; }
+    .form-heading em { font-style:italic; color:var(--cyan); }
+    .form-subhead { color:var(--muted); font-size:1rem; line-height:1.75; margin-bottom:2.2rem; max-width:480px; }
+    .form-card {
+      border:1px solid var(--line-strong); border-radius:24px;
+      background:linear-gradient(145deg,rgba(13,27,48,.96),rgba(6,16,31,.9));
+      padding:clamp(24px,4vw,40px); box-shadow:0 28px 90px rgba(0,0,0,.45);
+    }
+    .field { margin-bottom:18px; }
+    .form-label { display:block; font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); margin-bottom:7px; }
+    .form-input {
+      width:100%; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px;
+      padding:13px 16px; color:var(--text); font-size:.96rem; font-family:inherit;
+      transition:.18s; outline:none;
+    }
+    .form-input:focus { border-color:var(--cyan); background:rgba(115,230,255,.04); box-shadow:0 0 0 3px rgba(115,230,255,.10); }
+    .form-input::placeholder { color:var(--soft); }
+    .form-input.error { border-color:var(--red); }
+    .field-error { font-size:.78rem; color:var(--red); margin-top:5px; display:none; }
+    .field-error.show { display:block; }
+    .submit-btn {
+      width:100%; padding:15px; border-radius:999px; border:none; cursor:pointer;
+      font-family:'JetBrains Mono',monospace; font-size:.78rem; font-weight:900;
+      letter-spacing:.08em; text-transform:uppercase;
+      color:#020407; background:linear-gradient(135deg,#f7fbff,var(--cyan) 45%,var(--blue));
+      box-shadow:0 0 36px rgba(74,127,255,.32); transition:.18s; margin-top:8px;
+    }
+    .submit-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 0 52px rgba(74,127,255,.48); }
+    .submit-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+    .form-note { font-size:.8rem; color:var(--soft); text-align:center; margin-top:14px; line-height:1.5; }
+    .success-state { display:none; text-align:center; padding:2rem 0; }
+    .success-icon { width:64px; height:64px; border-radius:50%; background:rgba(85,230,165,.1); border:2px solid var(--green); display:grid; place-items:center; margin:0 auto 1.2rem; }
+    .success-icon svg { width:28px; height:28px; stroke:var(--green); fill:none; stroke-width:2; }
+    .success-state h3 { font-family:Georgia,"Cormorant Garamond",serif; font-size:2rem; color:var(--text); margin-bottom:.5rem; font-weight:400; }
+    .success-state p { color:var(--muted); margin-bottom:1.5rem; }
+    .form-general-error {
+      display:none; background:rgba(255,107,122,.06); border:1px solid rgba(255,107,122,.22);
+      border-radius:12px; padding:12px 16px; font-size:.88rem; color:var(--red);
+      margin-top:12px; text-align:center;
+    }
+    .form-general-error.show { display:block; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="nav" aria-label="Lead Manager navigation">
+      <a class="brand" href="/">
+        <span class="brand-mark"><img src="lead-management-logo.png" alt="" /></span>
+        <span class="brand-text"><strong>FlowDesk Pro</strong><span>Lead Manager</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/intake">Fallback Intake</a></li>
+        <li><a href="/">Overview</a></li>
+      </ul>
+      <a class="nav-action" href="/dashboard">Open Dashboard</a>
+    </nav>
+
+    <main class="form-shell">
+      <div class="form-wrap">
+        <div class="form-kicker">Request a Demo</div>
+        <h1 class="form-heading">FlowDesk Pro <em>Lead Manager</em></h1>
+        <p class="form-subhead">Fill out the form and we will set up a live walkthrough of your AI-powered lead management and CRM system.</p>
+
+        <div class="form-card">
+          <form id="demoForm" novalidate>
+            <div class="field">
+              <label class="form-label" for="business_name">Business Name</label>
+              <input class="form-input" type="text" id="business_name" name="business_name" placeholder="Acme Corp" autocomplete="organization" />
+              <div class="field-error" id="err_business_name">Please enter your business name.</div>
+            </div>
+            <div class="field">
+              <label class="form-label" for="contact_name">Your Name</label>
+              <input class="form-input" type="text" id="contact_name" name="contact_name" placeholder="Jane Smith" autocomplete="name" />
+              <div class="field-error" id="err_contact_name">Please enter your name.</div>
+            </div>
+            <div class="field">
+              <label class="form-label" for="phone">Phone Number</label>
+              <input class="form-input" type="tel" id="phone" name="phone" placeholder="+1 (702) 555-0100" autocomplete="tel" />
+              <div class="field-error" id="err_phone">Please enter a valid phone number.</div>
+            </div>
+            <div class="field">
+              <label class="form-label" for="email">Email Address</label>
+              <input class="form-input" type="email" id="email" name="email" placeholder="jane@acmecorp.com" autocomplete="email" />
+              <div class="field-error" id="err_email">Please enter a valid email address.</div>
+            </div>
+            <div class="field">
+              <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.85rem;color:var(--muted)">
+                <input type="checkbox" id="sms_consent" required style="margin-top:3px;flex-shrink:0">
+                <span>I agree to receive SMS notifications from FlowDesk Pro. Reply STOP to opt out at any time. Message and data rates may apply. See our <a href="/privacy.html" style="color:var(--cyan)">Privacy Policy</a> and <a href="/terms.html" style="color:var(--cyan)">Terms</a>.</span>
+              </label>
+              <div class="field-error" id="err_sms_consent">Please agree to the SMS terms to continue.</div>
+            </div>
+            <button type="submit" class="submit-btn" id="submitBtn">Request My Demo →</button>
+            <div class="form-general-error" id="generalError">Something went wrong. Please try again.</div>
+          </form>
+
+          <div class="success-state" id="successState">
+            <div class="success-icon">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3>You're on the list.</h3>
+            <p>We'll reach out shortly to schedule your live walkthrough.</p>
+          </div>
+
+          <p class="form-note">Your information is never sold. <strong>We'll reach out to schedule your live walkthrough.</strong></p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <div>FlowDesk Pro Lead Manager · Powered by FlowDesk Pro</div>
+        <div class="footer-links">
+          <a href="/dashboard">Dashboard</a>
+          <a href="/intake">Fallback Intake</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms &amp; Conditions</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+  'use strict';
+  const form = document.getElementById('demoForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const successState = document.getElementById('successState');
+  const generalError = document.getElementById('generalError');
+
+  function clearErrors() {
+    document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+    document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+    generalError.classList.remove('show');
+  }
+
+  function showError(fieldId, errId) {
+    const el = document.getElementById(fieldId);
+    if (el) el.classList.add('error');
+    document.getElementById(errId).classList.add('show');
+  }
+
+  function validate() {
+    let valid = true;
+    const businessName = document.getElementById('business_name').value.trim();
+    const contactName  = document.getElementById('contact_name').value.trim();
+    const phone        = document.getElementById('phone').value.trim();
+    const email        = document.getElementById('email').value.trim();
+
+    if (!businessName) { showError('business_name', 'err_business_name'); valid = false; }
+    if (!contactName)  { showError('contact_name',  'err_contact_name');  valid = false; }
+    if (!phone || phone.replace(/\D/g,'').length < 10) { showError('phone', 'err_phone'); valid = false; }
+    if (!email || !email.includes('@') || !email.includes('.')) { showError('email', 'err_email'); valid = false; }
+    if (!document.getElementById('sms_consent').checked) { showError('sms_consent', 'err_sms_consent'); valid = false; }
+
+    return valid;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+    if (!validate()) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    const payload = {
+      business_name: document.getElementById('business_name').value.trim(),
+      contact_name:  document.getElementById('contact_name').value.trim(),
+      phone:         document.getElementById('phone').value.trim(),
+      email:         document.getElementById('email').value.trim(),
+      sms_consent:   document.getElementById('sms_consent').checked,
+      source: 'lead-manager-demo-request',
+    };
+
+    try {
+      const res = await fetch('/.netlify/functions/submit-demo-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Server error ' + res.status);
+
+      form.style.display = 'none';
+      successState.style.display = 'block';
+    } catch {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Request My Demo →';
+      generalError.classList.add('show');
+    }
+  });
+  </script>
+</body>
+</html>
