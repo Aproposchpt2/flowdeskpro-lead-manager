@@ -87,6 +87,9 @@
     .b-voice{color:#efeaff;background:rgba(169,147,255,.17);border-color:rgba(169,147,255,.34)}
     .b-sms{color:#dff8ff;background:rgba(115,230,255,.13);border-color:rgba(115,230,255,.3)}
     .b-other{color:#d9e5f3;background:rgba(168,184,208,.12);border-color:rgba(168,184,208,.2)}
+    .b-src-leadmgr{color:#c4d9ff;background:rgba(74,127,255,.18);border-color:rgba(74,127,255,.38)}
+    .b-src-cc{color:#ece8ff;background:rgba(169,147,255,.22);border-color:rgba(169,147,255,.44)}
+    .b-src-voice{color:#d4f9ff;background:rgba(115,230,255,.17);border-color:rgba(115,230,255,.36)}
     .meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
     .meta{border:1px solid rgba(116,184,255,.12);border-radius:11px;background:rgba(255,255,255,.03);padding:8px;min-width:0}
     .meta span{display:block;color:var(--soft);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
@@ -410,7 +413,7 @@ function renderList(records){
         </div>
         ${statusBadge(r)}
       </div>
-      <div class="chip-row">${channelBadge(r)}${urgencyBadge(r)}${followBadge(r)}${appointmentBadge(r)}</div>
+      <div class="chip-row">${sourceBadge(r)}${channelBadge(r)}${urgencyBadge(r)}${followBadge(r)}${appointmentBadge(r)}</div>
       <div class="meta-grid">
         ${metaBox('Product', selectedProduct(r))}
         ${metaBox('Plan', selectedPlan(r))}
@@ -442,7 +445,7 @@ function renderDetail(){
       <div>
         <h2>${escapeHtml(contactName(r))}</h2>
         <p>${escapeHtml(businessName(r))}<br>${escapeHtml(value(r.email,'No email'))} / ${escapeHtml(value(r.phone,'No phone'))}</p>
-        <div class="chip-row">${statusBadge(r)}${channelBadge(r)}${urgencyBadge(r)}${followBadge(r)}${appointmentBadge(r)}</div>
+        <div class="chip-row">${statusBadge(r)}${sourceBadge(r)}${channelBadge(r)}${urgencyBadge(r)}${followBadge(r)}${appointmentBadge(r)}</div>
       </div>
     </div>
 
@@ -528,6 +531,12 @@ function urgencyBadge(r){
 }
 function followBadge(r){ return `<span class="badge ${r.follow_up_needed ? 'b-active' : 'b-other'}">Follow-up: ${boolLabel(r.follow_up_needed)}</span>`; }
 function appointmentBadge(r){ return `<span class="badge ${r.appointment_requested ? 'b-priority' : 'b-other'}">Appt: ${boolLabel(r.appointment_requested)}</span>`; }
+function sourceBadge(r){
+  const src = normalize(r.source || '');
+  if (src === 'contact-center' || src.includes('conversational_ai')) return '<span class="badge b-src-cc">Contact Center</span>';
+  if (channelBucket(r) === 'voice') return '<span class="badge b-src-voice">Voice</span>';
+  return '<span class="badge b-src-leadmgr">Lead Mgr</span>';
+}
 
 function setDetailNotice(message, type){
   const el = byId('detailNotice');
