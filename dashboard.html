@@ -134,8 +134,8 @@
   <main>
     <header class="topbar">
       <div class="page-title">
-        <h1>AI4 Businesses — Lead Manager Command Center</h1>
-        <p>Receive and manage records from AI4 Product Purchasing, web intake forms, calls, SMS, missed calls, and appointment requests. Payment activity belongs to the purchasing site; this dashboard tracks the record and follow-up workflow.</p>
+        <h1 id="dashboard-title">AI4 Businesses — Lead Manager Command Center</h1>
+        <p id="dashboard-subtitle">Receive and manage records from AI4 Product Purchasing, web intake forms, calls, SMS, missed calls, and appointment requests.</p>
       </div>
       <div class="top-actions">
         <a class="btn" href="https://ai4-product-purchasing.ai4businesses.org" target="_blank" rel="noopener">Product Purchasing Site</a>
@@ -197,6 +197,26 @@
 
 <script>
 'use strict';
+
+// Apply business name branding from URL param or sessionStorage
+(function applyBusinessBranding() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    let bizName = params.get('business_name') || '';
+    if (bizName) {
+      sessionStorage.setItem('lm_business_name', bizName);
+    } else {
+      bizName = sessionStorage.getItem('lm_business_name') || '';
+    }
+    if (bizName) {
+      const title = document.getElementById('dashboard-title');
+      const subtitle = document.getElementById('dashboard-subtitle');
+      if (title) title.textContent = bizName + ' — Lead Dashboard';
+      if (subtitle) subtitle.textContent = 'Your ' + bizName + ' lead pipeline — all records, activity, and follow-ups in one place.';
+      document.title = bizName + ' — Lead Manager | FlowDesk Pro';
+    }
+  } catch (_) {}
+})();
 
 const state = { records: [], selectedId: '', loading: false, error: '', config: null };
 const els = {
