@@ -234,6 +234,9 @@ exports.handler = async (event) => {
 
   if (event.httpMethod === 'OPTIONS') return handleOptions(origin);
 
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  if (!apiKey) return json(500, { ok: false, error: 'ELEVENLABS_API_KEY not configured' }, corsHeaders);
+
   // ?action=debug_detail — show raw detail for most recent conversation
   const qs = event.queryStringParameters || {};
   if (qs.action === 'debug_detail') {
@@ -271,10 +274,6 @@ exports.handler = async (event) => {
     }
   }
 
-  const apiKey = process.env.ELEVENLABS_API_KEY;
-  if (!apiKey) {
-    return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ ok: false, error: 'ELEVENLABS_API_KEY not configured' }) };
-  }
 
   let supabase;
   try { supabase = getSupabaseAdmin(); }
