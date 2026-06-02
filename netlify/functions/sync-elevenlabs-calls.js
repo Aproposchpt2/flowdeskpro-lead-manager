@@ -169,7 +169,7 @@ async function processConversation(supabase, conv, apiKey) {
       call_sid:         conversationId,
       call_status:      'completed',
       duration_seconds: durationSecs,
-      outcome:          conv.status || 'completed',
+      outcome:          'completed',
       lead_created:     true,
       is_demo:          false,
       created_at:       startedAt,
@@ -184,7 +184,7 @@ async function processConversation(supabase, conv, apiKey) {
       call_sid:              conversationId,
       source:                'voice_agent',
       source_page:           'ElevenLabs Alex — Contact Center',
-      channel:               'phone',
+      channel:               'voice',
       lead_status:           reason ? 'New / Needs Review' : 'New / Priority Review',
       service_needed:        reason || 'Inbound call — Contact Center',
       message:               reason || null,
@@ -198,7 +198,7 @@ async function processConversation(supabase, conv, apiKey) {
       ai_call_summary:       summary,
       transcript:            summary,
       campaign_source:       'voice_agent',
-      campaign_medium:       'phone',
+      campaign_medium:       'voice',
       campaign_name:         'FlowDesk Pro Contact Center',
       next_action:           reason
                                ? `Follow up with ${contactName || 'caller'} regarding: ${reason.slice(0,100)}`
