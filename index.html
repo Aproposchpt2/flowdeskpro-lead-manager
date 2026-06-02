@@ -191,7 +191,18 @@ footer{border-top:1px solid var(--line);padding:34px clamp(20px,5vw,74px);color:
 @media(max-width:1100px){.hero{grid-template-columns:1fr}.hero-card{max-width:720px}.metric-strip,.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.nav-links{display:none}}
 @media(max-width:720px){.brand{min-width:auto}.brand-text span{display:none}.nav-action{display:none}.hero{padding-top:38px}.hero h1{font-size:3.2rem}.form-grid,.metric-strip,.grid-3{grid-template-columns:1fr}.btn{width:100%}.hero-logo{width:100%}.form-card{padding:22px}}
 
-  </style>
+  
+/* -- FlowDesk Pro Brand Nav Override -- */
+.nav{background:#1B3A6B!important;border-bottom:1px solid rgba(27,58,107,0.3)!important;backdrop-filter:none!important;}
+.brand-mark,.brand-logo{width:40px!important;height:40px!important;background:#B8860B!important;border-radius:8px!important;border:none!important;box-shadow:none!important;display:grid!important;place-items:center!important;}
+.brand-mark::after{content:'FP';font-weight:700;font-size:1rem;color:#fff;font-family:Inter,system-ui,sans-serif;}
+.brand-mark img,.brand-logo img{display:none!important;}
+.brand-name,.brand-text strong,.nav-brand-name{color:#ffffff!important;}
+.brand-name span,.brand-text span,.nav-brand-sub{color:rgba(255,255,255,0.65)!important;}
+.nav-links a,.nav-link{color:rgba(255,255,255,0.8)!important;}
+.nav-links a:hover,.nav-link:hover{color:#B8860B!important;background:rgba(255,255,255,0.08)!important;}
+.nav-action,.nav-cta{background:#ffffff!important;color:#1B3A6B!important;border:none!important;box-shadow:none!important;font-family:Inter,system-ui,sans-serif!important;}
+.nav-action:hover,.nav-cta:hover{background:#B8860B!important;color:#ffffff!important;transform:translateY(-1px)!important;}</style>
 </head>
 <body>
   <div class="shell">
