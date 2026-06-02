@@ -234,6 +234,31 @@ exports.handler = async (event) => {
 
   if (event.httpMethod === 'OPTIONS') return handleOptions(origin);
 
+  // ?action=debug_detail — show raw detail for most recent conversation
+  const qs = event.queryStringParameters || {};
+  if (qs.action === 'debug_detail') {
+    try {
+      const listResult = await httpsGet(
+        `https://api.elevenlabs.io/v1/convai/conversations?agent_id=${AGENT_ID}&page_size=1`,
+        { 'xi-api-key': apiKey }
+      );
+      const convs = JSON.parse(listResult.body)?.conversations || [];
+      if (!convs.length) return json(200, { ok: false, error: 'No conversations found' }, corsHeaders);
+      const detail = await fetchConversationDetail(apiKey, convs[0].conversation_id);
+      return json(200, {
+        ok: true,
+        conversation_id: convs[0].conversation_id,
+        list_keys: Object.keys(convs[0]),
+        detail_keys: detail ? Object.keys(detail) : [],
+        metadata: detail?.metadata || null,
+        conversation_initiation_client_data: detail?.conversation_initiation_client_data || null,
+        custom_llm_extra_body: detail?.custom_llm_extra_body || null,
+      }, corsHeaders);
+    } catch (err) {
+      return json(500, { ok: false, error: err.message }, corsHeaders);
+    }
+  }
+
   // Auth check for manual POST triggers (scheduled runs bypass this)
   const isScheduled = event.httpMethod === 'GET' || !event.httpMethod;
   if (!isScheduled && event.httpMethod === 'POST') {
