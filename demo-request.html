@@ -3,196 +3,207 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Get Started — FlowDesk Pro Lead Manager</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Lead Manager Demo Request — FlowDesk Pro</title>
+  <meta name="description" content="Request a live demo of the FlowDesk Pro Lead Manager. Turn every lead into a revenue opportunity." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    main.form-shell { display:flex; align-items:center; justify-content:center; padding:clamp(2rem,6vw,5rem) clamp(18px,5vw,48px); }
-    .form-wrap { width:100%; max-width:560px; }
-    .form-kicker {
-      font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:900;
-      letter-spacing:.2em; text-transform:uppercase; color:var(--cyan);
-      display:flex; align-items:center; gap:8px; margin-bottom:1.2rem;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #F8F9FA;
+      color: #333333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .form-kicker::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan); animation:pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
-    .form-heading { font-family:Georgia,"Cormorant Garamond",serif; font-size:clamp(2rem,5vw,3.4rem); font-weight:400; color:var(--text); line-height:1.05; margin-bottom:.8rem; }
-    .form-heading em { font-style:italic; color:var(--cyan); }
-    .form-subhead { color:var(--muted); font-size:1rem; line-height:1.75; margin-bottom:2.2rem; max-width:480px; }
-    .form-card {
-      border:1px solid var(--line-strong); border-radius:24px;
-      background:linear-gradient(145deg,rgba(13,27,48,.96),rgba(6,16,31,.9));
-      padding:clamp(24px,4vw,40px); box-shadow:0 28px 90px rgba(0,0,0,.45);
+    nav {
+      background: #1B3A6B;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(27,58,107,0.18);
     }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    .field { margin-bottom:18px; }
-    .form-label { display:block; font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); margin-bottom:7px; }
-    .form-input {
-      width:100%; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px;
-      padding:13px 16px; color:var(--text); font-size:.96rem; font-family:inherit;
-      transition:.18s; outline:none;
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo-mark { width: 40px; height: 40px; background: #B8860B; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 1rem; color: #fff; }
+    .nav-brand-text { display: flex; flex-direction: column; }
+    .nav-brand-name { font-size: 1rem; font-weight: 700; color: #ffffff; line-height: 1.2; }
+    .nav-brand-sub { font-size: 0.68rem; color: rgba(255,255,255,0.65); font-weight: 400; letter-spacing: 0.04em; }
+    .nav-back { font-size: 0.82rem; color: rgba(255,255,255,0.75); text-decoration: none; transition: color 0.2s; }
+    .nav-back:hover { color: #B8860B; }
+    main { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 48px 20px 64px; }
+    .page-wrap { width: 100%; max-width: 560px; }
+    .page-header { margin-bottom: 32px; }
+    .page-kicker { display: inline-block; background: rgba(27,58,107,0.08); border: 1px solid rgba(27,58,107,0.2); color: #1B3A6B; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 12px; border-radius: 100px; margin-bottom: 14px; }
+    .page-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; color: #1B3A6B; line-height: 1.2; margin-bottom: 10px; letter-spacing: -0.02em; }
+    .page-subtitle { font-size: 1rem; color: #555555; line-height: 1.65; }
+    .form-card { background: #ffffff; border: 1px solid #E2E6EC; border-radius: 12px; padding: 36px; box-shadow: 0 4px 24px rgba(27,58,107,0.07); }
+    .field { margin-bottom: 20px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    label.field-label { display: block; font-size: 0.82rem; font-weight: 600; color: #1B3A6B; margin-bottom: 6px; }
+    input[type="text"], input[type="email"], input[type="tel"], textarea {
+      width: 100%; background: #ffffff; border: 1px solid #C8D0DC; border-radius: 6px;
+      padding: 11px 14px; font-family: 'Inter', system-ui, sans-serif; font-size: 0.93rem;
+      color: #333333; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .form-input:focus { border-color:var(--cyan); background:rgba(115,230,255,.04); box-shadow:0 0 0 3px rgba(115,230,255,.10); }
-    .form-input::placeholder { color:var(--soft); }
-    .form-input.error { border-color:var(--red); }
-    .field-error { font-size:.78rem; color:var(--red); margin-top:5px; display:none; }
-    .field-error.show { display:block; }
-
-    /* SMS OPT-IN */
-    .sms-opt-in {
-      margin:16px 0 20px; padding:14px 16px;
-      border:1px solid rgba(115,230,255,.22); border-radius:12px;
-      background:rgba(115,230,255,.04);
+    input::placeholder, textarea::placeholder { color: #9CA3AF; }
+    input:focus, textarea:focus { border-color: #1B3A6B; box-shadow: 0 0 0 3px rgba(27,58,107,0.12); }
+    input.error, textarea.error { border-color: #DC2626; }
+    textarea { resize: vertical; min-height: 100px; }
+    .field-error { font-size: 0.78rem; color: #DC2626; margin-top: 5px; display: none; }
+    .field-error.show { display: block; }
+    .sms-opt-in { background: #F8F9FA; border: 1px solid #E2E6EC; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; }
+    .sms-opt-in label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+    .sms-opt-in input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; width: 15px; height: 15px; accent-color: #1B3A6B; }
+    .sms-text { font-size: 0.82rem; color: #444444; line-height: 1.55; }
+    .sms-text a { color: #1B3A6B; }
+    .sms-note { font-size: 0.75rem; color: #666666; margin: 8px 0 0 25px; line-height: 1.5; }
+    .submit-btn { width: 100%; padding: 14px; background: #1B3A6B; color: #ffffff; border: none; border-radius: 6px; font-family: 'Inter', system-ui, sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+    .submit-btn:hover:not(:disabled) { background: #B8860B; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .form-note { font-size: 0.78rem; color: #888888; text-align: center; margin-top: 14px; line-height: 1.5; }
+    .success-state { display: none; text-align: center; padding: 2rem 0; }
+    .success-icon { width: 60px; height: 60px; border-radius: 50%; background: rgba(27,58,107,0.08); border: 2px solid #1B3A6B; display: grid; place-items: center; margin: 0 auto 1.2rem; }
+    .success-icon svg { width: 26px; height: 26px; stroke: #1B3A6B; fill: none; stroke-width: 2.5; }
+    .success-state h3 { font-size: 1.5rem; font-weight: 700; color: #1B3A6B; margin-bottom: 0.5rem; }
+    .success-state p { color: #555555; }
+    .form-general-error { display: none; background: #FEF2F2; border: 1px solid #FECACA; border-radius: 6px; padding: 10px 14px; font-size: 0.86rem; color: #DC2626; margin-top: 12px; text-align: center; }
+    .form-general-error.show { display: block; }
+    footer { background: #1B3A6B; padding: 20px 40px; text-align: center; }
+    .footer-links { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 8px; }
+    .footer-links a { font-size: 0.8rem; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #B8860B; }
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.45); }
+    @media (max-width: 560px) {
+      nav { padding: 14px 20px; }
+      .form-card { padding: 24px 20px; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+      footer { padding: 18px 20px; }
     }
-    .sms-opt-in label {
-      display:flex; align-items:flex-start; gap:10px;
-      font-size:13px; color:var(--muted); cursor:pointer; line-height:1.55;
-    }
-    .sms-opt-in input[type="checkbox"] { margin-top:3px; flex-shrink:0; accent-color:var(--cyan); width:15px; height:15px; }
-    .sms-opt-in a { color:var(--cyan); }
-    .sms-opt-in .sms-note { font-size:11px; color:var(--soft); margin:8px 0 0 25px; line-height:1.5; }
-
-    .submit-btn {
-      width:100%; padding:15px; border-radius:999px; border:none; cursor:pointer;
-      font-family:'JetBrains Mono',monospace; font-size:.78rem; font-weight:900;
-      letter-spacing:.08em; text-transform:uppercase;
-      color:#020407; background:linear-gradient(135deg,#f7fbff,var(--cyan) 45%,var(--blue));
-      box-shadow:0 0 36px rgba(74,127,255,.32); transition:.18s; margin-top:8px;
-    }
-    .submit-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 0 52px rgba(74,127,255,.48); }
-    .submit-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
-    .form-note { font-size:.8rem; color:var(--soft); text-align:center; margin-top:14px; line-height:1.5; }
-    .form-general-error {
-      display:none; background:rgba(255,107,122,.06); border:1px solid rgba(255,107,122,.22);
-      border-radius:12px; padding:12px 16px; font-size:.88rem; color:var(--red);
-      margin-top:12px; text-align:center;
-    }
-    .form-general-error.show { display:block; }
-    @media (max-width:480px) { .form-row { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <nav class="nav" aria-label="Lead Manager navigation">
-      <a class="brand" href="/">
-        <span class="brand-mark"><img src="lead-management-logo.png" alt="" /></span>
-        <span class="brand-text"><strong>FlowDesk Pro</strong><span>Lead Manager</span></span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/">Overview</a></li>
-      </ul>
-      <a class="nav-action" href="/dashboard">Open Dashboard</a>
-    </nav>
 
-    <main class="form-shell">
-      <div class="form-wrap">
-        <div class="form-kicker">Get Started — Member Sign-Up</div>
-        <h1 class="form-heading">FlowDesk Pro <em>Lead Manager</em></h1>
-        <p class="form-subhead">Enter your details and your branded Lead Manager dashboard will load instantly with your business name displayed throughout.</p>
-
-        <div class="form-card">
-          <form id="demoForm" novalidate>
-
-            <!-- First Name + Last Name -->
-            <div class="form-row">
-              <div class="field">
-                <label class="form-label" for="first_name">First Name *</label>
-                <input class="form-input" type="text" id="first_name" name="first_name" placeholder="Jane" autocomplete="given-name" required />
-                <div class="field-error" id="err_first_name">First name is required.</div>
-              </div>
-              <div class="field">
-                <label class="form-label" for="last_name">Last Name *</label>
-                <input class="form-input" type="text" id="last_name" name="last_name" placeholder="Smith" autocomplete="family-name" required />
-                <div class="field-error" id="err_last_name">Last name is required.</div>
-              </div>
-            </div>
-
-            <!-- Email -->
-            <div class="field">
-              <label class="form-label" for="email">Email Address *</label>
-              <input class="form-input" type="email" id="email" name="email" placeholder="jane@acmecorp.com" autocomplete="email" required />
-              <div class="field-error" id="err_email">Please enter a valid email address.</div>
-            </div>
-
-            <!-- Business Name -->
-            <div class="field">
-              <label class="form-label" for="business_name">Business Name *</label>
-              <input class="form-input" type="text" id="business_name" name="business_name" placeholder="Acme Corp" autocomplete="organization" required />
-              <div class="field-error" id="err_business_name">Business name is required.</div>
-            </div>
-
-            <!-- Phone (optional — needed for SMS) -->
-            <div class="field">
-              <label class="form-label" for="phone">Phone Number <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — required for SMS)</span></label>
-              <input class="form-input" type="tel" id="phone" name="phone" placeholder="+1 (702) 555-0100" autocomplete="tel" />
-            </div>
-
-            <!-- SMS OPT-IN — unchecked by default, NOT required -->
-            <div class="sms-opt-in">
-              <label>
-                <input type="checkbox" id="sms_consent" name="sms_consent" value="yes">
-                <span>
-                  I agree to receive SMS notifications from AI4 Businesses / FlowDesk Pro regarding my demo request, follow-up communications, and service updates. Message and data rates may apply. Message frequency varies. Reply STOP to unsubscribe at any time. Reply HELP for help. View our
-                  <a href="https://ai4businesses.org/privacy" target="_blank" rel="noopener">Privacy Policy</a>
-                  and
-                  <a href="https://ai4businesses.org/terms" target="_blank" rel="noopener">Terms of Service</a>.
-                </span>
-              </label>
-              <p class="sms-note">SMS consent is optional. You may still submit this form without checking this box. Standard message and data rates may apply.</p>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">Launch My Dashboard →</button>
-            <div class="form-general-error" id="generalError">Something went wrong. Please try again.</div>
-          </form>
-
-          <p class="form-note">Your information is never sold. <strong>Your branded dashboard loads immediately after sign-up.</strong></p>
-        </div>
+  <nav>
+    <a class="nav-brand" href="/">
+      <div class="nav-logo-mark">FP</div>
+      <div class="nav-brand-text">
+        <span class="nav-brand-name">FlowDesk Pro</span>
+        <span class="nav-brand-sub">Lead Manager</span>
       </div>
-    </main>
+    </a>
+    <a class="nav-back" href="/">← Back to Overview</a>
+  </nav>
 
-    <footer>
-      <div class="footer-inner">
-        <div>FlowDesk Pro Lead Manager · Powered by FlowDesk Pro</div>
-        <div class="footer-links">
-          <a href="/dashboard">Dashboard</a>
-          <a href="/privacy.html">Privacy Policy</a>
-          <a href="/terms.html">Terms &amp; Conditions</a>
-        </div>
+  <main>
+    <div class="page-wrap">
+
+      <div class="page-header">
+        <div class="page-kicker">Live Demo Request</div>
+        <h1 class="page-title">Lead Manager Demo Request</h1>
+        <p class="page-subtitle">Experience how FlowDesk Pro turns every lead into a revenue opportunity. Request your demo below and we'll launch your branded dashboard.</p>
       </div>
-    </footer>
-  </div>
+
+      <div class="form-card">
+        <form id="demoForm" novalidate>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="first_name">First Name *</label>
+              <input type="text" id="first_name" name="first_name" placeholder="Jane" autocomplete="given-name" required />
+              <div class="field-error" id="err_first_name">First name is required.</div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="last_name">Last Name *</label>
+              <input type="text" id="last_name" name="last_name" placeholder="Smith" autocomplete="family-name" required />
+              <div class="field-error" id="err_last_name">Last name is required.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="jane@company.com" autocomplete="email" required />
+            <div class="field-error" id="err_email">Please enter a valid email address.</div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="business_name">Business Name *</label>
+            <input type="text" id="business_name" name="business_name" placeholder="Acme Corp" autocomplete="organization" required />
+            <div class="field-error" id="err_business_name">Business name is required.</div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+1 (702) 555-0100" autocomplete="tel" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="reason">Reason for Demo Request</label>
+            <textarea id="reason" name="reason" placeholder="Tell us about your business and what you're looking to automate..."></textarea>
+          </div>
+
+          <div class="sms-opt-in">
+            <label>
+              <input type="checkbox" id="sms_consent" name="sms_consent" value="yes">
+              <span class="sms-text">I agree to receive SMS notifications from AI4 Businesses / FlowDesk Pro regarding my demo request, follow-up communications, and service updates. Message and data rates may apply. Message frequency varies. Reply STOP to unsubscribe at any time. Reply HELP for help. View our <a href="https://ai4businesses.org/privacy" target="_blank">Privacy Policy</a> and <a href="https://ai4businesses.org/terms" target="_blank">Terms of Service</a>.</span>
+            </label>
+            <p class="sms-note">SMS consent is optional. You may still submit this form without checking this box. Standard message and data rates may apply.</p>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">Request My Demo</button>
+          <div class="form-general-error" id="generalError">Something went wrong. Please try again.</div>
+        </form>
+
+        <div class="success-state" id="successState">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>Demo request received.</h3>
+          <p>We'll be in touch within one business day to schedule your walkthrough.</p>
+        </div>
+
+        <p class="form-note">Your information is never sold or shared. We'll reach out to schedule your live walkthrough.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="https://ai4businesses.org/privacy" target="_blank">Privacy Policy</a>
+      <a href="https://ai4businesses.org/terms" target="_blank">Terms of Service</a>
+      <a href="/">Lead Manager</a>
+    </div>
+    <div class="footer-copy">© 2026 Apropos Group LLC. All rights reserved.</div>
+  </footer>
 
   <script>
   'use strict';
-  const form        = document.getElementById('demoForm');
-  const submitBtn   = document.getElementById('submitBtn');
+  const form = document.getElementById('demoForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const successState = document.getElementById('successState');
   const generalError = document.getElementById('generalError');
 
   function clearErrors() {
     document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
-    document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+    document.querySelectorAll('input, textarea').forEach(el => el.classList.remove('error'));
     generalError.classList.remove('show');
   }
 
-  function showError(fieldId, errId) {
-    const el = document.getElementById(fieldId);
-    if (el) el.classList.add('error');
-    const errEl = document.getElementById(errId);
-    if (errEl) errEl.classList.add('show');
+  function showError(id, errId) {
+    const el = document.getElementById(id); if (el) el.classList.add('error');
+    const err = document.getElementById(errId); if (err) err.classList.add('show');
   }
 
   function validate() {
     let valid = true;
-    const firstName    = document.getElementById('first_name').value.trim();
-    const lastName     = document.getElementById('last_name').value.trim();
-    const email        = document.getElementById('email').value.trim();
-    const businessName = document.getElementById('business_name').value.trim();
-
-    if (!firstName)  { showError('first_name',    'err_first_name');    valid = false; }
-    if (!lastName)   { showError('last_name',     'err_last_name');     valid = false; }
+    if (!document.getElementById('first_name').value.trim()) { showError('first_name', 'err_first_name'); valid = false; }
+    if (!document.getElementById('last_name').value.trim())  { showError('last_name',  'err_last_name');  valid = false; }
+    const email = document.getElementById('email').value.trim();
     if (!email || !email.includes('@') || !email.includes('.')) { showError('email', 'err_email'); valid = false; }
-    if (!businessName) { showError('business_name', 'err_business_name'); valid = false; }
-
+    if (!document.getElementById('business_name').value.trim()) { showError('business_name', 'err_business_name'); valid = false; }
     return valid;
   }
 
@@ -200,39 +211,28 @@
     e.preventDefault();
     clearErrors();
     if (!validate()) return;
-
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Setting up your dashboard…';
-
+    submitBtn.textContent = 'Submitting…';
     const payload = {
       first_name:    document.getElementById('first_name').value.trim(),
       last_name:     document.getElementById('last_name').value.trim(),
       email:         document.getElementById('email').value.trim(),
       business_name: document.getElementById('business_name').value.trim(),
       phone:         document.getElementById('phone').value.trim(),
+      reason:        document.getElementById('reason').value.trim(),
       sms_consent:   document.getElementById('sms_consent').checked ? 'yes' : 'no',
       demo_site:     'lead-management.aiflowdeskpro.com',
     };
-
     try {
       const res = await fetch('/.netlify/functions/submit-demo-request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });
-
-      const data = await res.json();
-
-      if (res.ok && data.ok) {
-        // Redirect to branded dashboard
-        window.location.href = data.redirect || ('/dashboard?business_name=' + encodeURIComponent(payload.business_name));
-      } else {
-        throw new Error(data.error || 'Server error');
-      }
-    } catch (err) {
+      if (!res.ok) throw new Error('Server error');
+      form.style.display = 'none';
+      successState.style.display = 'block';
+    } catch {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Launch My Dashboard →';
-      generalError.textContent = err.message || 'Something went wrong. Please try again.';
+      submitBtn.textContent = 'Request My Demo';
       generalError.classList.add('show');
     }
   });
