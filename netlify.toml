@@ -8,6 +8,9 @@
 [functions]
   node_bundler = "esbuild"
 
+[functions."sync-elevenlabs-calls"]
+  schedule = "*/5 * * * *"
+
 # ─── FLOWDESK PRO LEAD MANAGER CLEAN ROUTES ───────────────────
 
 [[redirects]]

@@ -234,8 +234,9 @@ exports.handler = async (event) => {
 
   if (event.httpMethod === 'OPTIONS') return handleOptions(origin);
 
-  // Auth check for manual triggers
-  if (event.httpMethod === 'POST') {
+  // Auth check for manual POST triggers (scheduled runs bypass this)
+  const isScheduled = event.httpMethod === 'GET' || !event.httpMethod;
+  if (!isScheduled && event.httpMethod === 'POST') {
     const patchSecret = process.env.PATCH_SECRET;
     if (patchSecret) {
       const provided = (event.headers['x-patch-secret'] || event.headers['X-Patch-Secret'] || '').trim();
