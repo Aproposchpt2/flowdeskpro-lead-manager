@@ -12,7 +12,7 @@ const { json, error, parseJsonBody } = require('./lib/flowdesk-response-utils');
 
 const AGENT_NAME = 'Alex';
 const AGENT_ID   = process.env.ELEVENLABS_AGENT_ID || 'agent_6101ksv5amdpfqn90z89gtvh34a7';
-const CLIENT_ID  = process.env.CRM_CLIENT_ID || null;
+const CLIENT_ID  = process.env.CRM_CLIENT_ID || '10b8f727-cecd-4e20-9829-c0dfed181dde';
 
 function verifyElevenLabsSignature(event) {
   const secret = process.env.ELEVENLABS_WEBHOOK_SECRET;

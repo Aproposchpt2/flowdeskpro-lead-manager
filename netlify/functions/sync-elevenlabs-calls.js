@@ -270,8 +270,76 @@ async function processConversation(supabase, conv, apiKey) {
   if (callLogErr) console.error('[sync] call_logs error:', callLogErr);
   if (leadErr)    console.error('[sync] lead_manager_records error:', leadErr);
 
-  // Return errors for debugging
-  return { wasNew: true, callLogErr, leadErr, conversationId, callerPhone };
+  // ── Write to CRM tables ───────────────────────────────────────
+  const CRM_CLIENT_ID = '10b8f727-cecd-4e20-9829-c0dfed181dde';
+  const callerPhoneNorm = callerPhone !== 'Unknown' ? callerPhone : null;
+
+  let crmContactId = null;
+  if (callerPhoneNorm) {
+    const { data: existing } = await supabase.from('contacts').select('id,lead_score').eq('caller_id', callerPhoneNorm).maybeSingle();
+    if (existing) {
+      crmContactId = existing.id;
+      await supabase.from('contacts').update({ updated_at: now, lead_score: (existing.lead_score || 0) + 1 }).eq('id', crmContactId);
+    } else {
+      const { data: nc } = await supabase.from('contacts').insert({
+        caller_id: callerPhoneNorm, phone_primary: callerPhoneNorm,
+        first_name: resolvedFirst, last_name: resolvedLast,
+        lead_source: 'phone_call', lead_status: 'new', contact_type: 'lead',
+        client_id: CRM_CLIENT_ID, created_at: startedAt, updated_at: now,
+      }).select('id').single();
+      if (nc) crmContactId = nc.id;
+    }
+  }
+
+  let crmCallId = null;
+  const { data: cr } = await supabase.from('call_records').insert({
+    client_id: CRM_CLIENT_ID, contact_id: crmContactId, conversation_id: conversationId,
+    caller_id: callerPhoneNorm, caller_phone_normalized: callerPhoneNorm,
+    call_direction: 'inbound', call_status: 'completed',
+    call_start_time: startedAt, call_duration_seconds: durationSecs,
+    call_duration_display: durationSecs ? `${Math.floor(durationSecs/60)}m ${durationSecs%60}s` : null,
+    agent_name: 'Alex', caller_first_name: resolvedFirst, caller_last_name: resolvedLast,
+    reason_for_call: reason, caller_message: reason,
+    call_summary: reason || summaryTitle || 'Inbound call',
+    call_transcript: summary, lead_created: !!reason,
+    follow_up_required: !!reason, created_at: startedAt,
+  }).select('id').single();
+  if (cr) crmCallId = cr.id;
+
+  let crmLeadId = null;
+  if (reason && crmContactId) {
+    const { data: lead } = await supabase.from('crm_leads').insert({
+      client_id: CRM_CLIENT_ID, contact_id: crmContactId, call_record_id: crmCallId,
+      lead_title: `${resolvedFirst || 'Caller'} — ${reason.slice(0, 60)}`,
+      lead_description: reason, service_interest: 'FlowDesk Pro — Contact Center',
+      pipeline_stage: 'new_lead', lead_source: 'phone_call',
+      created_at: startedAt, updated_at: now,
+    }).select('id').single();
+    if (lead) {
+      crmLeadId = lead.id;
+      if (crmCallId) await supabase.from('call_records').update({ lead_id: crmLeadId }).eq('id', crmCallId);
+    }
+    const followUp = new Date(new Date(startedAt).getTime() + 24*60*60*1000).toISOString();
+    await supabase.from('tasks').insert({
+      client_id: CRM_CLIENT_ID, contact_id: crmContactId, lead_id: crmLeadId, call_record_id: crmCallId,
+      task_title: `Follow up: ${resolvedFirst || 'Caller'} — ${reason.slice(0, 60)}`,
+      task_description: reason, task_type: 'follow_up', due_date: followUp,
+      priority: 'normal', status: 'pending', created_at: startedAt,
+    });
+  }
+
+  if (crmContactId) {
+    await supabase.from('activities').insert({
+      client_id: CRM_CLIENT_ID, contact_id: crmContactId, lead_id: crmLeadId, call_record_id: crmCallId,
+      activity_type: 'call', activity_direction: 'inbound',
+      activity_subject: reason || 'Inbound call',
+      activity_body: summary || reason || 'Call handled by Alex',
+      activity_outcome: reason ? 'reason_captured' : 'no_reason_captured',
+      performed_by: 'Alex', duration_seconds: durationSecs, created_at: startedAt,
+    });
+  }
+
+  return { wasNew: true, callLogErr, leadErr, conversationId, callerPhone, crmContactId, crmCallId };
 }
 
 exports.handler = async (event) => {
