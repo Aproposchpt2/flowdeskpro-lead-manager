@@ -245,7 +245,7 @@ exports.handler = async (event) => {
         `https://api.elevenlabs.io/v1/convai/conversations?agent_id=${AGENT_ID}&page_size=1`,
         { 'xi-api-key': apiKey }
       );
-      const convs = JSON.parse(listResult.body)?.conversations || [];
+      const convs = (listResult.data?.conversations || listResult.data || []);
       if (!convs.length) return json(200, { ok: false, error: 'No conversations found' }, corsHeaders);
       const detail = await fetchConversationDetail(apiKey, convs[0].conversation_id);
       return json(200, {
