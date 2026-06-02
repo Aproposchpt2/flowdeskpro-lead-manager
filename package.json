@@ -9,5 +9,7 @@
   "engines": {
     "node": ">=18"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.4"
+  }
 }
