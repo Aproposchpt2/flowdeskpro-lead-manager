@@ -1,15 +1,15 @@
 'use strict';
 
 // GET /.netlify/functions/lookup-caller?phone=+15551234567
-// Called by ElevenLabs voice agent Alex at the start of a conversation.
-// Returns caller info from demo_requests if a matching phone exists.
-// Returns { found: false } (not 404) when no match — ElevenLabs tools expect 2xx.
-//
-// Optional auth: set ELEVENLABS_SECRET env var; caller must send matching X-Agent-Secret header.
+// Called by ElevenLabs Alex at the start of every conversation.
+// Looks up caller in lead_manager_records by phone number.
+// Returns caller name + call history so Alex can greet returning callers by name.
 
 const { buildCorsHeaders, handleOptions } = require('./lib/flowdesk-cors');
 const { getSupabaseAdmin } = require('./lib/flowdesk-supabase-admin');
 const { json, error } = require('./lib/flowdesk-response-utils');
+
+const TENANT_ID = process.env.CLIENT_TENANT_ID || 'apropos-ai4-businesses';
 
 function normalizePhone(value) {
   if (!value || typeof value !== 'string') return null;
@@ -31,21 +31,12 @@ exports.handler = async (event) => {
     return error(405, 'METHOD_NOT_ALLOWED', 'Only GET is supported', corsHeaders);
   }
 
-  // Optional shared-secret check for ElevenLabs agent calls
-  const secret = process.env.ELEVENLABS_SECRET;
-  if (secret) {
-    const provided = event.headers['x-agent-secret'] || event.headers['X-Agent-Secret'] || '';
-    if (provided !== secret) {
-      return error(401, 'UNAUTHORIZED', 'Invalid or missing agent secret', corsHeaders);
-    }
-  }
-
   const qs = event.queryStringParameters || {};
   const rawPhone = qs.phone || qs.caller_phone || '';
   const phone = normalizePhone(rawPhone);
 
   if (!phone) {
-    return error(400, 'MISSING_PHONE', 'phone query parameter is required (E.164 or 10-digit US)', corsHeaders);
+    return json(200, { found: false, reason: 'no_phone' }, corsHeaders);
   }
 
   let supabase;
@@ -55,34 +46,69 @@ exports.handler = async (event) => {
     return error(500, 'CONFIG_ERROR', 'Service configuration error', corsHeaders);
   }
 
-  const { data, error: dbErr } = await supabase
-    .from('demo_requests')
-    .select('id, business_name, contact_name, phone, email, industry, created_at')
+  // Look up by phone in lead_manager_records — find most recent record
+  const { data: records, error: dbErr } = await supabase
+    .from('lead_manager_records')
+    .select('id, contact_name, first_name, last_name, phone, service_needed, created_at, call_count')
     .eq('phone', phone)
+    .eq('tenant_id', TENANT_ID)
     .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(5);
 
   if (dbErr) {
     console.error('LOOKUP-CALLER DB ERROR:', dbErr.message);
-    return error(500, 'DB_ERROR', 'Failed to look up caller', corsHeaders);
+    return json(200, { found: false, reason: 'db_error' }, corsHeaders);
   }
 
-  if (!data) {
-    console.log(`LOOKUP-CALLER: not found phone=***${phone.slice(-4)}`);
+  if (!records || records.length === 0) {
+    // Also try without +1 prefix for normalization differences
+    const altPhone = phone.startsWith('+1') ? phone.slice(2) : null;
+    if (altPhone) {
+      const { data: altRecords } = await supabase
+        .from('lead_manager_records')
+        .select('id, contact_name, first_name, last_name, phone, service_needed, created_at')
+        .eq('phone', altPhone)
+        .eq('tenant_id', TENANT_ID)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (altRecords && altRecords.length > 0) {
+        const r = altRecords[0];
+        const firstName = r.first_name || r.contact_name?.split(' ')[0] || null;
+        console.log(`LOOKUP-CALLER: found (alt format) name="${r.contact_name}" phone=***${phone.slice(-4)}`);
+        return json(200, {
+          found: true,
+          caller: {
+            name:          r.contact_name,
+            first_name:    firstName,
+            previous_call: r.service_needed,
+            total_calls:   altRecords.length,
+            first_seen_at: r.created_at,
+          },
+        }, corsHeaders);
+      }
+    }
+
+    console.log(`LOOKUP-CALLER: new caller phone=***${phone.slice(-4)}`);
     return json(200, { found: false, phone }, corsHeaders);
   }
 
-  console.log(`LOOKUP-CALLER: found id=${data.id} phone=***${phone.slice(-4)}`);
+  const latest = records[0];
+  const firstName = latest.first_name || latest.contact_name?.split(' ')[0] || null;
+  const previousCalls = records.map(r => r.service_needed).filter(Boolean);
+
+  console.log(`LOOKUP-CALLER: returning caller name="${latest.contact_name}" calls=${records.length} phone=***${phone.slice(-4)}`);
+
   return json(200, {
     found: true,
     caller: {
-      id:            data.id,
-      business_name: data.business_name || null,
-      contact_name:  data.contact_name  || null,
-      email:         data.email         || null,
-      industry:      data.industry      || null,
-      first_seen_at: data.created_at,
+      name:           latest.contact_name,
+      first_name:     firstName,
+      last_name:      latest.last_name || null,
+      previous_call:  previousCalls[0] || null,
+      total_calls:    records.length,
+      first_seen_at:  records[records.length - 1].created_at,
+      last_seen_at:   latest.created_at,
     },
   }, corsHeaders);
 };

@@ -134,14 +134,11 @@ async function processConversation(supabase, conv, apiKey) {
   const transcript = detail?.transcript || conv.transcript || [];
   const collected  = detail?.data_collection_results || {};
 
-  // Phone number: search full detail object for phone/caller fields
+  // Phone: external_number is the caller's Twilio number
   const callerPhone = clean(
-    detail?.metadata?.phone_number ||
-    detail?.metadata?.caller_id ||
-    detail?.metadata?.caller_phone_number ||
-    detail?.call_metadata?.caller_phone_number ||
-    detail?.conversation_initiation_client_data?.metadata?.phone_number ||
-    detail?.conversation_initiation_client_data?.conversation?.phone_number ||
+    detail?.metadata?.phone_call?.external_number ||
+    detail?.conversation_initiation_client_data?.dynamic_variables?.system__caller_id ||
+    detail?.metadata?.phone_call?.caller_id ||
     conv.caller_id ||
     'Unknown',
     30
