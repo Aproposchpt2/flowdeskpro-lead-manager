@@ -12,7 +12,43 @@ const { json } = require('./lib/flowdesk-response-utils');
 
 const AGENT_ID  = 'agent_6101ksv5amdpfqn90z89gtvh34a7';
 const TENANT_ID = process.env.CLIENT_TENANT_ID || 'apropos-ai4-businesses';
-const SYNC_TABLE = 'call_sync_cursor'; // tracks last synced timestamp
+const SYNC_TABLE = 'call_sync_cursor';
+
+// Extract caller name from transcript — Alex says "Thank you, [Name]" after collecting it
+function extractCallerName(transcript) {
+  if (!Array.isArray(transcript)) return null;
+  for (const turn of transcript) {
+    if (turn.role !== 'agent' || !turn.message) continue;
+    // Alex confirms the name: "Thank you, Jeffrey Mitchell" or "Got it, Jeffrey"
+    const thankYou = turn.message.match(/(?:Thank you|Got it|Great|Perfect|Hi|Hello)[,.]?\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\b/);
+    if (thankYou) return thankYou[1].trim();
+  }
+  // Fallback: look in user turns for a name pattern (2-3 capitalized words)
+  for (const turn of transcript) {
+    if (turn.role !== 'user' || !turn.message) continue;
+    const nameMatch = turn.message.match(/\b([A-Z][a-z]{1,20}(?:\s+[A-Z][a-z]{1,20}){1,2})\b/);
+    if (nameMatch && nameMatch[1].split(' ').length >= 2) return nameMatch[1].trim();
+  }
+  return null;
+}
+
+// Extract reason from transcript — user's response after Alex asks why they're calling
+function extractReasonFromTranscript(transcript) {
+  if (!Array.isArray(transcript)) return null;
+  const callKeywords = ['reason', 'help', 'calling about', 'calling to', 'what can i'];
+  for (let i = 0; i < transcript.length - 1; i++) {
+    const turn = transcript[i];
+    if (turn.role !== 'agent' || !turn.message) continue;
+    const msgLower = turn.message.toLowerCase();
+    if (callKeywords.some(k => msgLower.includes(k))) {
+      const next = transcript[i + 1];
+      if (next?.role === 'user' && next.message && next.message.length > 5) {
+        return next.message.replace(/^(uh,?\s*|um,?\s*)/i, '').trim();
+      }
+    }
+  }
+  return null;
+}
 
 function httpsGet(urlStr, headers) {
   return new Promise((resolve, reject) => {
@@ -149,14 +185,27 @@ async function processConversation(supabase, conv, apiKey) {
   const durationSecs = conv.call_duration_secs ? Math.round(conv.call_duration_secs) : null;
   const startedAt  = conv.start_time_unix_secs ? new Date(conv.start_time_unix_secs * 1000).toISOString() : new Date().toISOString();
 
-  // Extract data-collected fields from conversation detail
-  const firstName  = clean(collected.caller_first_name?.value, 60) || null;
-  const lastName   = clean(collected.caller_last_name?.value, 60) || null;
-  const reason     = clean(collected.reason_for_call?.value, 500) || summaryTitle || null;
-  const contactName = [firstName, lastName].filter(Boolean).join(' ') || null;
-  const summary    = buildTranscriptSummary(transcript);
+  // Extract structured fields — data_collection_results first, then transcript fallback
+  const firstName    = clean(collected.caller_first_name?.value, 60) || null;
+  const lastName     = clean(collected.caller_last_name?.value, 60) || null;
+  const reasonRaw    = clean(collected.reason_for_call?.value, 500) || null;
 
-  console.log(`[sync] Processing: ${conversationId} | name="${contactName}" | phone="${callerPhone}" | reason="${reason?.slice(0,40)}"`);
+  // Extract from transcript when structured collection isn't available
+  const transcriptName   = extractCallerName(transcript);
+  const transcriptReason = extractReasonFromTranscript(transcript);
+
+  const reason = reasonRaw || transcriptReason || summaryTitle || null;
+  const resolvedName = [firstName, lastName].filter(Boolean).join(' ') || transcriptName || null;
+  const contactName  = resolvedName || `Voice Lead — ${callerPhone !== 'Unknown' ? callerPhone : conversationId?.slice(-8)}`;
+
+  // Split resolved name into first/last if we only got it from transcript
+  const nameParts = resolvedName ? resolvedName.split(' ') : [];
+  const resolvedFirst = firstName || nameParts[0] || null;
+  const resolvedLast  = lastName  || nameParts.slice(1).join(' ') || null;
+
+  const summary = buildTranscriptSummary(transcript);
+
+  console.log(`[sync] ${conversationId} | name="${contactName}" | phone="${callerPhone}" | reason="${reason?.slice(0,40)}"`);
 
   const now = new Date().toISOString();
 
@@ -174,19 +223,19 @@ async function processConversation(supabase, conv, apiKey) {
 
     supabase.from('lead_manager_records').insert({
       tenant_id:             TENANT_ID,
-      contact_name:          contactName || `Voice Lead — ${callerPhone !== 'Unknown' ? callerPhone : conversationId?.slice(-8) || 'Unknown'}`,
-      first_name:            firstName,
-      last_name:             lastName,
+      contact_name:          contactName,
+      first_name:            resolvedFirst,
+      last_name:             resolvedLast,
       phone:                 callerPhone,
       call_sid:              conversationId,
       source:                'voice_agent',
       source_page:           'ElevenLabs Alex — Contact Center',
       channel:               'voice',
       lead_status:           reason ? 'New / Needs Review' : 'New / Priority Review',
-      service_needed:        reason || 'Inbound call — Contact Center',
+      service_needed:        'AI Contact Center — Voice Lead',
       message:               reason || null,
       details:               reason
-                               ? `${contactName || 'Caller'} called about: ${reason}`
+                               ? `${contactName} called about: ${reason}`
                                : summary || `Inbound call. Phone: ${callerPhone}.`,
       call_status:           'completed',
       call_duration_seconds: durationSecs,
