@@ -14,18 +14,35 @@ const AGENT_NAME = 'Alex';
 const AGENT_ID   = process.env.ELEVENLABS_AGENT_ID || 'agent_6101ksv5amdpfqn90z89gtvh34a7';
 const CLIENT_ID  = process.env.CRM_CLIENT_ID || '10b8f727-cecd-4e20-9829-c0dfed181dde';
 
+// ElevenLabs native signature: elevenlabs-signature: t=<unix_ts>,v1=<hmac_sha256_hex>
+// Signed content: "{timestamp}.{body}"
 function verifyElevenLabsSignature(event) {
   const secret = process.env.ELEVENLABS_WEBHOOK_SECRET;
   if (!secret) return true;
-  const msgId        = event.headers['webhook-id']        || event.headers['svix-id']        || '';
-  const msgTimestamp = event.headers['webhook-timestamp'] || event.headers['svix-timestamp'] || '';
-  const msgSignature = event.headers['webhook-signature'] || event.headers['svix-signature'] || '';
-  if (!msgId || !msgTimestamp || !msgSignature) return false;
-  const rawBody      = event.isBase64Encoded ? Buffer.from(event.body || '', 'base64').toString('utf8') : (event.body || '');
-  const signedContent = `${msgId}.${msgTimestamp}.${rawBody}`;
-  const secretBytes  = Buffer.from(secret.replace(/^whsec_/, ''), 'base64');
-  const computed     = crypto.createHmac('sha256', secretBytes).update(signedContent).digest('base64');
-  return msgSignature.split(' ').some(sig => sig === `v1,${computed}`);
+
+  const sigHeader = event.headers['elevenlabs-signature'] || '';
+  if (!sigHeader) {
+    console.warn('LOG-CALL: no elevenlabs-signature header — proceeding');
+    return true; // allow through, log the warning
+  }
+
+  const parts     = Object.fromEntries(sigHeader.split(',').map(p => p.split('=')));
+  const timestamp = parts.t;
+  const signature = parts.v1;
+  if (!timestamp || !signature) return false;
+
+  const rawBody   = event.isBase64Encoded
+    ? Buffer.from(event.body || '', 'base64').toString('utf8')
+    : (event.body || '');
+
+  const signed   = `${timestamp}.${rawBody}`;
+  const computed = crypto.createHmac('sha256', secret).update(signed).digest('hex');
+
+  try {
+    return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(signature));
+  } catch {
+    return false;
+  }
 }
 
 function clean(value, max = 200) {
@@ -157,7 +174,7 @@ exports.handler = async (event) => {
 
   const { data: callRecord, error: crErr } = await supabase
     .from('call_records')
-    .insert({
+    .upsert({
       client_id:              CLIENT_ID,
       contact_id:             contactId,
       conversation_id:        conversationId,
@@ -180,7 +197,7 @@ exports.handler = async (event) => {
       lead_created:           !!reasonForCall,
       follow_up_required:     !!reasonForCall,
       created_at:             now,
-    })
+    }, { onConflict: 'conversation_id', ignoreDuplicates: true })
     .select('id')
     .single();
 

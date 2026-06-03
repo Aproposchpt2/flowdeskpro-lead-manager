@@ -1,15 +1,41 @@
 'use strict';
 
-// GET /.netlify/functions/lookup-caller?phone=+15551234567
-// Called by ElevenLabs Alex at the start of every conversation.
-// Looks up caller in lead_manager_records by phone number.
-// Returns caller name + call history so Alex can greet returning callers by name.
+// POST /.netlify/functions/lookup-caller
+// ElevenLabs Conversation Initiation Client Data webhook.
+// Called at the START of every conversation — ElevenLabs expects back
+// dynamic_variables to inject into the conversation context.
+//
+// Response shape must be:
+// { type: "conversation_initiation_client_data", dynamic_variables: { ... } }
 
+const crypto = require('crypto');
 const { buildCorsHeaders, handleOptions } = require('./lib/flowdesk-cors');
 const { getSupabaseAdmin } = require('./lib/flowdesk-supabase-admin');
-const { json, error } = require('./lib/flowdesk-response-utils');
+const { json } = require('./lib/flowdesk-response-utils');
 
 const TENANT_ID = process.env.CLIENT_TENANT_ID || 'apropos-ai4-businesses';
+
+// ElevenLabs signature: elevenlabs-signature: t=<ts>,v1=<hex>
+function verifySignature(event) {
+  const secret = process.env.ELEVENLABS_WEBHOOK_SECRET;
+  if (!secret) return true; // no secret configured — allow (isolation mode)
+
+  const sigHeader = event.headers['elevenlabs-signature'] || '';
+  if (!sigHeader) return false;
+
+  const parts = Object.fromEntries(sigHeader.split(',').map(p => p.split('=')));
+  const timestamp = parts.t;
+  const signature = parts.v1;
+  if (!timestamp || !signature) return false;
+
+  const rawBody = event.isBase64Encoded
+    ? Buffer.from(event.body || '', 'base64').toString('utf8')
+    : (event.body || '');
+
+  const signed   = `${timestamp}.${rawBody}`;
+  const computed = crypto.createHmac('sha256', secret).update(signed).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(signature));
+}
 
 function normalizePhone(value) {
   if (!value || typeof value !== 'string') return null;
@@ -22,93 +48,103 @@ function normalizePhone(value) {
   return null;
 }
 
-exports.handler = async (event) => {
-  const origin = event.headers && event.headers.origin;
-  const corsHeaders = buildCorsHeaders(origin);
-
-  if (event.httpMethod === 'OPTIONS') return handleOptions(origin);
-  if (event.httpMethod !== 'GET') {
-    return error(405, 'METHOD_NOT_ALLOWED', 'Only GET is supported', corsHeaders);
-  }
-
-  const qs = event.queryStringParameters || {};
-  const rawPhone = qs.phone || qs.caller_phone || '';
-  const phone = normalizePhone(rawPhone);
-
-  if (!phone) {
-    return json(200, { found: false, reason: 'no_phone' }, corsHeaders);
-  }
-
-  let supabase;
-  try {
-    supabase = getSupabaseAdmin();
-  } catch (e) {
-    return error(500, 'CONFIG_ERROR', 'Service configuration error', corsHeaders);
-  }
-
-  // Look up by phone in lead_manager_records — find most recent record
-  const { data: records, error: dbErr } = await supabase
+async function lookupPhone(supabase, phone) {
+  const { data } = await supabase
     .from('lead_manager_records')
-    .select('id, contact_name, first_name, last_name, phone, service_needed, created_at, call_count')
+    .select('id, contact_name, first_name, last_name, service_needed, created_at')
     .eq('phone', phone)
     .eq('tenant_id', TENANT_ID)
     .order('created_at', { ascending: false })
     .limit(5);
 
-  if (dbErr) {
-    console.error('LOOKUP-CALLER DB ERROR:', dbErr.message);
-    return json(200, { found: false, reason: 'db_error' }, corsHeaders);
+  if (data && data.length > 0) return data;
+
+  // Try without +1 prefix
+  const alt = phone.startsWith('+1') ? phone.slice(2) : null;
+  if (alt) {
+    const { data: d2 } = await supabase
+      .from('lead_manager_records')
+      .select('id, contact_name, first_name, last_name, service_needed, created_at')
+      .eq('phone', alt)
+      .eq('tenant_id', TENANT_ID)
+      .order('created_at', { ascending: false })
+      .limit(5);
+    if (d2 && d2.length > 0) return d2;
+  }
+  return [];
+}
+
+exports.handler = async (event) => {
+  const corsHeaders = buildCorsHeaders(event.headers?.origin);
+
+  if (event.httpMethod === 'OPTIONS') return handleOptions(event.headers?.origin);
+
+  // Verify signature (skip if ELEVENLABS_WEBHOOK_SECRET not set — isolation test mode)
+  if (!verifySignature(event)) {
+    console.error('LOOKUP-CALLER: invalid signature');
+    return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: 'unauthorized' }) };
   }
 
-  if (!records || records.length === 0) {
-    // Also try without +1 prefix for normalization differences
-    const altPhone = phone.startsWith('+1') ? phone.slice(2) : null;
-    if (altPhone) {
-      const { data: altRecords } = await supabase
-        .from('lead_manager_records')
-        .select('id, contact_name, first_name, last_name, phone, service_needed, created_at')
-        .eq('phone', altPhone)
-        .eq('tenant_id', TENANT_ID)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (altRecords && altRecords.length > 0) {
-        const r = altRecords[0];
-        const firstName = r.first_name || r.contact_name?.split(' ')[0] || null;
-        console.log(`LOOKUP-CALLER: found (alt format) name="${r.contact_name}" phone=***${phone.slice(-4)}`);
-        return json(200, {
-          found: true,
-          caller: {
-            name:          r.contact_name,
-            first_name:    firstName,
-            previous_call: r.service_needed,
-            total_calls:   altRecords.length,
-            first_seen_at: r.created_at,
-          },
-        }, corsHeaders);
-      }
-    }
-
-    console.log(`LOOKUP-CALLER: new caller phone=***${phone.slice(-4)}`);
-    return json(200, { found: false, phone }, corsHeaders);
+  // Extract caller phone from POST body (conversation initiation data)
+  let callerPhone = null;
+  try {
+    const rawBody = event.isBase64Encoded
+      ? Buffer.from(event.body || '', 'base64').toString('utf8')
+      : (event.body || '');
+    const body = JSON.parse(rawBody);
+    // ElevenLabs sends caller ID in dynamic_variables or conversation metadata
+    callerPhone = body?.dynamic_variables?.system__caller_id
+      || body?.metadata?.phone_call?.external_number
+      || body?.caller_id
+      || null;
+  } catch {
+    // ignore parse errors — return empty initiation data
   }
 
-  const latest = records[0];
-  const firstName = latest.first_name || latest.contact_name?.split(' ')[0] || null;
-  const previousCalls = records.map(r => r.service_needed).filter(Boolean);
+  const phone = normalizePhone(callerPhone);
 
-  console.log(`LOOKUP-CALLER: returning caller name="${latest.contact_name}" calls=${records.length} phone=***${phone.slice(-4)}`);
-
-  return json(200, {
-    found: true,
-    caller: {
-      name:           latest.contact_name,
-      first_name:     firstName,
-      last_name:      latest.last_name || null,
-      previous_call:  previousCalls[0] || null,
-      total_calls:    records.length,
-      first_seen_at:  records[records.length - 1].created_at,
-      last_seen_at:   latest.created_at,
+  // Always return 200 with correct shape — ElevenLabs requires this
+  const response = {
+    type: 'conversation_initiation_client_data',
+    dynamic_variables: {
+      caller_first_name:    null,
+      caller_last_name:     null,
+      caller_full_name:     null,
+      is_returning_caller:  false,
+      previous_call_reason: null,
+      total_calls:          0,
     },
-  }, corsHeaders);
+  };
+
+  if (phone) {
+    try {
+      const supabase = getSupabaseAdmin();
+      const records  = await lookupPhone(supabase, phone);
+
+      if (records.length > 0) {
+        const latest = records[0];
+        const firstName = latest.first_name || latest.contact_name?.split(' ')[0] || null;
+        const lastName  = latest.last_name  || (latest.contact_name?.split(' ').slice(1).join(' ') || null);
+        const fullName  = latest.contact_name || null;
+
+        response.dynamic_variables = {
+          caller_first_name:    firstName,
+          caller_last_name:     lastName,
+          caller_full_name:     fullName,
+          is_returning_caller:  true,
+          previous_call_reason: records[0].service_needed || null,
+          total_calls:          records.length,
+        };
+
+        console.log(`LOOKUP-CALLER: returning caller "${fullName}" phone=***${phone.slice(-4)} calls=${records.length}`);
+      } else {
+        console.log(`LOOKUP-CALLER: new caller phone=***${phone.slice(-4)}`);
+      }
+    } catch (err) {
+      console.error('LOOKUP-CALLER DB error:', err.message);
+      // Return empty dynamic_variables — never block the call
+    }
+  }
+
+  return { statusCode: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(response) };
 };
