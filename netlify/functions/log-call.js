@@ -2,7 +2,7 @@
 
 // POST /.netlify/functions/log-call
 // CRM-aware call logging — writes to full CRM schema:
-//   contacts → call_records → crm_leads → activities → tasks
+//   contacts → call_records → leads → activities → tasks
 // Handles ElevenLabs post-call webhooks AND in-conversation tool calls.
 
 const crypto = require('crypto');
@@ -147,10 +147,11 @@ exports.handler = async (event) => {
       const { data: newContact } = await supabase
         .from('contacts')
         .insert({
-          caller_id:    callerPhoneNorm,
-          phone_primary: callerPhoneNorm,
-          first_name:   callerFirstName,
-          last_name:    callerLastName,
+          caller_id:        callerPhoneNorm,
+          phone_primary:    callerPhoneNorm,
+          phone_normalized: callerPhoneNorm,
+          first_name:       callerFirstName,
+          last_name:        callerLastName,
           lead_source:  'phone_call',
           lead_status:  'new',
           contact_type: 'lead',
@@ -203,12 +204,12 @@ exports.handler = async (event) => {
   if (crErr) console.error('LOG-CALL call_records error:', crErr.message);
   else callRecordId = callRecord?.id;
 
-  // ── STEP 3: Create crm_lead if we have a reason for call ──────
+  // ── STEP 3: Create lead record if we have a reason for call ──────
   let leadId = null;
 
   if (reasonForCall && contactId) {
     const { data: lead, error: leadErr } = await supabase
-      .from('crm_leads')
+      .from('leads')
       .insert({
         client_id:      CLIENT_ID,
         contact_id:     contactId,
@@ -225,7 +226,7 @@ exports.handler = async (event) => {
       .select('id')
       .single();
 
-    if (leadErr) console.error('LOG-CALL crm_leads error:', leadErr.message);
+    if (leadErr) console.error('LOG-CALL leads error:', leadErr.message);
     else leadId = lead?.id;
 
     // Update call_record with lead_id
@@ -269,7 +270,7 @@ exports.handler = async (event) => {
         activity_subject:  reasonForCall || 'Inbound call',
         activity_body:     transcriptText || reasonForCall || 'Call handled by Alex',
         activity_outcome:  reasonForCall ? 'reason_captured' : 'no_reason_captured',
-        performed_by:      AGENT_NAME,
+        performed_by:      null,
         duration_seconds:  durationSecs,
         created_at:        now,
       });
