@@ -180,9 +180,15 @@ async function processConversation(supabase, conv, apiKey) {
   const durationSecs = conv.call_duration_secs ? Math.round(conv.call_duration_secs) : null;
   const startedAt    = conv.start_time_unix_secs ? new Date(conv.start_time_unix_secs * 1000).toISOString() : new Date().toISOString();
 
-  const firstName    = clean(collected.caller_first_name?.value, 60) || null;
-  const lastName     = clean(collected.caller_last_name?.value, 60) || null;
-  const reasonRaw    = clean(collected.reason_for_call?.value, 500) || null;
+  const firstName      = clean(collected.first_name?.value, 60) || null;
+  const lastName       = clean(collected.last_name?.value, 60) || null;
+  const reasonRaw      = clean(collected.reason_for_call?.value, 500) || null;
+  const contactType    = clean(collected.contact_type?.value, 30) || 'lead';
+  const callerEmail    = clean(collected.email?.value, 200) || null;
+  const leadPriority   = clean(collected.lead_priority?.value, 20) || null;
+  const decisionTL     = clean(collected.decision_timeline?.value, 30) || null;
+  const callerMessage  = clean(collected.caller_message?.value, 500) || null;
+  const callbackNumber = clean(collected.callback_number?.value, 30) || null;
 
   const transcriptName   = extractCallerName(transcript);
   const transcriptReason = extractReasonFromTranscript(transcript);
@@ -212,14 +218,19 @@ async function processConversation(supabase, conv, apiKey) {
       crmContactId = existingContact.id;
       await supabase.from('contacts').update({
         updated_at: now, lead_score: (existingContact.lead_score || 0) + 1,
-        ...(resolvedFirst && !existingContact.first_name ? { first_name: resolvedFirst } : {}),
-        ...(resolvedLast  && !existingContact.last_name  ? { last_name:  resolvedLast  } : {}),
+        ...(resolvedFirst  && !existingContact.first_name ? { first_name:        resolvedFirst  } : {}),
+        ...(resolvedLast   && !existingContact.last_name  ? { last_name:         resolvedLast   } : {}),
+        ...(callerEmail                                    ? { email:             callerEmail    } : {}),
+        ...(leadPriority                                   ? { priority:          leadPriority   } : {}),
+        ...(decisionTL                                     ? { decision_timeline: decisionTL    } : {}),
       }).eq('id', crmContactId);
     } else {
       const { data: nc } = await supabase.from('contacts').insert({
         caller_id: callerPhoneNorm, phone_primary: callerPhoneNorm, phone_normalized: callerPhoneNorm,
         first_name: resolvedFirst, last_name: resolvedLast,
-        lead_source: 'phone_call', lead_status: 'new', contact_type: 'lead',
+        email: callerEmail, contact_type: contactType,
+        priority: leadPriority, decision_timeline: decisionTL,
+        lead_source: 'phone_call', lead_status: 'new',
         client_id: CRM_CLIENT_ID, created_at: startedAt, updated_at: now,
       }).select('id').single();
       if (nc) crmContactId = nc.id;
@@ -235,8 +246,9 @@ async function processConversation(supabase, conv, apiKey) {
     call_start_time: startedAt, call_duration_seconds: durationSecs,
     agent_name: 'Alex', agent_id: AGENT_ID,
     caller_first_name: resolvedFirst, caller_last_name: resolvedLast,
-    reason_for_call: reason, caller_message: reason,
-    call_summary: reason || summaryTitle || 'Inbound call',
+    reason_for_call: reason, caller_message: callerMessage || reason,
+    callback_number: callbackNumber,
+    call_summary: reason || callerMessage || summaryTitle || 'Inbound call',
     call_transcript: summary, lead_created: !!reason,
     follow_up_required: !!reason, created_at: startedAt,
   }, { onConflict: 'conversation_id', ignoreDuplicates: true }).select('id').single();
