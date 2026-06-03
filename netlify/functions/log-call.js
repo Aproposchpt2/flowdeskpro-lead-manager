@@ -184,7 +184,6 @@ exports.handler = async (event) => {
       call_status:            'completed',
       call_start_time:        now,
       call_duration_seconds:  durationSecs,
-      call_duration_display:  durationDisplay(durationSecs),
       after_hours:            false,
       agent_name:             AGENT_NAME,
       agent_id:               AGENT_ID,
