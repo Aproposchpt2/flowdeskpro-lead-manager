@@ -83,6 +83,8 @@ exports.handler = async (event) => {
   const body = parseJsonBody(event);
   if (!body) return error(400, 'INVALID_BODY', 'Invalid JSON body', corsHeaders);
 
+  console.log('LOG-CALL body-type:', body.type, '| top-keys:', Object.keys(body).join(','), '| data-keys:', body.data ? Object.keys(body.data).join(',') : 'no-data', '| phone:', body.data?.metadata?.phone_call?.external_number || body.data?.metadata?.phone_call?.caller_id || 'not-found');
+
   // ── Extract fields from payload ───────────────────────────────
   let callerPhone, conversationId, durationSecs, transcriptText;
   let callerFirstName, callerLastName, reasonForCall;
