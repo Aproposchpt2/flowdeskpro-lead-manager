@@ -83,34 +83,45 @@ exports.handler = async (event) => {
   const body = parseJsonBody(event);
   if (!body) return error(400, 'INVALID_BODY', 'Invalid JSON body', corsHeaders);
 
-  console.log('LOG-CALL payload:', JSON.stringify({ type: body.type, keys: Object.keys(body), phone_path: body.data?.metadata?.phone_call, caller_phone: body.caller_phone }).slice(0, 500));
-
   // ── Extract fields from payload ───────────────────────────────
   let callerPhone, conversationId, durationSecs, transcriptText;
   let callerFirstName, callerLastName, reasonForCall;
+  let contactType, callerEmail, leadPriority, decisionTimeline, callerMessage, callbackNumber;
 
   if (body.type === 'post_call_transcription' && body.data) {
     const d = body.data;
-    conversationId  = clean(d.conversation_id, 64) || null;
-    durationSecs    = d.metadata?.call_duration_secs ? Math.round(Number(d.metadata.call_duration_secs)) : null;
-    callerPhone     = clean(d.metadata?.phone_call?.external_number || d.metadata?.phone_call?.caller_id, 30) || 'Unknown';
-    transcriptText  = buildTranscript(d.transcript);
-    const collected = d.data_collection_results || {};
-    const dynVars   = d.conversation_initiation_client_data?.dynamic_variables || {};
-    callerFirstName = clean(collected.caller_first_name?.value, 60) || null;
-    callerLastName  = clean(collected.caller_last_name?.value, 60) || null;
-    reasonForCall   = clean(collected.reason_for_call?.value, 500) || null;
+    conversationId   = clean(d.conversation_id, 64) || null;
+    durationSecs     = d.metadata?.call_duration_secs ? Math.round(Number(d.metadata.call_duration_secs)) : null;
+    callerPhone      = clean(d.metadata?.phone_call?.external_number || d.metadata?.phone_call?.caller_id, 30) || 'Unknown';
+    transcriptText   = buildTranscript(d.transcript);
+    const collected  = d.data_collection_results || {};
+    const dynVars    = d.conversation_initiation_client_data?.dynamic_variables || {};
+    callerFirstName  = clean(collected.first_name?.value, 60) || null;
+    callerLastName   = clean(collected.last_name?.value, 60) || null;
+    reasonForCall    = clean(collected.reason_for_call?.value, 500) || null;
+    contactType      = clean(collected.contact_type?.value, 30) || 'lead';
+    callerEmail      = clean(collected.email?.value, 200) || null;
+    leadPriority     = clean(collected.lead_priority?.value, 20) || null;
+    decisionTimeline = clean(collected.decision_timeline?.value, 30) || null;
+    callerMessage    = clean(collected.caller_message?.value, 500) || null;
+    callbackNumber   = clean(collected.callback_number?.value, 30) || null;
     // Fallback: caller phone from dynamic variables
     if (callerPhone === 'Unknown') callerPhone = clean(dynVars.system__caller_id, 30) || 'Unknown';
   } else {
-    callerPhone     = clean(body.caller_phone, 30) || 'Unknown';
-    callerFirstName = clean(body.caller_first_name, 60) || null;
-    callerLastName  = clean(body.caller_last_name, 60) || null;
-    reasonForCall   = clean(body.reason_for_call, 500) || null;
-    conversationId  = clean(body.conversation_id, 64) || null;
-    const dRaw      = body.duration || body.duration_seconds;
-    durationSecs    = Number.isFinite(Number(dRaw)) ? Math.round(Number(dRaw)) : null;
-    transcriptText  = clean(body.conversation_summary, 4000) || null;
+    callerPhone      = clean(body.caller_phone, 30) || 'Unknown';
+    callerFirstName  = clean(body.caller_first_name || body.first_name, 60) || null;
+    callerLastName   = clean(body.caller_last_name  || body.last_name,  60) || null;
+    reasonForCall    = clean(body.reason_for_call, 500) || null;
+    contactType      = clean(body.contact_type, 30) || 'lead';
+    callerEmail      = clean(body.email, 200) || null;
+    leadPriority     = clean(body.lead_priority, 20) || null;
+    decisionTimeline = clean(body.decision_timeline, 30) || null;
+    callerMessage    = clean(body.caller_message, 500) || null;
+    callbackNumber   = clean(body.callback_number, 30) || null;
+    conversationId   = clean(body.conversation_id, 64) || null;
+    const dRaw       = body.duration || body.duration_seconds;
+    durationSecs     = Number.isFinite(Number(dRaw)) ? Math.round(Number(dRaw)) : null;
+    transcriptText   = clean(body.conversation_summary, 4000) || null;
   }
 
   const callerPhoneNorm = normalizePhone(callerPhone);
@@ -139,9 +150,11 @@ exports.handler = async (event) => {
         updated_at:  now,
         lead_score:  (existingContact.lead_score || 0) + 1,
         lead_status: 'contacted',
-        // Fill in name if we now have it and didn't before
-        ...(callerFirstName && !existingContact.first_name ? { first_name: callerFirstName } : {}),
-        ...(callerLastName  && !existingContact.last_name  ? { last_name:  callerLastName  } : {}),
+        ...(callerFirstName  && !existingContact.first_name  ? { first_name:        callerFirstName  } : {}),
+        ...(callerLastName   && !existingContact.last_name   ? { last_name:         callerLastName   } : {}),
+        ...(callerEmail                                       ? { email:             callerEmail      } : {}),
+        ...(leadPriority                                      ? { priority:          leadPriority     } : {}),
+        ...(decisionTimeline                                  ? { decision_timeline: decisionTimeline } : {}),
       }).eq('id', contactId);
       console.log(`LOG-CALL: returning caller contact_id=${contactId}`);
     } else {
@@ -149,17 +162,20 @@ exports.handler = async (event) => {
       const { data: newContact } = await supabase
         .from('contacts')
         .insert({
-          caller_id:        callerPhoneNorm,
-          phone_primary:    callerPhoneNorm,
-          phone_normalized: callerPhoneNorm,
-          first_name:       callerFirstName,
-          last_name:        callerLastName,
-          lead_source:  'phone_call',
-          lead_status:  'new',
-          contact_type: 'lead',
-          client_id:    CLIENT_ID,
-          created_at:   now,
-          updated_at:   now,
+          caller_id:         callerPhoneNorm,
+          phone_primary:     callerPhoneNorm,
+          phone_normalized:  callerPhoneNorm,
+          first_name:        callerFirstName,
+          last_name:         callerLastName,
+          email:             callerEmail,
+          contact_type:      contactType,
+          priority:          leadPriority,
+          decision_timeline: decisionTimeline,
+          lead_source:       'phone_call',
+          lead_status:       'new',
+          client_id:         CLIENT_ID,
+          created_at:        now,
+          updated_at:        now,
         })
         .select('id')
         .single();
@@ -193,8 +209,9 @@ exports.handler = async (event) => {
       caller_first_name:      callerFirstName,
       caller_last_name:       callerLastName,
       reason_for_call:        reasonForCall,
-      caller_message:         reasonForCall,
-      call_summary:           reasonForCall || 'Inbound call — reason not captured',
+      caller_message:         callerMessage || reasonForCall,
+      callback_number:        callbackNumber,
+      call_summary:           reasonForCall || callerMessage || 'Inbound call — reason not captured',
       call_transcript:        transcriptText,
       lead_created:           !!reasonForCall,
       follow_up_required:     !!reasonForCall,
