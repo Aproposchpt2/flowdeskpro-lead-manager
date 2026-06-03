@@ -83,6 +83,8 @@ exports.handler = async (event) => {
   const body = parseJsonBody(event);
   if (!body) return error(400, 'INVALID_BODY', 'Invalid JSON body', corsHeaders);
 
+  console.log('LOG-CALL payload:', JSON.stringify({ type: body.type, keys: Object.keys(body), phone_path: body.data?.metadata?.phone_call, caller_phone: body.caller_phone }).slice(0, 500));
+
   // ── Extract fields from payload ───────────────────────────────
   let callerPhone, conversationId, durationSecs, transcriptText;
   let callerFirstName, callerLastName, reasonForCall;
