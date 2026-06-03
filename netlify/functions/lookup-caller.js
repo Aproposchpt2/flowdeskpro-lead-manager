@@ -16,25 +16,33 @@ const { json } = require('./lib/flowdesk-response-utils');
 const TENANT_ID = process.env.CLIENT_TENANT_ID || 'apropos-ai4-businesses';
 
 // ElevenLabs signature: elevenlabs-signature: t=<ts>,v1=<hex>
+// Returns true/false — never throws.
 function verifySignature(event) {
-  const secret = process.env.ELEVENLABS_WEBHOOK_SECRET;
-  if (!secret) return true; // no secret configured — allow (isolation mode)
+  try {
+    const secret = process.env.INITIATION_WEBHOOK_SECRET;
+    if (!secret) return true;
 
-  const sigHeader = event.headers['elevenlabs-signature'] || '';
-  if (!sigHeader) return false;
+    const sigHeader = event.headers['elevenlabs-signature'] || '';
+    if (!sigHeader) return false;
 
-  const parts = Object.fromEntries(sigHeader.split(',').map(p => p.split('=')));
-  const timestamp = parts.t;
-  const signature = parts.v1;
-  if (!timestamp || !signature) return false;
+    const parts     = Object.fromEntries(sigHeader.split(',').map(p => p.split('=')));
+    const timestamp = parts.t;
+    const signature = parts.v1;
+    if (!timestamp || !signature) return false;
 
-  const rawBody = event.isBase64Encoded
-    ? Buffer.from(event.body || '', 'base64').toString('utf8')
-    : (event.body || '');
+    const rawBody  = event.isBase64Encoded
+      ? Buffer.from(event.body || '', 'base64').toString('utf8')
+      : (event.body || '');
+    const signed   = `${timestamp}.${rawBody}`;
+    const computed = crypto.createHmac('sha256', secret).update(signed).digest('hex');
 
-  const signed   = `${timestamp}.${rawBody}`;
-  const computed = crypto.createHmac('sha256', secret).update(signed).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(signature));
+    const a = Buffer.from(computed,  'hex');
+    const b = Buffer.from(signature, 'hex');
+    if (a.length !== b.length) return false;
+    return crypto.timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
 }
 
 function normalizePhone(value) {
@@ -49,11 +57,13 @@ function normalizePhone(value) {
 }
 
 async function lookupPhone(supabase, phone) {
+  const CLIENT_ID = process.env.CRM_CLIENT_ID || '10b8f727-cecd-4e20-9829-c0dfed181dde';
+
   const { data } = await supabase
-    .from('lead_manager_records')
-    .select('id, contact_name, first_name, last_name, service_needed, created_at')
-    .eq('phone', phone)
-    .eq('tenant_id', TENANT_ID)
+    .from('contacts')
+    .select('id, first_name, last_name, caller_id, created_at')
+    .eq('caller_id', phone)
+    .eq('client_id', CLIENT_ID)
     .order('created_at', { ascending: false })
     .limit(5);
 
@@ -63,10 +73,10 @@ async function lookupPhone(supabase, phone) {
   const alt = phone.startsWith('+1') ? phone.slice(2) : null;
   if (alt) {
     const { data: d2 } = await supabase
-      .from('lead_manager_records')
-      .select('id, contact_name, first_name, last_name, service_needed, created_at')
-      .eq('phone', alt)
-      .eq('tenant_id', TENANT_ID)
+      .from('contacts')
+      .select('id, first_name, last_name, caller_id, created_at')
+      .eq('caller_id', alt)
+      .eq('client_id', CLIENT_ID)
       .order('created_at', { ascending: false })
       .limit(5);
     if (d2 && d2.length > 0) return d2;
@@ -121,17 +131,17 @@ exports.handler = async (event) => {
       const records  = await lookupPhone(supabase, phone);
 
       if (records.length > 0) {
-        const latest = records[0];
-        const firstName = latest.first_name || latest.contact_name?.split(' ')[0] || null;
-        const lastName  = latest.last_name  || (latest.contact_name?.split(' ').slice(1).join(' ') || null);
-        const fullName  = latest.contact_name || null;
+        const latest    = records[0];
+        const firstName = latest.first_name || null;
+        const lastName  = latest.last_name  || null;
+        const fullName  = [firstName, lastName].filter(Boolean).join(' ') || null;
 
         response.dynamic_variables = {
           caller_first_name:    firstName,
           caller_last_name:     lastName,
           caller_full_name:     fullName,
           is_returning_caller:  true,
-          previous_call_reason: records[0].service_needed || null,
+          previous_call_reason: null,
           total_calls:          records.length,
         };
 
