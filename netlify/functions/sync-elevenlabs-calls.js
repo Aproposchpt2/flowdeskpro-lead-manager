@@ -137,7 +137,6 @@ async function fetchConversationDetail(apiKey, conversationId) {
 }
 
 async function processConversation(supabase, conv, apiKey) {
-  // ElevenLabs API returns conversation_id at top level
   const conversationId = conv.conversation_id || conv.id || null;
 
   if (!conversationId) {
@@ -145,22 +144,20 @@ async function processConversation(supabase, conv, apiKey) {
     return false;
   }
 
-  // Check if already synced
-  const { data: existing } = await supabase
-    .from('call_logs')
+  // Dedup: skip if call_record already exists for this conversation_id
+  const { data: existingCall } = await supabase
+    .from('call_records')
     .select('id')
-    .eq('call_sid', conversationId)
+    .eq('conversation_id', conversationId)
     .maybeSingle();
 
-  if (existing) {
+  if (existingCall) {
     console.log(`[sync] Already synced: ${conversationId}`);
     return false;
   }
 
-  // Fetch full conversation detail for transcript + data collection
   const detail = await fetchConversationDetail(apiKey, conversationId);
 
-  // Log detail structure for phone number field discovery
   if (detail) {
     console.log('[sync] Detail keys:', Object.keys(detail).join(', '));
     if (detail.metadata) console.log('[sync] Metadata:', JSON.stringify(detail.metadata).slice(0, 200));
@@ -170,7 +167,6 @@ async function processConversation(supabase, conv, apiKey) {
   const transcript = detail?.transcript || conv.transcript || [];
   const collected  = detail?.data_collection_results || {};
 
-  // Phone: external_number is the caller's Twilio number
   const callerPhone = clean(
     detail?.metadata?.phone_call?.external_number ||
     detail?.conversation_initiation_client_data?.dynamic_variables?.system__caller_id ||
@@ -180,26 +176,22 @@ async function processConversation(supabase, conv, apiKey) {
     30
   );
 
-  // call_summary_title from list is the best available reason for call
   const summaryTitle = clean(conv.call_summary_title || conv.transcript_summary, 300);
   const durationSecs = conv.call_duration_secs ? Math.round(conv.call_duration_secs) : null;
-  const startedAt  = conv.start_time_unix_secs ? new Date(conv.start_time_unix_secs * 1000).toISOString() : new Date().toISOString();
+  const startedAt    = conv.start_time_unix_secs ? new Date(conv.start_time_unix_secs * 1000).toISOString() : new Date().toISOString();
 
-  // Extract structured fields — data_collection_results first, then transcript fallback
   const firstName    = clean(collected.caller_first_name?.value, 60) || null;
   const lastName     = clean(collected.caller_last_name?.value, 60) || null;
   const reasonRaw    = clean(collected.reason_for_call?.value, 500) || null;
 
-  // Extract from transcript when structured collection isn't available
   const transcriptName   = extractCallerName(transcript);
   const transcriptReason = extractReasonFromTranscript(transcript);
 
-  const reason = reasonRaw || transcriptReason || summaryTitle || null;
+  const reason       = reasonRaw || transcriptReason || summaryTitle || null;
   const resolvedName = [firstName, lastName].filter(Boolean).join(' ') || transcriptName || null;
   const contactName  = resolvedName || `Voice Lead — ${callerPhone !== 'Unknown' ? callerPhone : conversationId?.slice(-8)}`;
 
-  // Split resolved name into first/last if we only got it from transcript
-  const nameParts = resolvedName ? resolvedName.split(' ') : [];
+  const nameParts    = resolvedName ? resolvedName.split(' ') : [];
   const resolvedFirst = firstName || nameParts[0] || null;
   const resolvedLast  = lastName  || nameParts.slice(1).join(' ') || null;
 
@@ -208,81 +200,24 @@ async function processConversation(supabase, conv, apiKey) {
   console.log(`[sync] ${conversationId} | name="${contactName}" | phone="${callerPhone}" | reason="${reason?.slice(0,40)}"`);
 
   const now = new Date().toISOString();
-
-  const [callLogResult, leadResult] = await Promise.allSettled([
-    supabase.from('call_logs').insert({
-      caller_phone:     callerPhone,
-      call_sid:         conversationId,
-      call_status:      'completed',
-      duration_seconds: durationSecs,
-      outcome:          'completed',
-      lead_created:     true,
-      is_demo:          false,
-      created_at:       startedAt,
-    }).select('id').single(),
-
-    supabase.from('lead_manager_records').insert({
-      tenant_id:             TENANT_ID,
-      contact_name:          contactName,
-      first_name:            resolvedFirst,
-      last_name:             resolvedLast,
-      phone:                 callerPhone,
-      call_sid:              conversationId,
-      source:                'voice_agent',
-      source_page:           'ElevenLabs Alex — Contact Center',
-      channel:               'voice',
-      lead_status:           reason ? 'New / Needs Review' : 'New / Priority Review',
-      service_needed:        'AI Contact Center — Voice Lead',
-      message:               reason || null,
-      details:               reason
-                               ? `${contactName} called about: ${reason}`
-                               : summary || `Inbound call. Phone: ${callerPhone}.`,
-      call_status:           'completed',
-      call_duration_seconds: durationSecs,
-      missed_call:           false,
-      follow_up_needed:      true,
-      ai_call_summary:       summary,
-      transcript:            summary,
-      campaign_source:       'voice_agent',
-      campaign_medium:       'voice',
-      campaign_name:         'FlowDesk Pro Contact Center',
-      next_action:           reason
-                               ? `Follow up with ${contactName || 'caller'} regarding: ${reason.slice(0,100)}`
-                               : 'Review call and follow up.',
-      created_at:            startedAt,
-      updated_at:            now,
-      metadata: {
-        conversation_id: conversationId,
-        agent:           'Alex',
-        platform:        'ElevenLabs',
-        sync_method:     'api_poll',
-      },
-    }).select('id').single(),
-  ]);
-
-  const callLogErr = callLogResult.status === 'rejected'
-    ? (callLogResult.reason?.message || JSON.stringify(callLogResult.reason))
-    : (callLogResult.value?.error?.message || null);
-  const leadErr = leadResult.status === 'rejected'
-    ? (leadResult.reason?.message || JSON.stringify(leadResult.reason))
-    : (leadResult.value?.error?.message || null);
-
-  if (callLogErr) console.error('[sync] call_logs error:', callLogErr);
-  if (leadErr)    console.error('[sync] lead_manager_records error:', leadErr);
-
-  // ── Write to CRM tables ───────────────────────────────────────
-  const CRM_CLIENT_ID = '10b8f727-cecd-4e20-9829-c0dfed181dde';
+  const CRM_CLIENT_ID   = process.env.CRM_CLIENT_ID || '10b8f727-cecd-4e20-9829-c0dfed181dde';
   const callerPhoneNorm = callerPhone !== 'Unknown' ? callerPhone : null;
 
+  // ── contacts ─────────────────────────────────────────────────
   let crmContactId = null;
   if (callerPhoneNorm) {
-    const { data: existing } = await supabase.from('contacts').select('id,lead_score').eq('caller_id', callerPhoneNorm).maybeSingle();
-    if (existing) {
-      crmContactId = existing.id;
-      await supabase.from('contacts').update({ updated_at: now, lead_score: (existing.lead_score || 0) + 1 }).eq('id', crmContactId);
+    const { data: existingContact } = await supabase
+      .from('contacts').select('id,lead_score').eq('caller_id', callerPhoneNorm).maybeSingle();
+    if (existingContact) {
+      crmContactId = existingContact.id;
+      await supabase.from('contacts').update({
+        updated_at: now, lead_score: (existingContact.lead_score || 0) + 1,
+        ...(resolvedFirst && !existingContact.first_name ? { first_name: resolvedFirst } : {}),
+        ...(resolvedLast  && !existingContact.last_name  ? { last_name:  resolvedLast  } : {}),
+      }).eq('id', crmContactId);
     } else {
       const { data: nc } = await supabase.from('contacts').insert({
-        caller_id: callerPhoneNorm, phone_primary: callerPhoneNorm,
+        caller_id: callerPhoneNorm, phone_primary: callerPhoneNorm, phone_normalized: callerPhoneNorm,
         first_name: resolvedFirst, last_name: resolvedLast,
         lead_source: 'phone_call', lead_status: 'new', contact_type: 'lead',
         client_id: CRM_CLIENT_ID, created_at: startedAt, updated_at: now,
@@ -291,55 +226,66 @@ async function processConversation(supabase, conv, apiKey) {
     }
   }
 
+  // ── call_records ──────────────────────────────────────────────
   let crmCallId = null;
-  const { data: cr } = await supabase.from('call_records').insert({
+  const { data: cr, error: crErr } = await supabase.from('call_records').upsert({
     client_id: CRM_CLIENT_ID, contact_id: crmContactId, conversation_id: conversationId,
     caller_id: callerPhoneNorm, caller_phone_normalized: callerPhoneNorm,
     call_direction: 'inbound', call_status: 'completed',
     call_start_time: startedAt, call_duration_seconds: durationSecs,
-    call_duration_display: durationSecs ? `${Math.floor(durationSecs/60)}m ${durationSecs%60}s` : null,
-    agent_name: 'Alex', caller_first_name: resolvedFirst, caller_last_name: resolvedLast,
+    agent_name: 'Alex', agent_id: AGENT_ID,
+    caller_first_name: resolvedFirst, caller_last_name: resolvedLast,
     reason_for_call: reason, caller_message: reason,
     call_summary: reason || summaryTitle || 'Inbound call',
     call_transcript: summary, lead_created: !!reason,
     follow_up_required: !!reason, created_at: startedAt,
-  }).select('id').single();
-  if (cr) crmCallId = cr.id;
+  }, { onConflict: 'conversation_id', ignoreDuplicates: true }).select('id').single();
+  if (crErr) console.error('[sync] call_records error:', crErr.message);
+  else crmCallId = cr?.id;
 
+  // ── leads ─────────────────────────────────────────────────────
   let crmLeadId = null;
   if (reason && crmContactId) {
-    const { data: lead } = await supabase.from('crm_leads').insert({
+    const { data: lead, error: leadErr } = await supabase.from('leads').insert({
       client_id: CRM_CLIENT_ID, contact_id: crmContactId, call_record_id: crmCallId,
       lead_title: `${resolvedFirst || 'Caller'} — ${reason.slice(0, 60)}`,
       lead_description: reason, service_interest: 'FlowDesk Pro — Contact Center',
       pipeline_stage: 'new_lead', lead_source: 'phone_call',
-      created_at: startedAt, updated_at: now,
+      assigned_at: startedAt, created_at: startedAt, updated_at: now,
     }).select('id').single();
-    if (lead) {
-      crmLeadId = lead.id;
-      if (crmCallId) await supabase.from('call_records').update({ lead_id: crmLeadId }).eq('id', crmCallId);
+    if (leadErr) console.error('[sync] leads error:', leadErr.message);
+    else {
+      crmLeadId = lead?.id;
+      if (crmLeadId && crmCallId) {
+        await supabase.from('call_records').update({ lead_id: crmLeadId }).eq('id', crmCallId);
+      }
     }
+
     const followUp = new Date(new Date(startedAt).getTime() + 24*60*60*1000).toISOString();
-    await supabase.from('tasks').insert({
+    const { error: taskErr } = await supabase.from('tasks').insert({
       client_id: CRM_CLIENT_ID, contact_id: crmContactId, lead_id: crmLeadId, call_record_id: crmCallId,
       task_title: `Follow up: ${resolvedFirst || 'Caller'} — ${reason.slice(0, 60)}`,
       task_description: reason, task_type: 'follow_up', due_date: followUp,
       priority: 'normal', status: 'pending', created_at: startedAt,
     });
+    if (taskErr) console.error('[sync] tasks error:', taskErr.message);
   }
 
+  // ── activities ────────────────────────────────────────────────
   if (crmContactId) {
-    await supabase.from('activities').insert({
+    const { error: actErr } = await supabase.from('activities').insert({
       client_id: CRM_CLIENT_ID, contact_id: crmContactId, lead_id: crmLeadId, call_record_id: crmCallId,
       activity_type: 'call', activity_direction: 'inbound',
       activity_subject: reason || 'Inbound call',
       activity_body: summary || reason || 'Call handled by Alex',
       activity_outcome: reason ? 'reason_captured' : 'no_reason_captured',
-      performed_by: 'Alex', duration_seconds: durationSecs, created_at: startedAt,
+      performed_by: null, duration_seconds: durationSecs, created_at: startedAt,
     });
+    if (actErr) console.error('[sync] activities error:', actErr.message);
   }
 
-  return { wasNew: true, callLogErr, leadErr, conversationId, callerPhone, crmContactId, crmCallId };
+  console.log(`[sync] complete: contact=${crmContactId} call=${crmCallId} lead=${crmLeadId}`);
+  return { wasNew: true, conversationId, callerPhone, crmContactId, crmCallId, crmLeadId };
 }
 
 exports.handler = async (event) => {
@@ -406,9 +352,6 @@ exports.handler = async (event) => {
       const result = await processConversation(supabase, conv, apiKey);
       if (result?.wasNew) {
         synced++;
-        if (result.callLogErr || result.leadErr) {
-          errors.push({ id: result.conversationId, callLogErr: result.callLogErr, leadErr: result.leadErr });
-        }
       }
     } catch (err) {
       console.error('[sync] processConversation error:', err.message);
