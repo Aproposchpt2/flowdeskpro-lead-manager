@@ -6,6 +6,86 @@
   <title>Lead Intake — FlowDesk Pro Lead Manager</title>
   <meta name="description" content="Fallback lead intake form for FlowDesk Pro Lead Manager." />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── SMS Consent Card ── */
+    .sms-consent-card {
+      display: none;
+      border: 1px solid rgba(115,230,255,.38);
+      border-radius: 18px;
+      background: rgba(115,230,255,.05);
+      padding: 20px 22px;
+      gap: 14px !important;
+    }
+    .sms-consent-card.visible { display: flex; flex-direction: column; }
+
+    .sms-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--cyan);
+      font-size: .7rem;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .sms-card-header svg {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      stroke: var(--cyan);
+    }
+
+    .sms-disclosure {
+      font-size: .88rem;
+      line-height: 1.75;
+      color: var(--muted);
+      border-left: 2px solid rgba(115,230,255,.3);
+      padding-left: 14px;
+    }
+
+    .sms-checkbox-label {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      cursor: pointer;
+      color: var(--text);
+      font-size: .92rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .sms-checkbox-label input[type="checkbox"] {
+      width: 20px;
+      min-height: 20px;
+      margin-top: 2px;
+      accent-color: var(--cyan);
+      flex: 0 0 auto;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .sms-meta {
+      font-size: .72rem;
+      color: var(--soft);
+      letter-spacing: .04em;
+    }
+    .sms-meta a { color: var(--cyan); text-decoration: none; }
+    .sms-meta a:hover { text-decoration: underline; }
+
+    .sms-consent-stamp {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: .7rem;
+      color: var(--green);
+      letter-spacing: .08em;
+    }
+    .sms-consent-stamp.visible { display: flex; }
+    .sms-consent-stamp svg {
+      width: 14px; height: 14px;
+      stroke: var(--green);
+      flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
   <div class="shell">
@@ -46,9 +126,48 @@
               <input id="email" name="email" type="email" autocomplete="email" required />
             </div>
             <div class="field">
-              <label for="phone">Phone</label>
-              <input id="phone" name="phone" type="tel" autocomplete="tel" />
+              <label for="phone">Mobile Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel"
+                     placeholder="Used for SMS notifications if you opt in below" />
             </div>
+
+            <!-- ── SMS Consent Card ── shown when phone is entered ── -->
+            <div class="field full sms-consent-card" id="smsConsentCard" role="region" aria-label="SMS notification consent">
+              <div class="sms-card-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                SMS Notification Consent
+              </div>
+
+              <p class="sms-disclosure">
+                I agree to receive SMS notifications from FlowDesk Pro about inbound calls, leads, and
+                account activity at the mobile number provided above. Message frequency varies.
+                Message and data rates may apply. Reply <strong>STOP</strong> to opt out at any time,
+                or <strong>HELP</strong> for help.
+                <strong>Consent is not a condition of purchase.</strong>
+              </p>
+
+              <label class="sms-checkbox-label">
+                <input type="checkbox" id="smsConsent" name="sms_consent" />
+                I agree to receive SMS notifications from FlowDesk Pro about inbound calls, leads,
+                and account activity at the number above.
+              </label>
+
+              <div class="sms-meta">
+                By checking this box you provide express written consent under TCPA.
+                View our <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms of Service</a>.
+              </div>
+
+              <div class="sms-consent-stamp" id="smsStamp">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span id="smsStampText">Consent recorded</span>
+              </div>
+            </div>
+            <!-- ── end SMS card ── -->
+
             <div class="field">
               <label for="company">Business Name</label>
               <input id="company" name="company" autocomplete="organization" />
@@ -104,7 +223,6 @@
               <label>Options</label>
               <label class="checkbox-row"><input id="followUp" name="follow_up_needed" type="checkbox" checked />Follow-up needed</label>
               <label class="checkbox-row"><input id="appointment" name="appointment_requested" type="checkbox" />Appointment requested</label>
-              <label class="checkbox-row"><input id="smsConsent" name="sms_consent" type="checkbox" />Customer consented to SMS follow-up where applicable</label>
             </div>
           </div>
 
@@ -129,10 +247,53 @@
 'use strict';
 
 const $ = (id) => document.getElementById(id);
-const form = $('leadForm');
-const notice = $('formNotice');
-const button = $('submitButton');
+const form      = $('leadForm');
+const notice    = $('formNotice');
+const button    = $('submitButton');
+const phoneInput     = $('phone');
+const smsCard        = $('smsConsentCard');
+const smsCheckbox    = $('smsConsent');
+const smsStamp       = $('smsStamp');
+const smsStampText   = $('smsStampText');
 
+// ── SMS consent state ──────────────────────────────────────────────────────
+const SMS_CONSENT_TEXT =
+  'I agree to receive SMS notifications from FlowDesk Pro about inbound calls, ' +
+  'leads, and account activity at the mobile number provided above. ' +
+  'Message frequency varies. Message and data rates may apply. ' +
+  'Reply STOP to opt out at any time, or HELP for help. ' +
+  'Consent is not a condition of purchase.';
+
+let smsConsentTimestamp = null;
+
+// Show card when phone has a value, hide + reset when cleared.
+function syncSmsCard() {
+  const hasPhone = phoneInput.value.trim().length >= 7;
+  if (hasPhone) {
+    smsCard.classList.add('visible');
+  } else {
+    smsCard.classList.remove('visible');
+    smsCheckbox.checked = false;
+    smsConsentTimestamp = null;
+    smsStamp.classList.remove('visible');
+  }
+}
+
+phoneInput.addEventListener('input', syncSmsCard);
+
+// Capture timestamp the moment the box is checked; clear on uncheck.
+smsCheckbox.addEventListener('change', () => {
+  if (smsCheckbox.checked) {
+    smsConsentTimestamp = new Date().toISOString();
+    smsStampText.textContent = `Consent recorded · ${new Date().toLocaleTimeString()}`;
+    smsStamp.classList.add('visible');
+  } else {
+    smsConsentTimestamp = null;
+    smsStamp.classList.remove('visible');
+  }
+});
+
+// ── URL query prefill ─────────────────────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
 function fillFromQuery(id, keys) {
   for (const key of keys) {
@@ -141,25 +302,26 @@ function fillFromQuery(id, keys) {
   }
 }
 fillFromQuery('serviceNeeded', ['product', 'service', 'selected_product']);
-fillFromQuery('selectedPlan', ['plan', 'selected_plan']);
-fillFromQuery('message', ['message', 'details']);
+fillFromQuery('selectedPlan',  ['plan', 'selected_plan']);
+fillFromQuery('message',       ['message', 'details']);
 
+// ── Helpers ───────────────────────────────────────────────────────────────
 function showNotice(message, type) {
   notice.textContent = message;
   notice.className = `notice show ${type || ''}`.trim();
 }
-
 function bool(id) { return Boolean($(id)?.checked); }
-function val(id) { return ($(id)?.value || '').trim(); }
+function val(id)  { return ($(id)?.value || '').trim(); }
 
+// ── Submit ────────────────────────────────────────────────────────────────
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const firstName = val('firstName');
-  const lastName = val('lastName');
-  const email = val('email');
+  const firstName   = val('firstName');
+  const lastName    = val('lastName');
+  const email       = val('email');
   const serviceNeeded = val('serviceNeeded');
-  const message = val('message');
+  const message     = val('message');
 
   if (!firstName || !lastName || !email || !serviceNeeded || !message) {
     showNotice('Please complete first name, last name, email, product/service, and message.', 'error');
@@ -170,47 +332,58 @@ form.addEventListener('submit', async (event) => {
   button.textContent = 'Submitting...';
   showNotice('Submitting lead record to FlowDesk Pro Lead Manager...', '');
 
-  const selectedPlan = val('selectedPlan');
+  const selectedPlan  = val('selectedPlan');
+  const smsConsented  = bool('smsConsent');
+  const mobileNumber  = val('phone');
+
   const payload = {
-    tenant_id: 'apropos-ai4-businesses',
-    client_name: 'Apropos Group LLC',
-    business_name: 'AI4 Businesses',
-    first_name: firstName,
-    last_name: lastName,
+    tenant_id:    'apropos-ai4-businesses',
+    client_name:  'Apropos Group LLC',
+    business_name:'AI4 Businesses',
+    first_name:   firstName,
+    last_name:    lastName,
     contact_name: `${firstName} ${lastName}`.trim(),
     email,
-    phone: val('phone'),
-    company: val('company'),
-    source: 'lead_manager_fallback_intake',
-    channel: 'web',
-    source_page: 'intake.html',
-    source_url: window.location.href,
-    lead_status: 'New / Needs Review',
-    urgency: val('urgency') || 'Normal',
+    phone:        mobileNumber,
+    company:      val('company'),
+    source:       'lead_manager_fallback_intake',
+    channel:      'web',
+    source_page:  'intake.html',
+    source_url:   window.location.href,
+    lead_status:  'New / Needs Review',
+    urgency:      val('urgency') || 'Normal',
     service_needed: serviceNeeded,
-    category: 'Fallback Lead Intake',
+    category:     'Fallback Lead Intake',
     preferred_contact_method: val('contactMethod') || 'Email or phone',
-    preferred_callback_time: val('callback'),
+    preferred_callback_time:  val('callback'),
     message,
     details: [
       `Product / service: ${serviceNeeded}`,
       selectedPlan ? `Selected plan: ${selectedPlan}` : '',
       `Message: ${message}`,
     ].filter(Boolean).join('\n'),
-    follow_up_needed: bool('followUp'),
+    follow_up_needed:      bool('followUp'),
     appointment_requested: bool('appointment'),
-    sms_consent: bool('smsConsent'),
+
+    // ── SMS consent fields (TCPA artifact) ───────────────────────────────
+    sms_consent:           smsConsented,
+    sms_consent_phone:     smsConsented ? mobileNumber : null,
+    sms_consent_text:      smsConsented ? SMS_CONSENT_TEXT : null,
+    sms_consent_timestamp: smsConsented ? smsConsentTimestamp : null,
+    // ─────────────────────────────────────────────────────────────────────
+
     next_action: val('nextAction'),
     metadata: {
-      origin_site: window.location.hostname,
-      lead_source_type: 'fallback_manual_intake',
-      selected_product: serviceNeeded,
-      selected_plan: selectedPlan,
-      source_url: window.location.href,
-      payment_site: false,
-      payment_status: 'not_applicable',
+      origin_site:            window.location.hostname,
+      lead_source_type:       'fallback_manual_intake',
+      selected_product:       serviceNeeded,
+      selected_plan:          selectedPlan,
+      source_url:             window.location.href,
+      payment_site:           false,
+      payment_status:         'not_applicable',
       requires_sales_follow_up: true,
-      sms_consent: bool('smsConsent')
+      sms_consent:            smsConsented,
+      sms_consent_timestamp:  smsConsentTimestamp,
     }
   };
 
