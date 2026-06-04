@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -111,7 +111,11 @@
     @media(max-width:1280px){.metrics{grid-template-columns:repeat(3,1fr)}.workspace{grid-template-columns:1fr}.filters,.filters.secondary{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:900px){.app{grid-template-columns:1fr}aside{position:static;height:auto}.nav-group{grid-template-columns:repeat(3,1fr)}.side-note{display:none}}
     @media(max-width:700px){main{padding:16px}.topbar,.detail-title{flex-direction:column}.metrics,.filters,.filters.secondary,.detail-grid,.meta-grid,.nav-group{grid-template-columns:1fr}.lead-list{max-height:none}}
-  </style>
+    .client-banner{display:none;align-items:center;gap:10px;margin-top:14px;padding:9px 16px;border-radius:12px;background:linear-gradient(90deg,rgba(115,230,255,.13),rgba(74,127,255,.07));border:1px solid rgba(115,230,255,.26);font-size:.78rem;letter-spacing:.07em}
+    .client-banner.visible{display:flex}
+    .client-banner-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px rgba(115,230,255,.7);animation:pulse 2s infinite;flex-shrink:0}
+    .client-banner-name{color:var(--cyan);font-weight:900;font-size:.9rem;letter-spacing:-.01em}
+    .client-banner-label{color:var(--soft);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}  </style>
 </head>
 <body>
 <div class="app">
@@ -136,6 +140,11 @@
       <div class="page-title">
         <h1 id="dashboard-title">AI4 Businesses — Lead Manager Command Center</h1>
         <p id="dashboard-subtitle">Receive and manage records from AI4 Product Purchasing, web intake forms, calls, SMS, missed calls, and appointment requests.</p>
+      <div class="client-banner" id="clientBanner">
+        <span class="client-banner-dot"></span>
+        <span class="client-banner-name" id="clientBannerName"></span>
+        <span class="client-banner-label">— FlowDesk Pro Lead Dashboard</span>
+      </div>
       </div>
       <div class="top-actions">
         <a class="btn" href="https://ai4-product-purchasing.ai4businesses.org" target="_blank" rel="noopener">Product Purchasing Site</a>
@@ -209,10 +218,17 @@
       bizName = sessionStorage.getItem('lm_business_name') || '';
     }
     if (bizName) {
-      const title = document.getElementById('dashboard-title');
+      const title    = document.getElementById('dashboard-title');
       const subtitle = document.getElementById('dashboard-subtitle');
-      if (title) title.textContent = bizName + ' — Lead Dashboard';
+      const banner   = document.getElementById('clientBanner');
+      const bannerName = document.getElementById('clientBannerName');
+      const sideStrong = document.querySelector('.brand-text strong');
+      const sideSub    = document.querySelector('.brand-text span');
+      if (title)    title.textContent    = bizName + ' — Lead Dashboard';
       if (subtitle) subtitle.textContent = 'Your ' + bizName + ' lead pipeline — all records, activity, and follow-ups in one place.';
+      if (banner && bannerName) { bannerName.textContent = bizName; banner.classList.add('visible'); }
+      if (sideStrong) sideStrong.textContent = bizName;
+      if (sideSub)    sideSub.textContent    = 'Lead Dashboard';
       document.title = bizName + ' — Lead Manager | FlowDesk Pro';
     }
   } catch (_) {}
@@ -625,3 +641,5 @@ async function emailLead(id){
 </script>
 </body>
 </html>
+
+

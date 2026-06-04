@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -168,9 +168,10 @@
             </div>
             <!-- ── end SMS card ── -->
 
-            <div class="field">
-              <label for="company">Business Name</label>
-              <input id="company" name="company" autocomplete="organization" />
+            <div class="field full">
+              <label for="company">Your Business Name <span style="color:var(--cyan);font-weight:400;letter-spacing:.05em;text-transform:none;font-size:.9em">— becomes your dashboard header</span></label>
+              <input id="company" name="company" autocomplete="organization" placeholder="e.g. Henderson Law Group, Rivera Dental, Torres HVAC" required />
+              <span style="font-size:.74rem;color:var(--soft);letter-spacing:.04em;margin-top:2px;display:block">This name will display as the banner across your personalized FlowDesk Pro dashboard.</span>
             </div>
             <div class="field">
               <label for="serviceNeeded">Product / Service Needed</label>
@@ -395,8 +396,9 @@ form.addEventListener('submit', async (event) => {
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.ok) throw new Error(data.error || 'Unable to submit lead.');
-    const id = data.record_id ? `?lead=${encodeURIComponent(data.record_id)}` : '';
-    window.location.href = `/thankyou.html${id}`;
+    const biz    = encodeURIComponent(val('company'));
+    const leadId = encodeURIComponent(data.record_id || '');
+    window.location.href = `/dashboard.html?business_name=${biz}&lead=${leadId}`;
   } catch (error) {
     console.error(error);
     showNotice(error.message || 'Unable to submit right now. Check Netlify Function logs.', 'error');
@@ -407,3 +409,5 @@ form.addEventListener('submit', async (event) => {
 </script>
 </body>
 </html>
+
+
