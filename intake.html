@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -9,14 +9,15 @@
   <style>
     /* ── SMS Consent Card ── */
     .sms-consent-card {
-      display: none;
+      display: flex;
+      flex-direction: column;
       border: 1px solid rgba(115,230,255,.38);
       border-radius: 18px;
       background: rgba(115,230,255,.05);
       padding: 20px 22px;
-      gap: 14px !important;
+      gap: 14px;
+      margin-top: 28px;
     }
-    .sms-consent-card.visible { display: flex; flex-direction: column; }
 
     .sms-card-header {
       display: flex;
@@ -128,45 +129,8 @@
             <div class="field">
               <label for="phone">Mobile Phone</label>
               <input id="phone" name="phone" type="tel" autocomplete="tel"
-                     placeholder="Used for SMS notifications if you opt in below" />
+                     placeholder="(702) 555-0100" />
             </div>
-
-            <!-- ── SMS Consent Card ── shown when phone is entered ── -->
-            <div class="field full sms-consent-card" id="smsConsentCard" role="region" aria-label="SMS notification consent">
-              <div class="sms-card-header">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-                SMS Notification Consent
-              </div>
-
-              <p class="sms-disclosure">
-                I agree to receive SMS notifications from FlowDesk Pro about inbound calls, leads, and
-                account activity at the mobile number provided above. Message frequency varies.
-                Message and data rates may apply. Reply <strong>STOP</strong> to opt out at any time,
-                or <strong>HELP</strong> for help.
-                <strong>Consent is not a condition of purchase.</strong>
-              </p>
-
-              <label class="sms-checkbox-label">
-                <input type="checkbox" id="smsConsent" name="sms_consent" />
-                I agree to receive SMS notifications from FlowDesk Pro about inbound calls, leads,
-                and account activity at the number above.
-              </label>
-
-              <div class="sms-meta">
-                By checking this box you provide express written consent under TCPA.
-                View our <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms of Service</a>.
-              </div>
-
-              <div class="sms-consent-stamp" id="smsStamp">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span id="smsStampText">Consent recorded</span>
-              </div>
-            </div>
-            <!-- ── end SMS card ── -->
 
             <div class="field full">
               <label for="company">Your Business Name <span style="color:var(--cyan);font-weight:400;letter-spacing:.05em;text-transform:none;font-size:.9em">— becomes your dashboard header</span></label>
@@ -233,6 +197,39 @@
           </div>
           <div id="formNotice" class="notice" aria-live="polite"></div>
         </form>
+
+        <!-- ── SMS Notification Consent — always visible for A2P compliance ── -->
+        <div class="sms-consent-card" id="smsConsentCard" role="region" aria-label="SMS notification consent">
+          <div class="sms-card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            SMS Notification Consent
+          </div>
+          <p class="sms-disclosure">
+            I agree to receive SMS notifications from FlowDesk Pro about inbound calls, leads, and
+            account activity at the mobile number provided above. Message frequency varies.
+            Message and data rates may apply. Reply <strong>STOP</strong> to opt out at any time,
+            or <strong>HELP</strong> for help.
+            <strong>Consent is not a condition of purchase.</strong>
+          </p>
+          <label class="sms-checkbox-label">
+            <input type="checkbox" id="smsConsent" name="sms_consent" />
+            I agree to receive SMS notifications from FlowDesk Pro about inbound calls, leads,
+            and account activity at the number above.
+          </label>
+          <div class="sms-meta">
+            By checking this box you provide express written consent under TCPA.
+            View our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+          </div>
+          <div class="sms-consent-stamp" id="smsStamp">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span id="smsStampText">Consent recorded</span>
+          </div>
+        </div>
+
       </section>
     </main>
 
@@ -267,20 +264,6 @@ const SMS_CONSENT_TEXT =
 
 let smsConsentTimestamp = null;
 
-// Show card when phone has a value, hide + reset when cleared.
-function syncSmsCard() {
-  const hasPhone = phoneInput.value.trim().length >= 7;
-  if (hasPhone) {
-    smsCard.classList.add('visible');
-  } else {
-    smsCard.classList.remove('visible');
-    smsCheckbox.checked = false;
-    smsConsentTimestamp = null;
-    smsStamp.classList.remove('visible');
-  }
-}
-
-phoneInput.addEventListener('input', syncSmsCard);
 
 // Capture timestamp the moment the box is checked; clear on uncheck.
 smsCheckbox.addEventListener('change', () => {
@@ -409,5 +392,6 @@ form.addEventListener('submit', async (event) => {
 </script>
 </body>
 </html>
+
 
 
