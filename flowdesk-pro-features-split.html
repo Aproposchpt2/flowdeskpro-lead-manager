@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlowDesk Pro — Lead Management System (Split Layout)</title>
+<title>FlowDesk Pro â€” Lead Management System (Split Layout)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -132,45 +132,29 @@
     border:1px solid var(--line);background:rgba(10,20,36,.70);color:var(--ink-soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
   .pill b{color:var(--teal)}
 
-  /* ---- flow strip ---- */
-  .flow{margin:54px auto 10px;max-width:920px;padding:26px 24px;border:1px solid var(--line);border-radius:20px;
-    background:radial-gradient(460px 220px at 50% -20%,rgba(115,230,255,.14),transparent 68%),linear-gradient(180deg,var(--panel-2),rgba(10,20,36,.70));
-    box-shadow:0 24px 70px -42px var(--glow),inset 0 1px 0 rgba(255,255,255,.05)}
-  .flow-label{text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;
-    text-transform:uppercase;color:var(--ink-faint);margin-bottom:20px}
-  .flow-row{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
-  .feeders{display:flex;flex-direction:column;gap:8px}
-  .feeder{font-size:.84rem;font-weight:500;padding:8px 14px;border-radius:10px;background:rgba(255,255,255,.035);
-    border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap}
-  .flow-arrow{color:var(--coral);font-size:1.5rem;font-weight:700}
-  .hub{padding:22px 26px;border-radius:16px;background:linear-gradient(135deg,#F4F8FF,#73E6FF 50%,#4A7FFF);
-    color:#03101f;text-align:center;box-shadow:0 22px 48px -22px var(--glow),inset 0 1px 0 rgba(255,255,255,.35)}
-  .hub .k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;opacity:.75;text-transform:uppercase}
-  .hub .v{font-family:'Bricolage Grotesque';font-weight:700;font-size:1.25rem;line-height:1.1;margin-top:4px}
-  @media(max-width:640px){.flow-arrow{transform:rotate(90deg)}.feeders{flex-direction:row;flex-wrap:wrap;justify-content:center}}
 
   /* ---- sections ---- */
-  .feature{padding:62px 0;border-top:1px solid var(--line-2)}
-  .fhead{display:flex;align-items:flex-start;gap:20px;margin-bottom:30px}
-  .fnum{font-family:'Bricolage Grotesque';font-weight:300;font-size:3.2rem;line-height:.8;color:var(--teal);opacity:.32;flex-shrink:0}
-  .ficon{width:48px;height:48px;border-radius:13px;background:var(--teal-wash);display:grid;place-items:center;
-    color:var(--teal);flex-shrink:0;border:1px solid rgba(115,230,255,.26);box-shadow:0 0 24px rgba(74,127,255,.18)}
-  .ficon svg{width:25px;height:25px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .ftitles{flex:1}
-  .fkicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px}
-  .feature h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:clamp(1.6rem,3.6vw,2.3rem);
-    line-height:1.05;letter-spacing:-.02em;margin-bottom:12px}
-  .fwhy{font-size:1.04rem;color:var(--ink-soft);max-width:62ch}
+  .feature{padding:72px 0;border-top:1px solid var(--line-2);position:relative;overflow:hidden}
+  .fhead{display:flex;align-items:flex-start;gap:22px;margin-bottom:36px;position:relative}
+  .fnum{position:absolute;right:-16px;top:-20px;font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(7rem,16vw,11rem);line-height:1;color:var(--teal);opacity:.055;pointer-events:none;letter-spacing:-.04em;user-select:none;z-index:0}
+  .ficon{width:44px;height:44px;border-radius:12px;background:var(--teal-wash);display:grid;place-items:center;color:var(--teal);flex-shrink:0;border:1px solid rgba(115,230,255,.20);box-shadow:0 0 20px rgba(74,127,255,.15);position:relative;z-index:1}
+  .ficon svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .ftitles{flex:1;border-left:1px solid var(--line);padding-left:24px;position:relative;z-index:1}
+  .fkicker{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px}
+  .feature h2{font-family:'Bricolage Grotesque';font-weight:700;font-size:clamp(1.6rem,3.6vw,2.3rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:12px}
+  .fwhy{font-size:1.02rem;color:var(--ink-soft);max-width:62ch}
   .fwhy b{color:var(--ink);font-weight:600}
-  .items{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line-2);
-    border:1px solid var(--line-2);border-radius:18px;overflow:hidden;margin-top:30px}
-  @media(max-width:680px){.items{grid-template-columns:1fr}}
-  .item{background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.018)),rgba(10,20,36,.92);padding:22px 22px;transition:background .25s,box-shadow .25s}
-  .item:hover{background:rgba(10,20,36,.98);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
-  .item .it{font-family:'Bricolage Grotesque';font-weight:600;font-size:1.04rem;margin-bottom:6px;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+  /* ---- feature items — clean spec list ---- */
+  .items{margin-top:36px;border-top:1px solid var(--line-2);position:relative;z-index:1}
+  .item{display:grid;grid-template-columns:minmax(180px,5fr) 8fr;gap:12px 52px;padding:20px 0;border-bottom:1px solid var(--line-2);position:relative;transition:border-color .25s}
+  .item::before{content:"";position:absolute;left:-26px;top:0;bottom:0;width:2px;border-radius:2px;background:linear-gradient(180deg,var(--teal),var(--teal-deep));opacity:0;transition:opacity .25s}
+  .item:hover{border-color:rgba(115,230,255,.32)}
+  .item:hover::before{opacity:.65}
+  .item .it{font-family:'Bricolage Grotesque';font-weight:600;font-size:1rem;display:flex;align-items:center;gap:10px;letter-spacing:-.01em;color:var(--ink)}
   .item .it .tick{color:var(--teal);flex-shrink:0}
-  .item .it .tick svg{width:15px;height:15px;stroke:currentColor;stroke-width:2.4;fill:none}
-  .item .id{font-size:.92rem;color:var(--ink-soft);font-weight:400}
+  .item .it .tick svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.5;fill:none}
+  .item .id{font-size:.91rem;color:var(--ink-soft);font-weight:400;line-height:1.65}
+  @media(max-width:680px){.item{grid-template-columns:1fr;gap:6px}}
 
   /* presence demo (sec 4) */
   .presence{display:flex;gap:18px;margin-top:6px;flex-wrap:wrap}
@@ -196,10 +180,18 @@
     letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
 
   /* reveal */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
-  .items.reveal .item{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
+  .items.reveal .item{opacity:0;transform:translateY(10px);transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1)}
   .items.in .item{opacity:1;transform:none}
+  .items.in .item:nth-child(1){transition-delay:.05s}
+  .items.in .item:nth-child(2){transition-delay:.10s}
+  .items.in .item:nth-child(3){transition-delay:.15s}
+  .items.in .item:nth-child(4){transition-delay:.20s}
+  .items.in .item:nth-child(5){transition-delay:.25s}
+  .items.in .item:nth-child(6){transition-delay:.30s}
+  .items.in .item:nth-child(7){transition-delay:.35s}
+  .items.in .item:nth-child(8){transition-delay:.40s}
 </style>
 </head>
 <body>
@@ -208,14 +200,14 @@
   <div class="topbar-in">
     <div class="brand"><span class="mark" aria-label="AI4 FlowDesk Pro logo"></span>FlowDesk&nbsp;Pro <small>by AI4 Businesses</small></div>
     <nav class="secnav" id="secnav">
-      <a href="#s1">01 · Agent</a>
-      <a href="#s2">02 · Experience</a>
-      <a href="#s3">03 · Dashboard</a>
-      <a href="#s4">04 · Presence</a>
-      <a href="#s5">05 · Automation</a>
-      <a href="#s6">06 · Analytics</a>
-      <a href="#s7">07 · Integrations</a>
-      <a href="#s8">08 · Security</a>
+      <a href="#s1">01 Â· Agent</a>
+      <a href="#s2">02 Â· Experience</a>
+      <a href="#s3">03 Â· Dashboard</a>
+      <a href="#s4">04 Â· Presence</a>
+      <a href="#s5">05 Â· Automation</a>
+      <a href="#s6">06 Â· Analytics</a>
+      <a href="#s7">07 Â· Integrations</a>
+      <a href="#s8">08 Â· Security</a>
     </nav>
   </div>
 </div>
@@ -226,14 +218,14 @@
   <section class="hero hero--split">
     <div class="hero-grid">
       <!-- LEFT: brand lockup -->
-      <div class="hero-brand" role="img" aria-label="CRM Lead Management System — FlowDesk Pro by AI4 Businesses">
+      <div class="hero-brand" role="img" aria-label="CRM Lead Management System â€” FlowDesk Pro by AI4 Businesses">
         <span class="hero-brand-logo" aria-hidden="true"></span>
         <div class="hero-namewrap">
           <span class="hero-system-name">CRM Lead<br>Management System</span>
           <span class="hero-system-tag">The Revenue Hub</span>
         </div>
         <div class="hero-divider" aria-hidden="true"></div>
-        <div class="hero-brandline"><b>FlowDesk&nbsp;Pro</b> &nbsp;·&nbsp; by AI4 Businesses</div>
+        <div class="hero-brandline"><b>FlowDesk&nbsp;Pro</b> &nbsp;Â·&nbsp; by AI4 Businesses</div>
       </div>
       <!-- RIGHT: hero copy -->
       <div class="hero-copy">
@@ -249,23 +241,6 @@
       </div>
     </div>
 
-    <!-- FLOW STRIP -->
-    <div class="flow reveal">
-      <div class="flow-label">// One hub. Every channel feeds it.</div>
-      <div class="flow-row">
-        <div class="feeders">
-          <div class="feeder">📞 AI Voice Agent</div>
-          <div class="feeder">🔀 Smart Auto-Attendant</div>
-          <div class="feeder">📝 Business Intake Engine</div>
-          <div class="feeder">🌐 Web &amp; forms</div>
-        </div>
-        <div class="flow-arrow">&rarr;</div>
-        <div class="hub">
-          <div class="k">The revenue hub</div>
-          <div class="v">CRM / Lead<br>Management</div>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- 01 -->
@@ -450,7 +425,7 @@
   </div>
 </div>
 
-<footer>FlowDesk Pro &nbsp;·&nbsp; Lead Management System &nbsp;·&nbsp; AI4 Businesses</footer>
+<footer>FlowDesk Pro &nbsp;Â·&nbsp; Lead Management System &nbsp;Â·&nbsp; AI4 Businesses</footer>
 
 <script>
   // scroll reveal
