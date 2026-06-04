@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -86,6 +86,76 @@
       stroke: var(--green);
       flex-shrink: 0;
     }
+
+    /* ── Demo Preview Section ── */
+    .demo-preview-section {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: clamp(42px,7vw,72px) 20px 0;
+    }
+    .demo-lede { text-align: center; margin-bottom: 28px; }
+    .demo-lede .eyebrow { justify-content: center; margin-bottom: 14px; }
+    .demo-lede h1 {
+      font-family: Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(1.9rem,4vw,3rem);
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .demo-lede h1 em { color: var(--cyan); font-style: italic; }
+    .demo-lede p { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 600px; margin: 0 auto; }
+
+    .dash-mock {
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(0,0,0,.45);
+      margin-bottom: 12px;
+    }
+    .dash-mock-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 18px;
+      background: rgba(2,4,7,.95);
+      border-bottom: 1px solid var(--line);
+    }
+    .dash-mock-title { font-size: .9rem; font-weight: 900; color: var(--text); letter-spacing: -.01em; }
+    .dash-mock-title em { color: var(--cyan); font-style: normal; }
+    .dash-mock-live {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .68rem; color: var(--green); font-weight: 900; letter-spacing: .08em;
+    }
+    .dash-mock-live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 8px rgba(85,230,165,.7);
+      animation: pulse 2s infinite;
+    }
+    .dash-mock-metrics {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--line); border-bottom: 1px solid var(--line);
+    }
+    .dash-mock-metric { background: var(--panel); padding: 10px 14px; }
+    .dash-mock-metric span { display: block; color: var(--soft); font-size: .58rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+    .dash-mock-metric strong { font-size: 1.4rem; line-height: 1; color: var(--text); }
+    .dash-mock-leads { display: grid; gap: 1px; background: var(--line); }
+    .dash-mock-lead {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 10px 18px; background: rgba(5,13,25,.8);
+    }
+    .dash-mock-lead-name { font-size: .84rem; font-weight: 700; color: var(--text); }
+    .dash-mock-lead-type { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+    .dash-mock-badge { font-size: .6rem; font-weight: 900; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+    .badge-hot  { color: #03101f; background: var(--red); }
+    .badge-warm { color: #2d1900; background: var(--gold); }
+    .badge-new  { color: #03101f; background: var(--cyan); }
+    .demo-scroll-cue {
+      text-align: center; color: var(--soft); font-size: .72rem;
+      letter-spacing: .12em; text-transform: uppercase; margin-bottom: 38px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .demo-scroll-cue::before,.demo-scroll-cue::after {
+      content: ""; flex: 1; max-width: 80px; height: 1px; background: var(--line);
+    }
   </style>
 </head>
 <body>
@@ -103,13 +173,52 @@
       <a class="nav-action" href="/dashboard">Open Dashboard</a>
     </nav>
 
+    <!-- ── LIVE DEMO PREVIEW ─────────────────────────────────── -->
+    <div class="demo-preview-section">
+      <div class="demo-lede">
+        <div class="eyebrow"><span>Live Demo</span></div>
+        <h1>See FlowDesk Pro <em>personalized for your business</em></h1>
+        <p>Type your business name below and watch your branded dashboard appear. Submit the form — your dashboard is ready instantly.</p>
+      </div>
+
+      <!-- mini dashboard mockup — updates live as user types -->
+      <div class="dash-mock">
+        <div class="dash-mock-bar">
+          <div class="dash-mock-title"><em id="previewBizName">Your Business Name</em> — Lead Dashboard</div>
+          <div class="dash-mock-live"><span class="dash-mock-live-dot"></span>Live</div>
+        </div>
+        <div class="dash-mock-metrics">
+          <div class="dash-mock-metric"><span>Total Leads</span><strong>24</strong></div>
+          <div class="dash-mock-metric"><span>Needs Review</span><strong>6</strong></div>
+          <div class="dash-mock-metric"><span>Follow-Up</span><strong>11</strong></div>
+          <div class="dash-mock-metric"><span>High Urgency</span><strong>3</strong></div>
+        </div>
+        <div class="dash-mock-leads">
+          <div class="dash-mock-lead">
+            <div><div class="dash-mock-lead-name">Sandra Torres</div><div class="dash-mock-lead-type">AI Voice · Heating system down</div></div>
+            <span class="dash-mock-badge badge-hot">URGENT</span>
+          </div>
+          <div class="dash-mock-lead">
+            <div><div class="dash-mock-lead-name">Michael Reeves</div><div class="dash-mock-lead-type">Web Form · New matter inquiry</div></div>
+            <span class="dash-mock-badge badge-warm">HIGH</span>
+          </div>
+          <div class="dash-mock-lead">
+            <div><div class="dash-mock-lead-name">Dana Roberts</div><div class="dash-mock-lead-type">Intake Engine · Follow-up</div></div>
+            <span class="dash-mock-badge badge-new">NEW</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-scroll-cue">Enter your business name below to personalize this dashboard</div>
+    </div>
+
     <main class="form-shell">
       <section class="form-card">
         <img class="hero-logo" src="lead-management-logo.png" alt="FlowDesk Pro Lead Manager" />
-        <div class="eyebrow"><span>Fallback Intake</span></div>
-        <h1>Capture a lead record manually when needed.</h1>
+        <div class="eyebrow"><span>Start Your Free Demo</span></div>
+        <h1>Your personalized dashboard is one form away.</h1>
         <p class="hero-copy">
-          Primary records should come from external sources like AI4 Product Purchasing. This form exists as a fallback/admin intake path for direct lead capture.
+          Fill in your details below. The moment you submit, FlowDesk Pro builds your branded Lead Manager dashboard — with your business name at the top — ready to receive live leads.
         </p>
 
         <form id="leadForm" novalidate>
@@ -245,6 +354,12 @@
 'use strict';
 
 const $ = (id) => document.getElementById(id);
+
+// ── Live preview: business name syncs to dashboard mock ──────────────────
+const previewBizName = document.getElementById('previewBizName');
+document.getElementById('company').addEventListener('input', function () {
+  previewBizName.textContent = this.value.trim() || 'Your Business Name';
+});
 const form      = $('leadForm');
 const notice    = $('formNotice');
 const button    = $('submitButton');
@@ -392,6 +507,7 @@ form.addEventListener('submit', async (event) => {
 </script>
 </body>
 </html>
+
 
 
 
