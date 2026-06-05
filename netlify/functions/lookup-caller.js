@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // POST /.netlify/functions/lookup-caller
 // ElevenLabs Conversation Initiation Client Data webhook.
@@ -101,8 +101,9 @@ exports.handler = async (event) => {
       ? Buffer.from(event.body || '', 'base64').toString('utf8')
       : (event.body || '');
     const body = JSON.parse(rawBody);
-    // ElevenLabs sends caller ID in dynamic_variables or conversation metadata
-    callerPhone = body?.dynamic_variables?.system__caller_id
+    // ElevenLabs sends caller ID in several possible locations
+    callerPhone = body?.phone_number?.sms_user_phone_number   // inbound Twilio via ElevenLabs
+      || body?.dynamic_variables?.system__caller_id
       || body?.metadata?.phone_call?.external_number
       || body?.caller_id
       || null;
@@ -157,3 +158,4 @@ exports.handler = async (event) => {
 
   return { statusCode: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }, body: JSON.stringify(response) };
 };
+
