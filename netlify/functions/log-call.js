@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // POST /.netlify/functions/log-call
 // CRM-aware call logging — writes to full CRM schema:
@@ -96,7 +96,7 @@ exports.handler = async (event) => {
     durationSecs     = d.metadata?.call_duration_secs ? Math.round(Number(d.metadata.call_duration_secs)) : null;
     callerPhone      = clean(d.metadata?.phone_call?.external_number || d.metadata?.phone_call?.caller_id, 30) || 'Unknown';
     transcriptText   = buildTranscript(d.transcript);
-    const collected  = d.data_collection_results || {};
+    const collected  = d.data_collection_results || d.analysis?.data_collection_results || {};
     const dynVars    = d.conversation_initiation_client_data?.dynamic_variables || {};
     callerFirstName  = clean(collected.first_name?.value, 60) || null;
     callerLastName   = clean(collected.last_name?.value, 60) || null;
@@ -308,3 +308,4 @@ exports.handler = async (event) => {
     new_contact:    isNewContact,
   }, corsHeaders);
 };
+
