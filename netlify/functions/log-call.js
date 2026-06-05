@@ -1,4 +1,4 @@
-﻿'use strict';
+﻿﻿'use strict';
 
 // POST /.netlify/functions/log-call
 // CRM-aware call logging — writes to full CRM schema:
@@ -298,6 +298,46 @@ exports.handler = async (event) => {
     if (actErr) console.error('LOG-CALL activities error:', actErr.message);
   }
 
+  // ── Write flat record to lead_manager_records so dashboard displays it ──
+  try {
+    const flatRecord = {
+      tenant_id:    process.env.CLIENT_TENANT_ID || 'apropos-ai4-businesses',
+      client_name:  'Apropos Group LLC',
+      business_name:'AI4 Businesses',
+      contact_name: [callerFirstName, callerLastName].filter(Boolean).join(' ') || 'Voice Caller',
+      first_name:   callerFirstName,
+      last_name:    callerLastName,
+      email:        callerEmail,
+      phone:        callerPhone === 'Unknown' ? null : callerPhone,
+      company:      null,
+      source:       'ai_voice_call',
+      channel:      'voice',
+      source_page:  'elevenlabs_agent',
+      lead_status:  leadPriority === 'high' ? 'New / Priority Review' : 'New / Needs Review',
+      urgency:      leadPriority || 'Normal',
+      service_needed: reasonForCall,
+      category:     'Voice Call — ElevenLabs Agent',
+      message:      callerMessage || reasonForCall,
+      details:      transcriptText,
+      ai_summary:   reasonForCall,
+      next_action:  callbackNumber ? `Call back ${callbackNumber}` : 'Review call and follow up',
+      follow_up_needed: true,
+      metadata: {
+        conversation_id:   conversationId,
+        contact_type:      contactType,
+        decision_timeline: decisionTimeline,
+        callback_number:   callbackNumber,
+        call_record_id:    callRecordId,
+        duration_secs:     durationSecs,
+      }
+    };
+    const { error: flatErr } = await supabase.from('lead_manager_records').insert(flatRecord);
+    if (flatErr) console.error('LOG-CALL lead_manager_records error:', flatErr.message);
+    else console.log('LOG-CALL lead_manager_records: record written');
+  } catch (flatEx) {
+    console.error('LOG-CALL lead_manager_records exception:', flatEx.message);
+  }
+
   console.log(`LOG-CALL complete: contact_id=${contactId} call_record_id=${callRecordId} lead_id=${leadId} new_contact=${isNewContact}`);
 
   return json(200, {
@@ -308,4 +348,5 @@ exports.handler = async (event) => {
     new_contact:    isNewContact,
   }, corsHeaders);
 };
+
 
