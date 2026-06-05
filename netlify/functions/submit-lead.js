@@ -1,4 +1,4 @@
-﻿'use strict';
+﻿﻿'use strict';
 
 /**
  * FlowDesk Pro Lead Manager — Universal External Intake Receiver
@@ -54,10 +54,15 @@ function getOrigin(event) {
 }
 
 function getAllowedOrigins() {
-  return (process.env.LEAD_ALLOWED_ORIGINS || '')
+  const defaults = [
+    'https://aiflowdeskpro.com',
+    'http://aiflowdeskpro.com'
+  ];
+  const fromEnv = (process.env.LEAD_ALLOWED_ORIGINS || '')
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
+  return [...new Set([...defaults, ...fromEnv])];
 }
 
 function getAllowedOrigin(event) {
@@ -521,4 +526,5 @@ exports.handler = async (event) => {
     });
   }
 };
+
 

@@ -1,4 +1,4 @@
-﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -246,63 +246,10 @@
               <input id="company" name="company" autocomplete="organization" placeholder="e.g. Henderson Law Group, Rivera Dental, Torres HVAC" required />
               <span style="font-size:.74rem;color:var(--soft);letter-spacing:.04em;margin-top:2px;display:block">This name will display as the banner across your personalized FlowDesk Pro dashboard.</span>
             </div>
-            <div class="field">
-              <label for="serviceNeeded">Product / Service Needed</label>
-              <select id="serviceNeeded" name="service_needed" required>
-                <option value="">Select product or service</option>
-                <option>Website Design Studio Purchase Plans</option>
-                <option>FlowDesk Pro Lead Manager / CRM</option>
-                <option>Smart Auto-Attendant System</option>
-                <option>AI Voice Attendant System</option>
-                <option>Business Intake Engine System</option>
-                <option>SMS Follow-Up System</option>
-                <option>Appointment Request Workflow</option>
-                <option>General AI4 Businesses Inquiry</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="selectedPlan">Selected Plan</label>
-              <input id="selectedPlan" name="selected_plan" placeholder="Starter, Growth, Premium, etc." />
-            </div>
-            <div class="field">
-              <label for="urgency">Urgency</label>
-              <select id="urgency" name="urgency">
-                <option>Normal</option>
-                <option>High</option>
-                <option>Low</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="contactMethod">Preferred Contact</label>
-              <select id="contactMethod" name="preferred_contact_method">
-                <option>Email or phone</option>
-                <option>Email</option>
-                <option>Phone</option>
-                <option>SMS</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="callback">Preferred Callback Time</label>
-              <input id="callback" name="preferred_callback_time" placeholder="Morning, afternoon, specific date/time" />
-            </div>
-            <div class="field full">
-              <label for="message">Message / Details</label>
-              <textarea id="message" name="message" placeholder="Describe the request, product interest, setup need, or follow-up context." required></textarea>
-            </div>
-            <div class="field full">
-              <label for="nextAction">Initial Next Action</label>
-              <input id="nextAction" name="next_action" value="Review lead and follow up with setup or consultation details." />
-            </div>
-            <div class="field full">
-              <label>Options</label>
-              <label class="checkbox-row"><input id="followUp" name="follow_up_needed" type="checkbox" checked />Follow-up needed</label>
-              <label class="checkbox-row"><input id="appointment" name="appointment_requested" type="checkbox" />Appointment requested</label>
-            </div>
           </div>
 
           <div class="actions" style="margin-top:22px;">
-            <button class="btn primary" id="submitButton" type="submit">Submit Lead Record</button>
-            <a class="btn" href="/dashboard">Back to Dashboard</a>
+            <button class="btn primary" id="submitButton" type="submit">See My Dashboard →</button>
           </div>
           <div id="formNotice" class="notice" aria-live="polite"></div>
         </form>
@@ -344,7 +291,7 @@
 
     <footer>
       <div class="footer-inner">
-        <div>Fallback intake only. External product and purchase records should come from approved source sites.</div>
+        <div>FlowDesk Pro Lead Management System &nbsp;·&nbsp; White Label Partnership</div>
         <div class="footer-links"><a href="/dashboard">Dashboard</a><a href="/">Overview</a></div>
       </div>
     </footer>
@@ -400,9 +347,6 @@ function fillFromQuery(id, keys) {
     if (value && $(id)) { $(id).value = value; return; }
   }
 }
-fillFromQuery('serviceNeeded', ['product', 'service', 'selected_product']);
-fillFromQuery('selectedPlan',  ['plan', 'selected_plan']);
-fillFromQuery('message',       ['message', 'details']);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function showNotice(message, type) {
@@ -416,73 +360,53 @@ function val(id)  { return ($(id)?.value || '').trim(); }
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const firstName   = val('firstName');
-  const lastName    = val('lastName');
-  const email       = val('email');
-  const serviceNeeded = val('serviceNeeded');
-  const message     = val('message');
+  const firstName  = val('firstName');
+  const lastName   = val('lastName');
+  const email      = val('email');
+  const company    = val('company');
 
-  if (!firstName || !lastName || !email || !serviceNeeded || !message) {
-    showNotice('Please complete first name, last name, email, product/service, and message.', 'error');
+  if (!firstName || !lastName || !email || !company) {
+    showNotice('Please complete first name, last name, email, and business name.', 'error');
     return;
   }
 
   button.disabled = true;
-  button.textContent = 'Submitting...';
-  showNotice('Submitting lead record to FlowDesk Pro Lead Manager...', '');
+  button.textContent = 'Building your dashboard...';
+  showNotice('Setting up your FlowDesk Pro dashboard...', '');
 
-  const selectedPlan  = val('selectedPlan');
-  const smsConsented  = bool('smsConsent');
-  const mobileNumber  = val('phone');
+  const smsConsented = bool('smsConsent');
+  const mobileNumber = val('phone');
 
   const payload = {
     tenant_id:    'apropos-ai4-businesses',
     client_name:  'Apropos Group LLC',
-    business_name:'AI4 Businesses',
+    business_name: company,
     first_name:   firstName,
     last_name:    lastName,
     contact_name: `${firstName} ${lastName}`.trim(),
     email,
     phone:        mobileNumber,
-    company:      val('company'),
-    source:       'lead_manager_fallback_intake',
+    company,
+    source:       'aiflowdeskpro_demo_intake',
     channel:      'web',
     source_page:  'intake.html',
     source_url:   window.location.href,
     lead_status:  'New / Needs Review',
-    urgency:      val('urgency') || 'Normal',
-    service_needed: serviceNeeded,
-    category:     'Fallback Lead Intake',
-    preferred_contact_method: val('contactMethod') || 'Email or phone',
-    preferred_callback_time:  val('callback'),
-    message,
-    details: [
-      `Product / service: ${serviceNeeded}`,
-      selectedPlan ? `Selected plan: ${selectedPlan}` : '',
-      `Message: ${message}`,
-    ].filter(Boolean).join('\n'),
-    follow_up_needed:      bool('followUp'),
-    appointment_requested: bool('appointment'),
-
-    // ── SMS consent fields (TCPA artifact) ───────────────────────────────
+    urgency:      'Normal',
+    service_needed: 'FlowDesk Pro — Lead Management / White Label Partnership',
+    category:     'Demo Request',
+    follow_up_needed: true,
+    next_action:  'Review demo request and follow up with Lead Management System overview.',
     sms_consent:           smsConsented,
     sms_consent_phone:     smsConsented ? mobileNumber : null,
     sms_consent_text:      smsConsented ? SMS_CONSENT_TEXT : null,
     sms_consent_timestamp: smsConsented ? smsConsentTimestamp : null,
-    // ─────────────────────────────────────────────────────────────────────
-
-    next_action: val('nextAction'),
     metadata: {
-      origin_site:            window.location.hostname,
-      lead_source_type:       'fallback_manual_intake',
-      selected_product:       serviceNeeded,
-      selected_plan:          selectedPlan,
-      source_url:             window.location.href,
-      payment_site:           false,
-      payment_status:         'not_applicable',
-      requires_sales_follow_up: true,
-      sms_consent:            smsConsented,
-      sms_consent_timestamp:  smsConsentTimestamp,
+      origin_site:           window.location.hostname,
+      lead_source_type:      'demo_request',
+      source_url:            window.location.href,
+      sms_consent:           smsConsented,
+      sms_consent_timestamp: smsConsentTimestamp,
     }
   };
 
@@ -507,6 +431,7 @@ form.addEventListener('submit', async (event) => {
 </script>
 </body>
 </html>
+
 
 
 
