@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 /**
  * FlowDesk Pro Lead Manager — Universal External Intake Receiver
@@ -244,6 +244,11 @@ function buildRecord(body, event) {
     follow_up_needed: asBoolean(body.follow_up_needed, true),
     appointment_requested: asBoolean(body.appointment_requested, false),
     sms_consent: asBoolean(body.sms_consent, false),
+
+    // SMS consent artifact — TCPA proof fields
+    sms_consent_phone:     safeString(body.sms_consent_phone) || null,
+    sms_consent_text:      safeString(body.sms_consent_text)  || null,
+    sms_consent_timestamp: body.sms_consent_timestamp         || null,
 
     assigned_to: safeString(body.assigned_to || body.assignedTo, ''),
     customer_status_message: safeString(body.customer_status_message || body.customerStatusMessage, ''),
@@ -516,3 +521,4 @@ exports.handler = async (event) => {
     });
   }
 };
+
