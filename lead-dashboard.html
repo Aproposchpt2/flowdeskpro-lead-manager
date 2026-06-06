@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -36,7 +36,6 @@
   .badge-high{color:#fff0f0;background:rgba(255,107,122,.22);border:1px solid rgba(255,107,122,.38)}
   .badge-normal{color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line)}
 
-  .summary-cell{font-size:.78rem;color:var(--soft);line-height:1.5;max-width:240px}
   .next-cell{font-size:.76rem;color:var(--cyan);line-height:1.5;max-width:200px}
   .source-cell{font-size:.72rem;color:var(--soft)}
 
@@ -120,7 +119,6 @@
             <th>Status</th>
             <th>Urgency</th>
             <th class="hide-sm">Service / Category</th>
-            <th class="hide-sm">Summary</th>
             <th class="hide-sm">Next Action</th>
             <th>Source</th>
             <th>Date</th>
@@ -128,7 +126,7 @@
           </tr>
         </thead>
         <tbody id="tableBody">
-          <tr><td colspan="10" class="loading">Loading records…</td></tr>
+          <tr><td colspan="9" class="loading">Loading records…</td></tr>
         </tbody>
       </table>
       <div class="pagination" id="pagination" style="display:none">
@@ -207,7 +205,6 @@ function renderRow(r) {
       ${r.service_needed ? `<div style="font-size:.78rem;color:var(--text)">${r.service_needed}</div>` : ''}
       ${r.category ? `<div style="font-size:.72rem;color:var(--soft)">${r.category}</div>` : ''}
     </td>
-    <td class="summary-cell hide-sm">${r.ai_summary || '—'}</td>
     <td class="next-cell hide-sm">${r.next_action || '—'}</td>
     <td class="source-cell">${srcLabel(r.source)}</td>
     <td style="font-size:.78rem;white-space:nowrap">${fmtDate(r.created_at)}</td>
@@ -227,7 +224,7 @@ async function loadRecords(page = 0) {
   if (urgency) params.set('urgency', urgency);
   if (source)  params.set('source', source);
 
-  $('tableBody').innerHTML = '<tr><td colspan="10" class="loading">Loading…</td></tr>';
+  $('tableBody').innerHTML = '<tr><td colspan="9" class="loading">Loading…</td></tr>';
 
   try {
     const res  = await fetch(`/.netlify/functions/list-records?${params}`);
@@ -247,7 +244,7 @@ async function loadRecords(page = 0) {
 
     const records = data.records || [];
     if (!records.length) {
-      $('tableBody').innerHTML = '<tr><td colspan="10" class="empty">No records match.</td></tr>';
+      $('tableBody').innerHTML = '<tr><td colspan="9" class="empty">No records match.</td></tr>';
       $('pagination').style.display = 'none';
       return;
     }
@@ -267,7 +264,7 @@ async function loadRecords(page = 0) {
     }
 
   } catch (err) {
-    $('tableBody').innerHTML = `<tr><td colspan="10" class="empty" style="color:var(--red)">${err.message}</td></tr>`;
+    $('tableBody').innerHTML = `<tr><td colspan="9" class="empty" style="color:var(--red)">${err.message}</td></tr>`;
   }
 }
 
@@ -311,3 +308,4 @@ loadRecords(0);
 </script>
 </body>
 </html>
+
