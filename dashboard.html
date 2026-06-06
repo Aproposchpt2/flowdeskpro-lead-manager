@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -498,7 +498,6 @@ function renderDetail(){
       ${metaBox('Created', formatDate(r.created_at))}
     </div>
 
-    ${detailSection('Message / Details', value(r.details || r.message, 'No message captured.'))}
     ${detailSection('Internal Notes', value(r.internal_notes, 'No internal notes yet.'))}
     ${detailSection('Next Action', value(r.next_action, 'Review and decide the next follow-up step.'))}
     ${detailSection('Customer Status Message', value(r.customer_status_message, 'No customer status message sent yet.'))}
@@ -641,5 +640,6 @@ async function emailLead(id){
 </script>
 </body>
 </html>
+
 
 
