@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FlowDesk Pro — Lead Dashboard</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .dash-wrap{max-width:1280px;margin:0 auto;padding:28px clamp(14px,3vw,36px)}
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+  .metric{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.018)),rgba(10,20,36,.88);padding:18px 20px}
+  .metric-val{font-size:2rem;font-weight:900;line-height:1;color:var(--text);margin-bottom:6px}
+  .metric-val.cyan{color:var(--cyan)} .metric-val.gold{color:var(--gold)} .metric-val.red{color:var(--red)}
+  .metric-label{font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--soft)}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+  .filters input,.filters select{min-height:40px;border:1px solid var(--line);border-radius:12px;background:rgba(2,4,7,.58);color:var(--text);padding:0 12px;outline:none;font-size:.84rem}
+  .filters input{flex:1;min-width:200px}
+  .filters input:focus,.filters select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(115,230,255,.08)}
+
+  .table-wrap{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(10,20,36,.88)}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:.66rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--soft);padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+  td{padding:13px 14px;font-size:.86rem;border-bottom:1px solid rgba(116,184,255,.08);color:var(--muted);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(115,230,255,.04)}
+  .name-cell{color:var(--text);font-weight:700;font-size:.9rem}
+  .biz-cell{color:var(--muted);font-size:.78rem;margin-top:2px}
+  .contact-cell{font-size:.78rem;line-height:1.6}
+
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:.64rem;font-weight:900;white-space:nowrap}
+  .badge-new{color:#03101f;background:var(--cyan)}
+  .badge-priority{color:#2d1900;background:var(--gold)}
+  .badge-progress{color:#efeaff;background:rgba(169,147,255,.22);border:1px solid rgba(169,147,255,.4)}
+  .badge-closed{color:var(--soft);background:rgba(255,255,255,.06);border:1px solid var(--line)}
+  .badge-high{color:#fff0f0;background:rgba(255,107,122,.22);border:1px solid rgba(255,107,122,.38)}
+  .badge-normal{color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line)}
+
+  .summary-cell{font-size:.78rem;color:var(--soft);line-height:1.5;max-width:240px}
+  .next-cell{font-size:.76rem;color:var(--cyan);line-height:1.5;max-width:200px}
+  .source-cell{font-size:.72rem;color:var(--soft)}
+
+  .action-btn{background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--muted);padding:5px 10px;cursor:pointer;font-size:.72rem;font-weight:700;transition:.18s}
+  .action-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+  /* inline status editor */
+  .status-select{background:rgba(2,4,7,.8);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:4px 8px;font-size:.76rem;outline:none;cursor:pointer}
+  .status-select:focus{border-color:var(--cyan)}
+
+  .pagination{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-top:1px solid var(--line);color:var(--soft);font-size:.8rem}
+  .page-btns{display:flex;gap:8px}
+  .page-btn{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:.78rem;transition:.18s}
+  .page-btn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+  .page-btn:disabled{opacity:.35;cursor:not-allowed}
+
+  .empty{text-align:center;padding:52px 24px;color:var(--soft)}
+  .loading{text-align:center;padding:52px;color:var(--muted)}
+  @media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.filters input{min-width:140px}}
+  @media(max-width:600px){.metrics{grid-template-columns:1fr 1fr}th.hide-sm,td.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="nav">
+    <a class="brand" href="/">
+      <span class="brand-mark"><img src="lead-management-logo.png" alt="" /></span>
+      <span class="brand-text"><strong>FlowDesk Pro</strong><span>Lead Dashboard</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Overview</a></li>
+      <li><a href="/intake.html">Intake</a></li>
+      <li><a href="/capability-generator.html">CapGen</a></li>
+    </ul>
+    <button class="nav-action" id="refreshBtn">Refresh</button>
+  </nav>
+
+  <div class="dash-wrap">
+
+    <!-- Metrics -->
+    <div class="metrics" id="metrics">
+      <div class="metric"><div class="metric-val cyan" id="m-total">—</div><div class="metric-label">Total Records</div></div>
+      <div class="metric"><div class="metric-val" id="m-new">—</div><div class="metric-label">New / Needs Review</div></div>
+      <div class="metric"><div class="metric-val gold" id="m-followup">—</div><div class="metric-label">Follow-Up Needed</div></div>
+      <div class="metric"><div class="metric-val red" id="m-high">—</div><div class="metric-label">High Urgency</div></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input type="search" id="searchInput" placeholder="Search name, business, email, phone…" />
+      <select id="statusFilter">
+        <option value="">All statuses</option>
+        <option>New / Needs Review</option>
+        <option>New / Priority Review</option>
+        <option>In Progress</option>
+        <option>Closed / Resolved</option>
+      </select>
+      <select id="urgencyFilter">
+        <option value="">All urgency</option>
+        <option>High</option>
+        <option>Urgent</option>
+        <option>Normal</option>
+        <option>Low</option>
+      </select>
+      <select id="sourceFilter">
+        <option value="">All sources</option>
+        <option value="ai_voice_call">AI Voice Call</option>
+        <option value="aiflowdeskpro_demo_intake">Demo Intake</option>
+        <option value="lead_manager_fallback_intake">Fallback Intake</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Contact</th>
+            <th class="hide-sm">Phone / Email</th>
+            <th>Status</th>
+            <th>Urgency</th>
+            <th class="hide-sm">Service / Category</th>
+            <th class="hide-sm">Summary</th>
+            <th class="hide-sm">Next Action</th>
+            <th>Source</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="10" class="loading">Loading records…</td></tr>
+        </tbody>
+      </table>
+      <div class="pagination" id="pagination" style="display:none">
+        <span id="pageInfo"></span>
+        <div class="page-btns">
+          <button class="page-btn" id="prevBtn" disabled>← Prev</button>
+          <button class="page-btn" id="nextBtn" disabled>Next →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+
+let currentPage = 0;
+let totalRecords = 0;
+const PAGE_SIZE = 50;
+let debounceTimer;
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function statusBadge(s) {
+  s = s || 'New / Needs Review';
+  const sl = s.toLowerCase();
+  const cls = sl.includes('priority') ? 'badge-priority'
+    : sl.includes('progress')         ? 'badge-progress'
+    : sl.includes('closed')           ? 'badge-closed'
+    : 'badge-new';
+  return `<span class="badge ${cls}">${s}</span>`;
+}
+
+function urgencyBadge(u) {
+  u = u || 'Normal';
+  const cls = (u.toLowerCase() === 'high' || u.toLowerCase() === 'urgent') ? 'badge-high' : 'badge-normal';
+  return `<span class="badge ${cls}">${u}</span>`;
+}
+
+function srcLabel(s) {
+  const map = {
+    ai_voice_call: 'Voice',
+    aiflowdeskpro_demo_intake: 'Demo Intake',
+    lead_manager_fallback_intake: 'Manual',
+    elevenlabs_agent: 'Voice Agent',
+  };
+  return map[s] || (s || 'Unknown');
+}
+
+function renderRow(r) {
+  const name = r.contact_name || [r.first_name, r.last_name].filter(Boolean).join(' ') || 'Unknown';
+  const biz  = r.business_name || r.company || '';
+  return `<tr data-id="${r.id}">
+    <td>
+      <div class="name-cell">${name}</div>
+      ${biz ? `<div class="biz-cell">${biz}</div>` : ''}
+    </td>
+    <td class="contact-cell hide-sm">
+      ${r.phone ? `<div>${r.phone}</div>` : ''}
+      ${r.email ? `<div style="color:var(--cyan);font-size:.74rem">${r.email}</div>` : ''}
+    </td>
+    <td>
+      <select class="status-select" data-id="${r.id}" data-field="lead_status">
+        ${['New / Needs Review','New / Priority Review','In Progress','Closed / Resolved']
+          .map(s => `<option${s === r.lead_status ? ' selected' : ''}>${s}</option>`).join('')}
+      </select>
+    </td>
+    <td>${urgencyBadge(r.urgency)}</td>
+    <td class="hide-sm">
+      ${r.service_needed ? `<div style="font-size:.78rem;color:var(--text)">${r.service_needed}</div>` : ''}
+      ${r.category ? `<div style="font-size:.72rem;color:var(--soft)">${r.category}</div>` : ''}
+    </td>
+    <td class="summary-cell hide-sm">${r.ai_summary || '—'}</td>
+    <td class="next-cell hide-sm">${r.next_action || '—'}</td>
+    <td class="source-cell">${srcLabel(r.source)}</td>
+    <td style="font-size:.78rem;white-space:nowrap">${fmtDate(r.created_at)}</td>
+    <td><button class="action-btn" data-id="${r.id}" title="Copy ID">···</button></td>
+  </tr>`;
+}
+
+async function loadRecords(page = 0) {
+  const search  = $('searchInput').value.trim();
+  const status  = $('statusFilter').value;
+  const urgency = $('urgencyFilter').value;
+  const source  = $('sourceFilter').value;
+
+  const params = new URLSearchParams({ page });
+  if (search)  params.set('search', search);
+  if (status)  params.set('status', status);
+  if (urgency) params.set('urgency', urgency);
+  if (source)  params.set('source', source);
+
+  $('tableBody').innerHTML = '<tr><td colspan="10" class="loading">Loading…</td></tr>';
+
+  try {
+    const res  = await fetch(`/.netlify/functions/list-records?${params}`);
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Load failed');
+
+    // Metrics
+    const m = data.metrics || {};
+    $('m-total').textContent   = m.total   ?? '—';
+    $('m-new').textContent     = m.new_review ?? '—';
+    $('m-followup').textContent = m.follow_up ?? '—';
+    $('m-high').textContent    = m.high    ?? '—';
+
+    totalRecords = data.total || 0;
+    currentPage  = data.page  || 0;
+
+    const records = data.records || [];
+    if (!records.length) {
+      $('tableBody').innerHTML = '<tr><td colspan="10" class="empty">No records match.</td></tr>';
+      $('pagination').style.display = 'none';
+      return;
+    }
+
+    $('tableBody').innerHTML = records.map(renderRow).join('');
+    wireStatusSelects();
+
+    // Pagination
+    const totalPages = Math.ceil(totalRecords / PAGE_SIZE);
+    if (totalPages > 1) {
+      $('pagination').style.display = 'flex';
+      $('pageInfo').textContent = `Page ${currentPage + 1} of ${totalPages} · ${totalRecords} records`;
+      $('prevBtn').disabled = currentPage === 0;
+      $('nextBtn').disabled = currentPage >= totalPages - 1;
+    } else {
+      $('pagination').style.display = 'none';
+    }
+
+  } catch (err) {
+    $('tableBody').innerHTML = `<tr><td colspan="10" class="empty" style="color:var(--red)">${err.message}</td></tr>`;
+  }
+}
+
+function wireStatusSelects() {
+  document.querySelectorAll('.status-select').forEach(sel => {
+    sel.addEventListener('change', async function() {
+      const id = this.dataset.id;
+      const lead_status = this.value;
+      try {
+        const res = await fetch('/.netlify/functions/update-lead-status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, lead_status }),
+        });
+        if (!res.ok) throw new Error('Update failed');
+      } catch (e) {
+        console.error('Status update error:', e.message);
+        this.style.borderColor = 'var(--red)';
+        setTimeout(() => this.style.borderColor = '', 2000);
+      }
+    });
+  });
+}
+
+// Filter listeners with debounce on search
+$('searchInput').addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => { currentPage = 0; loadRecords(0); }, 400);
+});
+['statusFilter','urgencyFilter','sourceFilter'].forEach(id => {
+  $(id).addEventListener('change', () => { currentPage = 0; loadRecords(0); });
+});
+$('refreshBtn').addEventListener('click', () => loadRecords(currentPage));
+$('prevBtn').addEventListener('click', () => loadRecords(currentPage - 1));
+$('nextBtn').addEventListener('click', () => loadRecords(currentPage + 1));
+
+// Auto-refresh every 30 seconds
+setInterval(() => loadRecords(currentPage), 30000);
+
+loadRecords(0);
+</script>
+</body>
+</html>
