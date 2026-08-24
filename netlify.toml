@@ -8,8 +8,8 @@
 [functions]
   node_bundler = "esbuild"
 
-[functions."sync-elevenlabs-calls"]
-  schedule = "*/5 * * * *"
+# sync-elevenlabs-calls remains available for explicit/manual invocation only.
+# Automatic scheduled execution is intentionally disabled.
 
 # ─── FLOWDESK PRO LEAD MANAGER CLEAN ROUTES ───────────────────
 
